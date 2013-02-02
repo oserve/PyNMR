@@ -3,7 +3,7 @@ from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
 
-installDir="/Users/olivier/Pymol_scripts/NMR/"
+installDir="/Users/olivier/Pymol_scripts/pyNMR/"
 workingDir=getcwd()
 chdir(installDir)
 

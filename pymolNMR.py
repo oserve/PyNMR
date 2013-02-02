@@ -1,7 +1,7 @@
 from os import getcwd, chdir
 from sys import stderr
 #Needed to upload custom modules
-installDir="/Users/olivier/Pymol_scripts/NMR/"
+installDir="/Users/olivier/Pymol_scripts/pyNMR/"
 workingDir=getcwd()
 chdir(installDir)
 
