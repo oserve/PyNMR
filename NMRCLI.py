@@ -50,20 +50,24 @@ class NMRCore(object):
 		else:
 			if managerName=='':
 				managerName=self.ManagersList["defaultManager"]
-			print self.ManagersList[managerName]
 			self.ManagersList[managerName].setPDB(pdb)
 			theFilter=self.filterSetup(managerName, residuesList, dist_range, violationState, violCutoff, method)
 			radius=float(radius)
 			drawer=ConstraintDrawer()
-			results=drawer.drC(self.ManagersList[managerName], theFilter, radius, colors)
-			stdout.write(str(results['DrawnConstraints'])+" constraints drawn on a total of "+str(len(self.ManagersList[managerName].constraints))+"\n")
-	
-			zoomSelection=self.ManagersList[managerName].pdb+" &"
-			if len(results['Residueslist']):
-				for residue in results['Residueslist']:
-					zoomSelection=zoomSelection+" resi "+residue+" +"
-				zoom(zoomSelection.rstrip(' +'))
-				select('involRes',zoomSelection.rstrip(' +'))
+			selectedConstraints=[]
+			if len(self.ManagersList[managerName].constraints):
+				if self.ManagersList[managerName].associateToPDB():
+					selectedConstraints=theFilter.filterConstraints(self.ManagersList[managerName].constraints)
+					results=drawer.drC(selectedConstraints, radius, colors)
+					stdout.write(str(results['DrawnConstraints'])+" constraints drawn on a total of "+str(len(self.ManagersList[managerName].constraints))+"\n")			
+					zoomSelection=self.ManagersList[managerName].pdb+" &"
+					if len(results['Residueslist']):
+						for residue in results['Residueslist']:
+							zoomSelection=zoomSelection+" resi "+residue+" +"
+						zoom(zoomSelection.rstrip(' +'))
+						select('involRes',zoomSelection.rstrip(' +'))
+			else:
+				stderr.write( "No constraints to draw ! You might want to load a few of them first ...\n")
 	
 	def showNOEDensity(self, pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method='sum6', colors=defaultColors):
 		"""Seeks for constraints that fit criteria, increases a counter for each residue which has a
@@ -77,14 +81,18 @@ class NMRCore(object):
 			self.ManagersList[managerName].setPDB(pdb)
 			theFilter=self.filterSetup(managerName,residuesList, dist_range,violationState,violCutoff,method)
 			drawer=ConstraintDrawer()
-			densityList=drawer.paD(self.ManagersList[managerName], theFilter, colors['gradient'])
-			zoomSelection=self.ManagersList[managerName].pdb+" &"
-			if len(densityList):
-				stdout.write(str(len(densityList))+" residues involved.\n")
-				for residue in densityList.keys():
-					zoomSelection=zoomSelection+" resi "+residue+" +"
-				zoom(zoomSelection.rstrip(' +'))
-				select('involRes',zoomSelection.rstrip(' +'))
+			if len(self.ManagersList[managerName].constraints):
+				if self.ManagersList[managerName].associateToPDB():
+					selectedConstraints=theFilter.filterConstraints(self.ManagersList[managerName].constraints)
+					densityList=drawer.paD(selectedConstraints, self.ManagersList[managerName].pdb, colors['gradient'])
+					zoomSelection=self.ManagersList[managerName].pdb+" &"
+					if len(densityList):
+						stdout.write(str(len(selectedConstraints)) + " used.\n")
+						stdout.write(str(len(densityList))+" residues involved.\n")
+						for residue in densityList.keys():
+							zoomSelection=zoomSelection+" resi "+residue+" +"
+						zoom(zoomSelection.rstrip(' +'))
+						select('involRes',zoomSelection.rstrip(' +'))
 	
 	def filterSetup(self, managerName, residuesList, dist_range, violationState, violCutoff, method):
 		"""Setup Filter for constraints

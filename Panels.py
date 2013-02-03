@@ -192,8 +192,52 @@ class ViolationSelectionPanel(Panel):
 				violationState.append(violationType)
 		return {"cutOff":self.cutOff.get(), "violationState":violationState}
 
-class sticksPreferencesPanel(Panel):
+class SticksPreferencesPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="NOE Sticks Preferences")
 		self.radius=Tk.DoubleVar(self)
-		self.colors={}
+		self.colors={"notViolated":"","tooFar":"", "tooClose":""}
+		self.widgetCreation()
+	
+	def widgetCreation(self):
+		Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
+		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.0, to=10.0, increment=0.1)
+		self.spinBox_Radius.grid(row=0, column=1)
+	
+	def getInfos(self):
+		return {"radius":self.radius.get()}
+
+class DensityPreferencesPanel(Panel):
+	def __init__(self, master):
+		Panel.__init__(self, master, frameText="NOE density Preferences")
+		self.gradient=Tk.StringVar(self)
+		self.widgetCreation()
+
+	def widgetCreation(self):
+		Tk.Label(self, text='Gradient :').grid(row=0, column=0)
+
+class PreferencesPanel(Panel):
+	def __init__(self, master):
+		Panel.__init__(self, master, frameText="NOE Preferences")
+		self.method=Tk.StringVar(self)
+		self.panelsList=[]
+		self.widgetCreation()
+	
+	def widgetCreation(self):
+		Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
+		self.sticksPanel = SticksPreferencesPanel(self)
+		self.sticksPanel.grid(row=1, column=0, columnspan=2)
+		self.panelsList.append(self.sticksPanel)
+		
+		self.densityPanel = DensityPreferencesPanel(self)
+		self.densityPanel.grid(row=2, column=0, columnspan=2)
+		self.panelsList.append(self.densityPanel)
+	
+	def getInfos(self):
+		infos={"method":self.method.get()}
+		for panel in self.panelsList:
+			infos.update(panel.getInfo())
+		return infos
+	
+
+

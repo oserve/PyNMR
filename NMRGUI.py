@@ -33,6 +33,10 @@ class NMRGUI(Tk.Tk):
 		self.NOEDrawingManagement.grid(row=0, column=2)
 		self.panelsList.append(self.NOEDrawingManagement)
 
+		self.preferencesPanel=Panels.PreferencesPanel(self)
+		self.preferencesPanel.grid(row=1, column=1)
+		self.panelsList.append(self.preferencesPanel)
+		
 	def getInfo(self):
 		infos={}
 		for panel in self.panelsList:

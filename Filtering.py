@@ -44,3 +44,10 @@ class ConstraintFilter(object):
 				return 0
 		else:
 			return 0
+	
+	def filterConstraints(self, constraintList):
+		selectedConstraint=[]
+		for aConstraint in constraintList:
+			if self.filter(aConstraint):
+				selectedConstraint.append(aConstraint)
+		return selectedConstraint

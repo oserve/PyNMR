@@ -11,17 +11,17 @@ chdir(workingDir)
 
 #pymolNMR=NMRCore()
 
-try:
-	from pymol.cmd import extend
-	extend("loadNOE", pymolNMR.loadNOE)
-	extend("showNOE", pymolNMR.showNOE)
-	extend("showNOEDensity", pymolNMR.showNOEDensity)
-	extend("consStats", pymolNMR.consStats)
-	#cmd.extend("cnsToPDB", pymolNMR.cnsToPDB)
-	extend("loadAndShow", pymolNMR.loadAndShow)
-
-except ImportError:
-	stderr.write("Demo mode.\n")
+#try:
+#	from pymol.cmd import extend
+#	extend("loadNOE", pymolNMR.loadNOE)
+#	extend("showNOE", pymolNMR.showNOE)
+#	extend("showNOEDensity", pymolNMR.showNOEDensity)
+#	extend("consStats", pymolNMR.consStats)
+#	#cmd.extend("cnsToPDB", pymolNMR.cnsToPDB)
+#	extend("loadAndShow", pymolNMR.loadAndShow)
+#
+#except ImportError:
+#	stderr.write("Demo mode.\n")
 	
 class NMRApplication(object):
 	def __init__(self):
