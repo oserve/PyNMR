@@ -40,8 +40,8 @@ class FileSelectionPanel(Panel):
 		else:
 			constraintDefinition="CYANA"
 		self.NMRCommands.loadNOE(filename, constraintDefinition)
-		print self.NMRCommands.ManagersList.keys()
 		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+		self.constraintsList.setvalue(path.basename(filename))
 	
 	def removeFile(self):
 		pass
@@ -196,13 +196,15 @@ class SticksPreferencesPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="NOE Sticks Preferences")
 		self.radius=Tk.DoubleVar(self)
+		self.radius.set(0.03)
 		self.colors={"notViolated":"","tooFar":"", "tooClose":""}
 		self.widgetCreation()
 	
 	def widgetCreation(self):
 		Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
-		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.0, to=10.0, increment=0.1)
+		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
 		self.spinBox_Radius.grid(row=0, column=1)
+
 	
 	def getInfos(self):
 		return {"radius":self.radius.get()}

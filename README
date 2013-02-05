@@ -5,8 +5,9 @@ Attempt to add NMR abilities to molecular viewer Pymol, including :
 via command line and GUI (using TK and Pmw)
 
 This plugin actually works quite well, although :
-- Architecture of the core the plugin needs some revamping to ease the communication with the GUI and the CLI (CLI and core are completeley mixed)
-- There is an important speed loss (/30) when using GUI
+- Architecture of the core the plugin is under revamping to ease the communication with the GUI and the CLI (CLI and core are completeley mixed)
+- Need to create a better config initialisation
+- Need to finish the GUI
 
 Installation :
 - copy the files into a single directory anywhere on your disk

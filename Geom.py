@@ -46,7 +46,7 @@ def averageDistance_6(selection_init,selection_final):
 				try:
 					sum6=sum6+pow(distance,-6)
 				except:
-					stderr.write("problem with selection : "+selection_init+" "+selection_final + "\n" + "distance is : "+str(distance)+" A")
+					stderr.write("Problem with selection : "+selection_init+" "+selection_final + "\n" + "distance is : "+str(distance)+" A")
 			return pow(sum6/len(distance_list),-1./6)
 	else:
 		stderr.write("selection is empty : "+selection_init+" "+selection_final+"\n")
@@ -69,7 +69,7 @@ def sumDistance_6(selection_init,selection_final):
 				try:
 					sum6=sum6+pow(distance,-6)
 				except:
-					stderr.write("problem with selection : "+selection_init+" "+selection_final + "\n" + "distance is : "+str(distance)+" A")
+					stderr.write("Problem with selection : "+selection_init+" "+selection_final + "\n" + "distance is : "+str(distance)+" A")
 			result=pow(sum6,-1./6)
 			return result
 
