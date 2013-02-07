@@ -3,13 +3,7 @@ from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
 
-installDir="/Users/olivier/Pymol_scripts/pyNMR/"
-workingDir=getcwd()
-chdir(installDir)
-
 import Panels
-
-chdir(workingDir)
 
 class NMRGUI(Tk.Tk):
 	def __init__ (self):
@@ -22,11 +16,9 @@ class NMRGUI(Tk.Tk):
 	def createPanels(self):
 		#Main Frames (not IBM)
 		self.constraintSelectionManagement = Panels.ConstraintSelectionPanel(self)
-		self.constraintSelectionManagement.grid(row=0, column=1)
 		self.panelsList.append(self.constraintSelectionManagement)
 
 		self.constraintFilesManagement = Panels.FileSelectionPanel(self)
-		self.constraintFilesManagement.grid(row=0, column=0)
 		self.panelsList.append(self.constraintFilesManagement)
 
 		self.NOEDrawingManagement = Panels.NOEDrawingPanel(self)
@@ -34,8 +26,12 @@ class NMRGUI(Tk.Tk):
 		self.panelsList.append(self.NOEDrawingManagement)
 
 		self.preferencesPanel=Panels.PreferencesPanel(self)
-		self.preferencesPanel.grid(row=1, column=1)
 		self.panelsList.append(self.preferencesPanel)
+	
+	def startGUI(self):
+		self.constraintSelectionManagement.grid(row=0, column=1)
+		self.constraintFilesManagement.grid(row=0, column=0)
+		self.preferencesPanel.grid(row=1, column=1)		
 		
 	def getInfo(self):
 		infos={}

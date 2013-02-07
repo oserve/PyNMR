@@ -3,6 +3,7 @@ from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
 import tkFileDialog
+from config import *
 
 class Panel(Tk.LabelFrame):
 	def __init__(self, master, frameText = ""):
@@ -114,11 +115,17 @@ class NOEDrawingPanel(Panel):
 	
 	def showSticks(self):
 		infos= self.master.getInfo()
-		self.NMRCommands.showNOE(pdb=infos["pdb"], managerName=infos["constraintFile"], residuesList=infos["ranges"], dist_range=infos["residuesRange"], violationState=infos["violationState"], violCutoff=infos["cutOff"])
+		infos["method"]= "sum6"
+		infos["colors"]=defaultColors
+		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+		self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
 	def showDensity(self):
 		infos=self.master.getInfo()
-		self.NMRCommands.showNOEDensity(pdb=infos["pdb"], managerName=infos["constraintFile"], residuesList=infos["ranges"], dist_range=infos["residuesRange"], violationState=infos["violationState"], violCutoff=infos["cutOff"])
+		infos["method"]= "sum6"
+		infos["colors"]=defaultColors
+		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+		self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["colors"])
 		
 class RangeSelectionPanel(Panel):
 	def __init__(self, master):
@@ -206,7 +213,7 @@ class SticksPreferencesPanel(Panel):
 		self.spinBox_Radius.grid(row=0, column=1)
 
 	
-	def getInfos(self):
+	def getInfo(self):
 		return {"radius":self.radius.get()}
 
 class DensityPreferencesPanel(Panel):
@@ -235,11 +242,8 @@ class PreferencesPanel(Panel):
 		self.densityPanel.grid(row=2, column=0, columnspan=2)
 		self.panelsList.append(self.densityPanel)
 	
-	def getInfos(self):
+	def getInfo(self):
 		infos={"method":self.method.get()}
 		for panel in self.panelsList:
 			infos.update(panel.getInfo())
 		return infos
-	
-
-
