@@ -3,6 +3,8 @@ from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
 import tkFileDialog
+import tkColorChooser
+
 from config import *
 
 class Panel(Tk.LabelFrame):
@@ -211,10 +213,14 @@ class SticksPreferencesPanel(Panel):
 		Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
 		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
 		self.spinBox_Radius.grid(row=0, column=1)
+		Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
+		Tk.Button(self, text="Choose color", command=self.setColor).grid(row=1, column=1)
 
-	
 	def getInfo(self):
 		return {"radius":self.radius.get()}
+	
+	def setColor(self):
+		tkColorChooser.askcolor()
 
 class DensityPreferencesPanel(Panel):
 	def __init__(self, master):
@@ -228,12 +234,16 @@ class DensityPreferencesPanel(Panel):
 class PreferencesPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="NOE Preferences")
-		self.method=Tk.StringVar(self)
 		self.panelsList=[]
 		self.widgetCreation()
 	
 	def widgetCreation(self):
 		Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
+		self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
+		self.methodSelection.add("Sum6", text="Sum of r^6")
+		self.methodSelection.add("Average6", text="Average of r^6")
+		self.methodSelection.grid(row=0, column=1)
+		self.methodSelection.setvalue("Sum6")
 		self.sticksPanel = SticksPreferencesPanel(self)
 		self.sticksPanel.grid(row=1, column=0, columnspan=2)
 		self.panelsList.append(self.sticksPanel)
@@ -243,7 +253,7 @@ class PreferencesPanel(Panel):
 		self.panelsList.append(self.densityPanel)
 	
 	def getInfo(self):
-		infos={"method":self.method.get()}
+		infos={"method":self.methodSelection.getvalue()}
 		for panel in self.panelsList:
 			infos.update(panel.getInfo())
 		return infos
