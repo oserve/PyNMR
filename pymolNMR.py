@@ -4,7 +4,11 @@ from sys import stderr
 installDir="/Users/olivier/Pymol_scripts/pyNMR/"
 workingDir=getcwd()
 chdir(installDir)
-from config import *
+
+defaultRadius=0.03 # Angstrom
+defaultViolCutoff=0.3 # Angstrom
+defaultColors={'notViolated':[1,1,1,1,1,1],'tooFar':[1,0,0,1,0,0],'tooClose':[0,0,1,0,0,1],'gradient':"blue_white_red"}
+defaultRGBColors={'notViolated':[1,1,1],'tooFar':[1,0,0],'tooClose':[0,0,1],'gradient':"blue_white_red"}
 
 from NMRCore import NMRCore
 from NMRGUI import NMRGUI
@@ -17,6 +21,10 @@ class NMRApplication(object):
 		self.NMRCommands = Core		
 		self.NMRInterface = NMRGUI()
 		self.log=""
+		self.defaults={"radius":0.03, "cutOff":0.3, "colors":{'notViolated':[1,1,1,1,1,1],'tooFar':[1,0,0,1,0,0],'tooClose':[0,0,1,0,0,1],'gradient':"blue_white_red"}}
+		self.NMRInterface.preferencesPanel.sticksPanel.colors=self.defaults["colors"]
+		self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
+		self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
 		self.GUIBindings()
 		
 	def GUIBindings(self):
@@ -25,7 +33,7 @@ class NMRApplication(object):
 
 pyNMR=NMRApplication(Core)
 
-def showNOE(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method="sum6", radius=defaultRadius, colors=defaultColors):
+def showNOE(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method="sum6", radius=pyNMR.defaults["radius"], colors=pyNMR.defaults["colors"]):
 	if managerName=='' and Core.ManagersList["defaultManager"]=="":
 		stderr.write("No constraints loaded.\n")
 	else:
@@ -45,7 +53,7 @@ def loadNOE(filename="", consDef=""):
 	else:
 		stderr.write("File : "+ filename +" has not been found.\n")
 
-def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method='sum6', colors=defaultColors):
+def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method='sum6', colors=pyNMR.defaults["colors"]):
 	if managerName=='' and Core.ManagersList["defaultManager"]=="":
 		stderr.write("No constraints loaded.\n")
 	else:
@@ -57,7 +65,7 @@ def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all',
 		else:
 			stderr.write("Please check constraints filename.\n")
 
-def loadAndShow(self, filename, consDef, pdb='',residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method="sum6", radius=defaultRadius, colors=defaultColors):
+def loadAndShow(self, filename, consDef, pdb='',residuesList='all', dist_range='all', violationState='all', violCutoff=defaultViolCutoff, method="sum6", radius=defaultRadius, colors=pyNMR.defaults["colors"]):
 	"""
 	"""
 	loadNOE(filename, consDef)
