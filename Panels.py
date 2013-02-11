@@ -12,7 +12,7 @@ class Panel(Tk.LabelFrame):
 		"""Abstract Class
 		"""
 		Tk.LabelFrame.__init__(self, master, text=frameText)
-	
+
 	def getInfo(self):
 		return {}
 
@@ -21,7 +21,7 @@ class FileSelectionPanel(Panel):
 		Panel.__init__(self, master, frameText="Constraints Files")
 		self.widgetCreation()
 		self.NMRCommands=""#Must be set by application at run time
-	
+
 	def widgetCreation(self):
 		self.constraintFilesButtonBox = Pmw.ButtonBox(self, labelpos = 'nw', orient='vertical')
 		self.constraintFilesButtonBox.add("Load Constraints", command=self.loadFile)
@@ -45,25 +45,25 @@ class FileSelectionPanel(Panel):
 		self.NMRCommands.loadNOE(filename, constraintDefinition)
 		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 		self.constraintsList.setvalue(path.basename(filename))
-	
+
 	def removeFile(self):
 		pass
-	
+
 	def getInfo(self):
 		return {"constraintFile":self.constraintsList.getvalue()[0]}
-		
+
 class ConstraintSelectionPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="Constraints Selection")
 		self.panelsList=[]
 		self.widgetCreation()
-	
+
 	def widgetCreation(self):
 		#Creation of range input
 		self.consRangeFrame=RangeSelectionPanel(self)
 		self.consRangeFrame.grid(row=0, column=0)
 		self.panelsList.append(self.consRangeFrame)
-	
+
 		#Creation of Violations inputs
 		self.violationsFrame=ViolationSelectionPanel(self)
 		self.violationsFrame.grid(row=0, column=1)
@@ -73,30 +73,30 @@ class ConstraintSelectionPanel(Panel):
 		self.structureManagement = StructureSelectionPanel(self)
 		self.structureManagement.grid(row=1, column=0, columnspan=2)
 		self.panelsList.append(self.structureManagement)
-	
+
 	def getInfo(self):
 		infos={}
 		for panel in self.panelsList:
 			infos.update(panel.getInfo())
 		return infos
-	
+
 class StructureSelectionPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="Structure")
 		self.residueRanges=Tk.StringVar(self)
 		self.pdb=Tk.StringVar(self)
-		self.widgetCreation()	
-		
+		self.widgetCreation()
+
 	def widgetCreation(self):
 		Tk.Label(self, text='Name :').grid(row=0, column=0, sticky=Tk.W)
 		self.entry_Pdb=Tk.Entry(self, textvariable=self.pdb)
 		self.entry_Pdb.grid(row=0, column=1)
 
-		Tk.Label(self, text='Residues ranges :').grid(row=1, column=0, sticky=Tk.W)		
+		Tk.Label(self, text='Residues ranges :').grid(row=1, column=0, sticky=Tk.W)
 		self.entry_res=Tk.Entry(self, textvariable=self.residueRanges)
 		self.entry_res.grid(row=1, column=1)
 		self.residueRanges.set('all')
-	
+
 	def getInfo(self):
 		return {"pdb":self.pdb.get(), "ranges":self.residueRanges.get()}
 
@@ -106,29 +106,26 @@ class NOEDrawingPanel(Panel):
 		Panel.__init__(self, master, frameText="NOE Representation")
 		self.widgetCreation()
 		self.NMRCommands=""#Must be set by application at run time
-		
-	def widgetCreation(self):		
+
+	def widgetCreation(self):
 		self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='vertical')
 		self.drawingNOEButtonBox.add('Sticks', command = self.showSticks)
 		self.drawingNOEButtonBox.add('Density', command = self.showDensity)
 		self.drawingNOEButtonBox.add('Clean NOEs')
 		self.drawingNOEButtonBox.grid(row=0, column=0)
 		self.drawingNOEButtonBox.setdefault('Sticks')
-	
+
 	def showSticks(self):
 		infos= self.master.getInfo()
-		infos["method"]= "sum6"
-		infos["colors"]=defaultColors
 		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
 		self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
 	def showDensity(self):
 		infos=self.master.getInfo()
-		infos["method"]= "sum6"
 		infos["colors"]=defaultColors
 		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
 		self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["colors"])
-		
+
 class RangeSelectionPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="Range Selection")
@@ -137,7 +134,7 @@ class RangeSelectionPanel(Panel):
 		self.RangesCB={}
 		self.RangesFunctions={}
 		self.widgetCreation()
-	
+
 	def widgetCreation(self):
 		rowPosition=0
 		for consRange in ['intra', 'sequential', 'medium', 'long']:
@@ -167,7 +164,7 @@ class RangeSelectionPanel(Panel):
 		ranges=[]
 		for consRange in ['intra', 'sequential', 'medium', 'long']:
 			if self.RangesVars[consRange].get()==1:
-				ranges.append(consRange)	
+				ranges.append(consRange)
 		return {"residuesRange":ranges}
 
 class ViolationSelectionPanel(Panel):
@@ -177,8 +174,8 @@ class ViolationSelectionPanel(Panel):
 		self.ViolationsVars={}
 		self.ViolatedCB={}
 		self.cutOff=Tk.DoubleVar(self)
-		self.widgetCreation()	
-		
+		self.widgetCreation()
+
 	def widgetCreation(self):
 		rowPosition=0
 		for violationType in ['violated', 'not violated']:
@@ -187,15 +184,15 @@ class ViolationSelectionPanel(Panel):
 			self.ViolatedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
 			self.ViolatedCB[violationType].select()
 			rowPosition=rowPosition+1
-		
+
 		Tk.Label(self, text='Distance CutOff (A)').grid(row=rowPosition+1, column=0)
-		
+
 		self.spinBox_cutOff=Tk.Spinbox(self, textvariable=self.cutOff, from_=0.0, to=10.0, increment=0.1)
 		self.cutOff.set('0.5')
 		self.spinBox_cutOff.grid(row=rowPosition+2, column=0)
-	
+
 	def getInfo(self):
-		violationState=[]		
+		violationState=[]
 		for violationType in ['violated','not violated']:
 			if self.ViolationsVars[violationType].get()==1:
 				violationState.append(violationType)
@@ -206,21 +203,34 @@ class SticksPreferencesPanel(Panel):
 		Panel.__init__(self, master, frameText="NOE Sticks Preferences")
 		self.radius=Tk.DoubleVar(self)
 		self.radius.set(0.03)
-		self.colors={"notViolated":"","tooFar":"", "tooClose":""}
+		self.colors={"notViolated":defaultColors["notViolated"],"tooFar":defaultColors["tooFar"], "tooClose":defaultColors["tooClose"]}
 		self.widgetCreation()
-	
+
 	def widgetCreation(self):
 		Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
 		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
 		self.spinBox_Radius.grid(row=0, column=1)
 		Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
-		Tk.Button(self, text="Choose color", command=self.setColor).grid(row=1, column=1)
+		Tk.Button(self, text="Choose color", command=self.setSatisfiedColor).grid(row=1, column=1)
+		Tk.Label(self, bg=self.float2intColor(self.colors["notViolated"])).grid(row=1, column1=2)
 
 	def getInfo(self):
-		return {"radius":self.radius.get()}
+		return {"radius":self.radius.get(), "colors":self.colors}
+
+	def setSatisfiedColor(self):
+		currentColor = self.float2intColor(self.colors["notViolated"])
+		result = tkColorChooser.askcolor(currentColor)
+		self.colors["notViolated"]=self.int2floatColor(result[0])
+
+	#This should be in NMRCore
+	def float2intColor(self, color):
+		return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
+
+	def int2floatColor(self, color):
+		return [color[0]/255.0, color[1]/255.0, color[2]/255.0, color[0]/255, color[1]/255, color[2]/255]
 	
-	def setColor(self):
-		tkColorChooser.askcolor()
+	def float2hexColor(self, color):
+		pass
 
 class DensityPreferencesPanel(Panel):
 	def __init__(self, master):
@@ -236,22 +246,22 @@ class PreferencesPanel(Panel):
 		Panel.__init__(self, master, frameText="NOE Preferences")
 		self.panelsList=[]
 		self.widgetCreation()
-	
+
 	def widgetCreation(self):
 		Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
 		self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
-		self.methodSelection.add("Sum6", text="Sum of r^6")
-		self.methodSelection.add("Average6", text="Average of r^6")
+		self.methodSelection.add("sum6", text="Sum of r^6")
+		self.methodSelection.add("average6", text="Average of r^6")
 		self.methodSelection.grid(row=0, column=1)
-		self.methodSelection.setvalue("Sum6")
+		self.methodSelection.setvalue("sum6")
 		self.sticksPanel = SticksPreferencesPanel(self)
 		self.sticksPanel.grid(row=1, column=0, columnspan=2)
 		self.panelsList.append(self.sticksPanel)
-		
+
 		self.densityPanel = DensityPreferencesPanel(self)
 		self.densityPanel.grid(row=2, column=0, columnspan=2)
 		self.panelsList.append(self.densityPanel)
-	
+
 	def getInfo(self):
 		infos={"method":self.methodSelection.getvalue()}
 		for panel in self.panelsList:
