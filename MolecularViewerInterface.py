@@ -30,6 +30,9 @@ try:
             cons =[CYLINDER]+list(points[0])+list(points[1])+[aRadius]+color
             PymolCmd.load_cgo(cons, ID)
 
+    def delete(selectionName):
+        PymolCmd.delete(selectionName)
+
 except ImportError:
     def select(selectionName, selection):
         return []
@@ -48,12 +51,15 @@ except ImportError:
     
     def zoom(selection):
         pass
+    
+    def delete(selectionName):
+        pass
 
 def zeroBFactors(pdb):
-	alterBFactors(pdb, 0)
+        alterBFactors(pdb, 0)
 
 def setBfactor(selection, bFactor):
-	alterBFactors(selection, bFactor)
+        alterBFactors(selection, bFactor)
 
 def paintDensity(color_gradient, pdb):
-	spectrum(color_gradient, pdb)
+        spectrum(color_gradient, pdb)

@@ -11,7 +11,7 @@ from NOE import NOE
 from ConstraintLoading import *
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
-from MolecularViewerInterface import select, zoom
+from MolecularViewerInterface import select, zoom, delete
 
 class NMRCore(object):
 	
@@ -52,7 +52,7 @@ class NMRCore(object):
 		else:
 			stderr.write( "No constraints to draw ! You might want to load a few of them first ...\n")
 
-	def showNOEDensity(self, managerName, pdb, colors):
+	def showNOEDensity(self, managerName, pdb, gradient):
 		"""Seeks for constraints that fit criteria, increases a counter for each residue which has a
 		 matching constraint. That simulates a density which is then paint on the model according to a color gradient
 		"""
@@ -62,7 +62,7 @@ class NMRCore(object):
 		if len(self.ManagersList[managerName].constraints):
 			if self.ManagersList[managerName].associateToPDB():
 				selectedConstraints=theFilter.filterConstraints(self.ManagersList[managerName].constraints)
-				densityList=drawer.paD(selectedConstraints, self.ManagersList[managerName].pdb, colors['gradient'])
+				densityList=drawer.paD(selectedConstraints, self.ManagersList[managerName].pdb, gradient)
 				zoomSelection=self.ManagersList[managerName].pdb+" &"
 				if len(densityList):
 					stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
@@ -100,3 +100,6 @@ class NMRCore(object):
 			else:
 				violationState=[violationState]
 		self.filter=ConstraintFilter(pdb, resList, dist_range, violationState, violCutoff, method)
+	
+	def cleanScreen(self, managerName):
+		delete(managerName+"*")

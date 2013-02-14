@@ -40,15 +40,23 @@ class FileSelectionPanel(Panel):
 			constraintDefinition="CNS"
 		else:
 			constraintDefinition="CYANA"
-		self.NMRCommands.loadNOE(filename, constraintDefinition)
-		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
-		self.constraintsList.setvalue(path.basename(filename))
+		if filename:
+			self.NMRCommands.loadNOE(filename, constraintDefinition)
+			self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+			self.constraintsList.setvalue(path.basename(filename))
 
 	def removeFile(self):
-		pass
+		toRemove=self.constraintsList.getvalue()
+		if toRemove:
+			for manager in toRemove:
+				del self.NMRCommands.ManagersList[manager]
+		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
 	def getInfo(self):
-		return {"constraintFile":self.constraintsList.getvalue()[0]}
+		if len(self.constraintsList.getvalue()):
+			return {"constraintFile":self.constraintsList.getvalue()[0]}
+		else:
+			return {"constraintFile":""}
 
 class ConstraintSelectionPanel(Panel):
 	def __init__(self, master):
@@ -109,20 +117,39 @@ class NOEDrawingPanel(Panel):
 		self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='vertical')
 		self.drawingNOEButtonBox.add('Sticks', command = self.showSticks)
 		self.drawingNOEButtonBox.add('Density', command = self.showDensity)
-		self.drawingNOEButtonBox.add('Clean NOEs')
+		self.drawingNOEButtonBox.add('Clean NOEs', command = self.cleanAll)
 		self.drawingNOEButtonBox.grid(row=0, column=0)
 		self.drawingNOEButtonBox.setdefault('Sticks')
 
 	def showSticks(self):
 		infos= self.master.getInfo()
-		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
-		self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
+		infoCheck=1
+
+		if self.infoCheck(infos):
+			self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+			self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
 	def showDensity(self):
-		infos=self.master.getInfo()
-		infos["colors"]=defaultColors
-		self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
-		self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["colors"])
+		infos= self.master.getInfo()
+
+		if self.infoCheck(infos):
+			self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+			self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["gradient"])
+
+	def cleanAll(self):
+		infos= self.master.getInfo()
+		
+		if self.infoCheck(infos):
+			self.NMRCommands.cleanScreen(infos["constraintFile"])
+
+
+	def infoCheck(self, infos):
+		check=1
+		for item in infos:
+			if infos[item]=="":
+				check=0
+				break
+		return check
 
 class RangeSelectionPanel(Panel):
 	def __init__(self, master):
@@ -207,12 +234,14 @@ class SticksPreferencesPanel(Panel):
 		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
 		self.spinBox_Radius.grid(row=0, column=1)
 		Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
-		Tk.Button(self, text="Choose color", command=self.setSatisfiedColor).grid(row=1, column=1)
+		self.satisfiedColorButton=Tk.Button(self, text="Choose color", command=self.setSatisfiedColor)
+		self.satisfiedColorButton.grid(row=1, column=1)
 		Tk.Label(self, text="Atoms too far").grid(row=2, column=0)
-		Tk.Button(self, text="Choose color", command=self.setTooFarColor).grid(row=2, column=1)
+		self.tooFarButton=Tk.Button(self, text="Choose color", command=self.setTooFarColor)
+		self.tooFarButton.grid(row=2, column=1)
 		Tk.Label(self, text="Atoms too close").grid(row=3, column=0)
-		Tk.Button(self, text="Choose color", command=self.setTooCloseColor).grid(row=3, column=1)
-		#Tk.Label(self, bg=self.float2intColor(self.colors["notViolated"])).grid(row=1, column1=2)
+		self.tooCloseButton=Tk.Button(self, text="Choose color", command=self.setTooCloseColor)
+		self.tooCloseButton.grid(row=3, column=1)
 
 	def getInfo(self):
 		return {"radius":self.radius.get(), "colors":self.colors}
@@ -235,16 +264,13 @@ class SticksPreferencesPanel(Panel):
 		if result[0]:
 			self.colors["tooClose"]=self.int2floatColor(result[0])
 
-	#This should be in NMRCore
+	#This should be in an different file probably
 	def float2intColor(self, color):
 		return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
 
 	def int2floatColor(self, color):
 		return [color[0]/255.0, color[1]/255.0, color[2]/255.0, color[0]/255.0, color[1]/255.0, color[2]/255.0]
 	
-	def float2hexColor(self, color):
-		pass
-
 class DensityPreferencesPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="NOE density Preferences")
@@ -253,6 +279,11 @@ class DensityPreferencesPanel(Panel):
 
 	def widgetCreation(self):
 		Tk.Label(self, text='Gradient :').grid(row=0, column=0)
+		self.gradientSelection = Pmw.OptionMenu(self)
+		self.gradientSelection.grid(row=0, column=1)
+	
+	def getInfo(self):
+		return {"gradient":self.gradientSelection.getvalue()}
 
 class PreferencesPanel(Panel):
 	def __init__(self, master):
