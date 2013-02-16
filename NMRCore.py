@@ -19,6 +19,7 @@ class NMRCore(object):
 		self.ManagersList={}
 		self.ManagersList["defaultManager"]=""
 		self.filter=""
+		self.displayedConstraints=[]
 
 	def loadNOE(self, filename, consDef):
 		"""load NMR distance constraints, call for the correct file format (CNS/CYANA),
@@ -40,7 +41,12 @@ class NMRCore(object):
 		selectedConstraints=[]
 		if len(self.ManagersList[managerName].constraints):
 			if self.ManagersList[managerName].associateToPDB():
-				selectedConstraints=self.filter.filterConstraints(self.ManagersList[managerName].constraints)
+				filteredConstraints=self.filter.filterConstraints(self.ManagersList[managerName].constraints)
+				selectedConstraints=[]
+				for constraint in filteredConstraints:
+					if constraint not in self.displayedConstraints:
+						selectedConstraints.append(constraint)
+				self.displayedConstraints=self.displayedConstraints+selectedConstraints
 				results=drawer.drC(selectedConstraints, radius, colors)
 				stdout.write(str(results['DrawnConstraints'])+" constraints drawn on a total of "+str(len(self.ManagersList[managerName].constraints))+"\n")			
 				zoomSelection=self.ManagersList[managerName].pdb+" &"
@@ -62,6 +68,7 @@ class NMRCore(object):
 		if len(self.ManagersList[managerName].constraints):
 			if self.ManagersList[managerName].associateToPDB():
 				selectedConstraints=theFilter.filterConstraints(self.ManagersList[managerName].constraints)
+				self.displayedConstraints=self.displayedConstraints+selectedConstraints
 				densityList=drawer.paD(selectedConstraints, self.ManagersList[managerName].pdb, gradient)
 				zoomSelection=self.ManagersList[managerName].pdb+" &"
 				if len(densityList):
@@ -102,4 +109,5 @@ class NMRCore(object):
 		self.filter=ConstraintFilter(pdb, resList, dist_range, violationState, violCutoff, method)
 	
 	def cleanScreen(self, managerName):
+		self.displayedConstraints=[]
 		delete(managerName+"*")
