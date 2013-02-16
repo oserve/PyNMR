@@ -1,4 +1,3 @@
-#from pymol import cmd
 from sys import stderr
 from math import sqrt, pow
 from MolecularViewerInterface import get_model

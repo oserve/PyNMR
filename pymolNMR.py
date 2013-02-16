@@ -66,11 +66,15 @@ def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all',
 		else:
 			stderr.write("Please check constraints filename.\n")
 
-def loadAndShow(self, filename, consDef, pdb='',residuesList='all', dist_range='all', violationState='all', violCutoff=pyNMR.defaults["cutOff"], method="sum6", radius=defaultRadius, colors=pyNMR.defaults["colors"]):
+def loadAndShow(filename, consDef, pdb='', residuesList='all', dist_range='all', violationState='all', violCutoff=pyNMR.defaults["cutOff"], method="sum6", radius=pyNMR.defaults["radius"], colors=pyNMR.defaults["colors"]):
 	"""
 	"""
 	loadNOE(filename, consDef)
 	showNOE(pdb,filename, residuesList, dist_range, violationState, violCutoff, method, radius, colors)
+
+def cleanScreen(filename):
+	if filename in Core.ManagersList:
+		Core.cleanScreen(filename)
 
 if __name__=="__main__":
 	pyNMR.NMRInterface.startGUI()

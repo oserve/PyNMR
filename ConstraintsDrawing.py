@@ -7,7 +7,6 @@
 #
 #Module for drawing constraints
 from sys import stderr, stdout
-import time
 from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
 from ConstraintManager import ConstraintSetManager
 

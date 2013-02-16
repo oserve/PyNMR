@@ -8,7 +8,7 @@ import re
 from MolecularViewerInterface import select
 lastDigit=re.compile('\d(\b|\Z)')#look for last digit of atom type (used in MyAtom)
 
-class AtomSet:
+class AtomSet(object):
 	"""Base Class contains residu number
 		and the atom type of the atom
 	"""

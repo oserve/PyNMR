@@ -111,10 +111,11 @@ class NOEDrawingPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="NOE Representation")
 		self.widgetCreation()
+		self.mainApp=""#Must be set at run time
 		self.NMRCommands=""#Must be set by application at run time
 
 	def widgetCreation(self):
-		self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='vertical')
+		self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='horizontal')
 		self.drawingNOEButtonBox.add('Sticks', command = self.showSticks)
 		self.drawingNOEButtonBox.add('Density', command = self.showDensity)
 		self.drawingNOEButtonBox.add('Clean NOEs', command = self.cleanAll)
@@ -122,7 +123,7 @@ class NOEDrawingPanel(Panel):
 		self.drawingNOEButtonBox.setdefault('Sticks')
 
 	def showSticks(self):
-		infos= self.master.getInfo()
+		infos= self.mainApp.getInfo()
 		infoCheck=1
 
 		if self.infoCheck(infos):
@@ -130,18 +131,17 @@ class NOEDrawingPanel(Panel):
 			self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
 	def showDensity(self):
-		infos= self.master.getInfo()
+		infos= self.mainApp.getInfo()
 
 		if self.infoCheck(infos):
 			self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
 			self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["gradient"])
 
 	def cleanAll(self):
-		infos= self.master.getInfo()
+		infos= self.mainApp.getInfo()
 		
 		if self.infoCheck(infos):
 			self.NMRCommands.cleanScreen(infos["constraintFile"])
-
 
 	def infoCheck(self, infos):
 		check=1

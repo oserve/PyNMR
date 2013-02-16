@@ -10,22 +10,29 @@ Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) ab
 - [CNS](http://cns-online.org) or [CYANA](http://www.cyana.org) format available
 - Command line and GUI (using Tk and [Pmw](http://pmw.sourceforge.net))
 
-This plugin actually works quite well, although :
-
-- [x] Need to create a better config initialisation
-- [] Need to improve color handling
-- [] Need to finish the GUI
-- [] Redirect stderr to a log
+This plugin actually works quite well, although some work is remaining.
 
 Installation :
 ------------
+###For development version :
 - Copy the files into a single directory anywhere on your disk
 - Edit .pymolrc in your home directory and add "run /path/to/files/pymolNMR.py"
 - Edit variable "installDir" in pymolNMR.py (Hopefully this should not be needed in the future)
 
+###For user friendly version :
+- Download "plugin.py"
+- Use the Pymol standard plugin install in the main menu
+
 Start plugin :
 ------------
+
+###For development version :
+
 It is not yet a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.interface.startGUI()
+
+###For user friendly version :
+
+Start PyNMR from the plugin menu.
 
 Usage :
 -----
