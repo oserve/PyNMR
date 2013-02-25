@@ -16,43 +16,42 @@ from ConstraintManager import ConstraintSetManager
 #Useful RegEx definitions
 Par=re.compile('[()]')# used in cns constraints loading. Suppression of ()
 SPar=re.compile("\(.*\)")#used in cns constraint loading.
-RegResi=re.compile("resi\w*\s+\d+\s+and\s+name\s+H\w?\d*[\*#]*")#match CNS Residue definition
+RegResi=re.compile("resi\w*\s+\d+\s+and\s+name\s+\w\w?\d*[\*#]*")#match CNS Residue definition
 Sharp=re.compile('[#]')# used in cns constraints loading. Replace # by *
-AtType=re.compile('[CHON][A-Z]*')
+AtType=re.compile('[chon][a-z]*')
 
-
-def cns(cnsFile,managerName):
+def cns(cnsFile, managerName):
 	"""
 	Return a ConstraintSetManager loaded with cns/xplor constraints
 	"""
 	fin=open(cnsFile,'r')
 	#Avoid formatting issues
-	inFile=""
+	inFileTab=[]
 	for txt in fin:
-		if txt.lstrip().find('!')<0:
-			inFile=inFile+txt
+		txt=txt.lstrip()
+		if txt.find('!')<0:
+			inFileTab.append(txt.lower().rstrip())
 		else:
 			stderr.write(txt+" skipped. Commented out.\n")
 	fin.close()
-
-	inFile=inFile.replace("\n","")
-	if inFile.find("assign")>-1:
-		tabFile=inFile.split("assign")
-	elif inFile.find("assi")>-1:
-		tabFile=inFile.split("assi")
-	else:
-		stderr.write("File not recognised.\n")
+	validCNSConstraints=[]
+	for line in inFileTab:
+		if line.find("assi")>-1:
+			line=line.replace("gn", "")
+			validCNSConstraints.append(line.replace("assi",""))
+		elif RegResi.search(line)<>None:
+			validCNSConstraints[-1]=validCNSConstraints[-1]+line
 
 	constraint_number=1
 	aManager=ConstraintSetManager(managerName)
-	for aConstLine in tabFile:#itemizing constraints
+	for aConstLine in validCNSConstraints:#itemizing constraints
 		#avoid empty lines
-		if re.search('\d',aConstLine):
+		if re.search('\d', aConstLine):
 			parsingResult = parseCNSConstraint(aConstLine)
-			if len(parsingResult)==3:#2 residues + distances
+			if len(parsingResult)==3:#2 residues + distances (matches also H-Bonds)
 				aConstraint=NOE()
 			else:
-				#No other constraint type supported ... for now
+				#No other constraint type supported ... for now !
 				break
 			aConstraint.id["number"]=constraint_number
 			aConstraint.definition=aConstLine
@@ -110,7 +109,7 @@ def dyana(dyanaFile,managerName):
 					aManager.addConstraint(aConstraint)
 					i=i+1
 				except:
-					stderr.write("Error while loading constraint :\n"+aConstLine+"\n")
+					stderr.write("Unknown error while loading constraint :\n"+aConstLine+"\n")
 		else:
 			stderr.write("Empty line, skipping.\n")
 
