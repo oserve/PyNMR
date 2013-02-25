@@ -10,6 +10,8 @@ from NMRCore import NMRCore
 from NMRGUI import NMRGUI
 chdir(workingDir)
 
+from pymol.cmd import get_names
+
 Core=NMRCore()
 	
 class NMRApplication(object):
@@ -27,10 +29,24 @@ class NMRApplication(object):
 		self.NMRInterface.preferencesPanel.sticksPanel.colors=self.defaults["colors"]
 		self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
 		self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
+		self.NMRInterface.constraintSelectionManagement.structureManagement.pdbList.setlist(self.getModelsNames())
 		
 	def GUIBindings(self):
 		self.NMRInterface.constraintFilesManagement.NMRCommands=self.NMRCommands
 		self.NMRInterface.NOEDrawingManagement.NMRCommands=self.NMRCommands
+		self.NMRInterface.constraintSelectionManagement.structureManagement.mainApp=self
+	
+	def getModelsNames(self):
+		results=[]
+		objectsLists=get_names()
+		for name in objectsLists:
+			if len(self.NMRCommands.ManagersList):
+				for managerName in self.NMRCommands.ManagersList.keys():
+					if name.find(managerName)==-1:
+						results.append(name)
+			else:
+				results.append(name)
+		return results
 
 pyNMR=NMRApplication(Core)
 
@@ -62,7 +78,7 @@ def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all',
 			managerName=Core.ManagersList["defaultManager"]
 		if managerName in Core.ManagersList:
 			Core.commandsInterpretation(pdb, managerName, residuesList, dist_range, violationState, violCutoff, method)
-			Core.showSticks(managerName, pdb, colors)
+			Core.showNOEDensity(managerName, pdb, colors)
 		else:
 			stderr.write("Please check constraints filename.\n")
 
