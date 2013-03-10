@@ -107,7 +107,6 @@ class StructureSelectionPanel(Panel):
 		self.residueRanges.set('all')
 
 	def getInfo(self):
-		#print self.pdb.get()
 		return {"pdb":self.comboPDB.component("entryfield").getvalue(), "ranges":self.residueRanges.get()}
 	
 	def updatePdbList(self, event):
@@ -286,11 +285,12 @@ class DensityPreferencesPanel(Panel):
 
 	def widgetCreation(self):
 		Tk.Label(self, text='Gradient :').grid(row=0, column=0)
-		self.gradientSelection = Pmw.OptionMenu(self)
+		x=Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+		self.gradientSelection = Pmw.ComboBox(self)
 		self.gradientSelection.grid(row=0, column=1)
 	
 	def getInfo(self):
-		return {"gradient":self.gradientSelection.getvalue()}
+		return {"gradient":self.gradientSelection.component("entryfield").getvalue()}
 
 class PreferencesPanel(Panel):
 	def __init__(self, master):
