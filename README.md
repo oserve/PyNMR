@@ -28,7 +28,7 @@ Start plugin :
 
 ###For development version :
 
-It is not yet a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.interface.startGUI()
+It is not yet a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.startGUI()
 
 ###For user friendly version :
 
