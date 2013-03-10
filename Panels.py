@@ -26,7 +26,7 @@ class FileSelectionPanel(Panel):
 		self.constraintFilesButtonBox.add("Remove Constraints", command=self.removeFile)
 		self.constraintFilesButtonBox.grid(row=0, column=0)
 		self.constraintsList=Pmw.ScrolledListBox(self)
-		#self.constraintsList.listbox.exportselection=0
+		self.constraintsList.component("listbox").exportselection=0
 		self.constraintsList.grid(row=0, column=1)
 		self.constraintDefinitions = Pmw.RadioSelect(self, label_text="Select constraints definition type :",labelpos = 'nw', buttontype='radiobutton')
 		self.constraintDefinitions.add("CNS/XPLOR")
@@ -95,11 +95,11 @@ class StructureSelectionPanel(Panel):
 		self.widgetCreation()
 
 	def widgetCreation(self):
-		self.pdbList=Pmw.ScrolledListBox(self)
-		self.pdbList.grid(row=0, column=1)
-		self.pdbUpdateButton=Tk.Button(self, text="Update\nstructures list")
-		self.pdbUpdateButton.grid(row=0, column=0)
-		self.pdbUpdateButton.bind('<Button-1>', self.updatePdbList)
+		Tk.Label(self, text="Structure :").grid(row=0, column=0)
+		x=Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+		self.comboPDB=Pmw.ComboBox(self)
+		self.comboPDB.grid(row=0, column=1)
+		self.comboPDB.bind('<Enter>', self.updatePdbList)
 
 		Tk.Label(self, text='Residues ranges :').grid(row=2, column=0, sticky=Tk.W)
 		self.entry_res=Tk.Entry(self, textvariable=self.residueRanges)
@@ -107,10 +107,12 @@ class StructureSelectionPanel(Panel):
 		self.residueRanges.set('all')
 
 	def getInfo(self):
-		return {"pdb":self.pdb.get(), "ranges":self.residueRanges.get()}
+		#print self.pdb.get()
+		return {"pdb":self.comboPDB.component("entryfield").getvalue(), "ranges":self.residueRanges.get()}
 	
 	def updatePdbList(self, event):
-		self.pdbList.setlist(self.mainApp.getModelsNames())
+		self.comboPDB.setlist(self.mainApp.getModelsNames())
+		self.pdb.set(self.mainApp.getModelsNames())
 
 class NOEDrawingPanel(Panel):
 	def __init__(self, master):

@@ -29,8 +29,8 @@ class NMRApplication(object):
 		self.NMRInterface.preferencesPanel.sticksPanel.colors=self.defaults["colors"]
 		self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
 		self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
-		self.NMRInterface.constraintSelectionManagement.structureManagement.pdbList.setlist(self.getModelsNames())
-		
+		self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.setlist(self.getModelsNames())
+
 	def GUIBindings(self):
 		self.NMRInterface.constraintFilesManagement.NMRCommands=self.NMRCommands
 		self.NMRInterface.NOEDrawingManagement.NMRCommands=self.NMRCommands
@@ -42,7 +42,7 @@ class NMRApplication(object):
 		for name in objectsLists:
 			if len(self.NMRCommands.ManagersList):
 				for managerName in self.NMRCommands.ManagersList.keys():
-					if name.find(managerName)==-1:
+					if name.find(managerName)<0:
 						results.append(name)
 			else:
 				results.append(name)
