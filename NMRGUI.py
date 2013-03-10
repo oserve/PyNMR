@@ -10,8 +10,6 @@ class NMRGUI(Tk.Tk):
 		Tk.Tk.__init__(self)
 		self.title('PymolNMR')
 		self.panelsList=[]
-		self.createPanels()
-		self.setDelegation()
 		
 	def createPanels(self):
 		#Main Frames (not IBM)
@@ -33,13 +31,16 @@ class NMRGUI(Tk.Tk):
 		self.preferencesPanel= PreferencesPanel(self.preferencesPage)
 		self.panelsList.append(self.preferencesPanel)
 	
-	def startGUI(self):
-		self.noteBook.grid(row=0, column=0)
 		self.constraintFilesManagement.grid(row=0, column=0)
 		self.constraintSelectionManagement.grid(row=1, column=0)
 		self.NOEDrawingManagement.grid(row=2, column=0)
 		self.preferencesPanel.grid(row=0, column=0)		
 		self.noteBook.setnaturalsize()
+
+	def startGUI(self):
+		self.createPanels()
+		self.noteBook.grid(row=0, column=0)
+		self.setDelegation()
 
 	def setDelegation(self):
 		self.NOEDrawingManagement.mainApp=self
