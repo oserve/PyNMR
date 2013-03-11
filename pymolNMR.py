@@ -96,7 +96,7 @@ def cleanScreen(filename):
 		Core.cleanScreen(filename)
 
 if __name__=="__main__":
-	pyNMR.NMRInterface.startGUI()
+	pyNMR.startGUI()
 	pyNMR.NMRInterface.mainloop()
 	
 try:

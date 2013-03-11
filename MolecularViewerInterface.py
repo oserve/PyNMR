@@ -9,7 +9,7 @@ try:
         if selectionName == "":
             return PymolCmd.select(selection)
         else:
-            return PymolCmd.select(selectionName,selection)
+            return PymolCmd.select(selectionName, selection)
 
     def get_model(model):
         return PymolCmd.get_model(model)
