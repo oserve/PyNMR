@@ -17,7 +17,6 @@ class NMRCore(object):
 	
 	def __init__(self):
 		self.ManagersList={}
-		self.ManagersList["defaultManager"]=""
 		self.filter=""
 		self.displayedConstraints=[]
 
@@ -27,10 +26,8 @@ class NMRCore(object):
 		managerName=basename(filename)
 		if consDef in ['XPLOR', 'CNS']:
 			self.ManagersList[managerName]=cns(filename, managerName)
-			self.ManagersList["defaultManager"]=managerName 
 		elif consDef in ['DYANA', 'CYANA']:
 			self.ManagersList[managerName]=dyana(filename,managerName)
-			self.ManagersList["defaultManager"]=managerName 
 		else:
 			stderr.write("incorrect or unsupported constraint type.\n")
 	

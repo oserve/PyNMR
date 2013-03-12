@@ -54,11 +54,11 @@ class NMRApplication(object):
 pyNMR=NMRApplication(Core)
 
 def showNOE(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=pyNMR.defaults["cutOff"], method="sum6", radius=pyNMR.defaults["radius"], colors=pyNMR.defaults["colors"]):
-	if managerName=='' and Core.ManagersList["defaultManager"]=="":
+	if managerName=='' and len(Core.ManagersList)==0:
 		stderr.write("No constraints loaded.\n")
 	else:
 		if managerName=='':
-			managerName=Core.ManagersList["defaultManager"]
+			managerName=Core.ManagersList.keys()[0]
 		if managerName in Core.ManagersList:
 			Core.commandsInterpretation(pdb, managerName, residuesList, dist_range, violationState, violCutoff, method)
 			Core.showSticks(managerName, pdb, colors, radius)
@@ -74,11 +74,11 @@ def loadNOE(filename="", consDef=""):
 		stderr.write("File : "+ filename +" has not been found.\n")
 
 def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=pyNMR.defaults["cutOff"], method='sum6', colors=pyNMR.defaults["gradient"]):
-	if managerName=='' and Core.ManagersList["defaultManager"]=="":
+	if managerName=='' and len(Core.ManagersList)==0:
 		stderr.write("No constraints loaded.\n")
 	else:
 		if managerName=='':
-			managerName=Core.ManagersList["defaultManager"]
+			managerName=Core.ManagersList.keys()[0]
 		if managerName in Core.ManagersList:
 			Core.commandsInterpretation(pdb, managerName, residuesList, dist_range, violationState, violCutoff, method)
 			Core.showNOEDensity(managerName, pdb, colors)
