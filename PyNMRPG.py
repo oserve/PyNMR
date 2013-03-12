@@ -672,8 +672,11 @@ class FileSelectionPanel(Panel):
 			constraintDefinition="CYANA"
 		if filename:
 			self.NMRCommands.loadNOE(filename, constraintDefinition)
-			self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+			self.updateFileList()
 			self.constraintsList.setvalue(path.basename(filename))
+
+	def updateFilelist(self):
+		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
 	def removeFile(self):
 		toRemove=self.constraintsList.getvalue()
@@ -1007,8 +1010,8 @@ class NMRApplication(object):
 	def startGUI(self):
 		self.NMRInterface = NMRGUI()
 		self.NMRInterface.startGUI()
-		self.setDefaults()
 		self.GUIBindings()		
+		self.setDefaults()
 	
 	def setDefaults(self):
 		self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.setlist( ["blue_green","blue_magenta","blue_red","blue_white_green","blue_white_magenta","blue_white_red","blue_white_yellow","blue_yellow","cbmr","cyan_magenta","cyan_red","cyan_white_magenta","cyan_white_red","cyan_white_yellow","cyan_yellow","gcbmry","green_blue","green_magenta","green_red","green_white_blue","green_white_magenta","green_white_red","green_white_yellow","green_yellow","green_yellow_red","magenta_blue","magenta_cyan","magenta_green","magenta_white_blue","magenta_white_cyan","magenta_white_green","magenta_white_yellow","magenta_yellow","rainbow","rainbow2","rainbow2_rev","rainbow_cycle","rainbow_cycle_rev","rainbow_rev red_blue","red_cyan red_green","red_white_blue","red_white_cyan","red_white_green","red_white_yellow","red_yellow","red_yellow_green","rmbc","yellow_blue","yellow_cyan","yellow_cyan_white","yellow_green","yellow_magenta","yellow_red","yellow_white_blue","yellow_white_green","yellow_white_magenta","yellow_white_red","yrmbcg"])
@@ -1017,6 +1020,7 @@ class NMRApplication(object):
 		self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
 		self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
 		self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.setlist(self.getModelsNames())
+		self.NMRInterface.constraintFilesManagement.updateFilelist()
 
 	def GUIBindings(self):
 		self.NMRInterface.constraintFilesManagement.NMRCommands=self.NMRCommands
@@ -1086,4 +1090,3 @@ extend("loadAndShow", loadAndShow)
 
 def __init__(self):
 	self.menuBar.addmenuitem('Plugin', 'command', 'PyNMR', label = 'PyNMR', command = lambda s=self : pyNMR.startGUI())
-

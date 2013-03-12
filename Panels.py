@@ -43,8 +43,11 @@ class FileSelectionPanel(Panel):
 			constraintDefinition="CYANA"
 		if filename:
 			self.NMRCommands.loadNOE(filename, constraintDefinition)
-			self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+			self.updateFileList()
 			self.constraintsList.setvalue(path.basename(filename))
+
+	def updateFilelist(self):
+		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
 	def removeFile(self):
 		toRemove=self.constraintsList.getvalue()
