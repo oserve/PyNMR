@@ -16,7 +16,7 @@ from ConstraintManager import ConstraintSetManager
 #Useful RegEx definitions
 Par=re.compile('[()]')# used in cns constraints loading. Suppression of ()
 SPar=re.compile("\(.*\)")#used in cns constraint loading.
-RegResi=re.compile("resi\w*\s+\d+\s+and\s+name\s+\w\w?\d*[\*#]*")#match CNS Residue definition
+RegResi=re.compile("RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")#match CNS Residue definition
 Sharp=re.compile('[#]')# used in cns constraints loading. Replace # by *
 AtType=re.compile('[chon][a-z]*')
 
@@ -30,15 +30,15 @@ def cns(cnsFile, managerName):
 	for txt in fin:
 		txt=txt.lstrip()
 		if txt.find('!')<0:
-			inFileTab.append(txt.lower().rstrip())
+			inFileTab.append(txt.upper().rstrip())
 		else:
 			stderr.write(txt+" skipped. Commented out.\n")
 	fin.close()
 	validCNSConstraints=[]
 	for line in inFileTab:
-		if line.find("assi")>-1:
-			line=line.replace("gn", "")
-			validCNSConstraints.append(line.replace("assi",""))
+		if line.find("ASSI")>-1:
+			line=line.replace("GN", "")
+			validCNSConstraints.append(line.replace("ASSI",""))
 		elif RegResi.search(line)<>None:
 			validCNSConstraints[-1]=validCNSConstraints[-1]+line
 
@@ -129,7 +129,7 @@ def parseCNSConstraint(aCNSConstraint):
 		residueParsingResult={}
 		for aDefinition in Sharp.sub('*', aResidue).split("and"):
 			definitionArray=aDefinition.split()
-			residueParsingResult[definitionArray[0].strip()]=definitionArray[1].strip()
+			residueParsingResult[definitionArray[0].strip().lower()]=definitionArray[1].strip()
 		constraintParsingResult.append(residueParsingResult)
 	numericValues=[]
 	for aValue in constraintValuesList:
