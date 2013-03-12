@@ -7,19 +7,31 @@ import Tkinter as Tk
 import Pmw
 import tkFileDialog
 import tkColorChooser
-from pymol.cmd import select, get_names, get_model, zoom, spectrum, extend, delete, load_cgo
-from pymol.cmd import alter as alterBFactors
+from pymol import cmd
+from pymol.cmd import get_names, get_model, zoom, spectrum, extend, delete, load_cgo, alter
 from pymol.cgo import CYLINDER
+
 def drawConstraint(points, color, aRadius, ID):
 	cons =[CYLINDER]+list(points[0])+list(points[1])+[aRadius]+color
 	load_cgo(cons, ID)
 
+def alterBFactors(pdb, bFactor):
+	alter(pdb,"b="+ str(bFactor))
+
+def select(selectionName, selection):
+	if selectionName == "":
+		return cmd.select(selection)
+	else:
+		return cmd.select(selectionName, selection)
+
 def zeroBFactors(pdb):
 	alterBFactors(pdb, 0)
+
 def setBfactor(selection, bFactor):
 	alterBFactors(selection, bFactor)
+
 def paintDensity(color_gradient, pdb):
-	spectrum(color_gradient, pdb)
+	spectrum("b", color_gradient, pdb )
 
 lastDigit=re.compile('\d(\b|\Z)')#look for last digit of atom type (used in MyAtom)
 
@@ -173,6 +185,7 @@ class NOE(Constraint):
 		"""
 		return [self.resis[0]['number'],self.resis[1]['number']]
 
+
 class ConstraintSetManager(object):
 	"""Class to manage a set of constraints
 	"""
@@ -228,9 +241,9 @@ class ConstraintSetManager(object):
 #Useful RegEx definitions
 Par=re.compile('[()]')# used in cns constraints loading. Suppression of ()
 SPar=re.compile("\(.*\)")#used in cns constraint loading.
-RegResi=re.compile("resi\w*\s+\d+\s+and\s+name\s+\w\w?\d*[\*#]*")#match CNS Residue definition
+RegResi=re.compile("RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")#match CNS Residue definition
 Sharp=re.compile('[#]')# used in cns constraints loading. Replace # by *
-AtType=re.compile('[chon][a-z]*')
+AtType=re.compile('[CHON][A-Z]*')
 
 def cns(cnsFile, managerName):
 	"""
@@ -242,15 +255,15 @@ def cns(cnsFile, managerName):
 	for txt in fin:
 		txt=txt.lstrip()
 		if txt.find('!')<0:
-			inFileTab.append(txt.lower().rstrip())
+			inFileTab.append(txt.upper().rstrip())
 		else:
 			stderr.write(txt+" skipped. Commented out.\n")
 	fin.close()
 	validCNSConstraints=[]
 	for line in inFileTab:
-		if line.find("assi")>-1:
-			line=line.replace("gn", "")
-			validCNSConstraints.append(line.replace("assi",""))
+		if line.find("ASSI")>-1:
+			line=line.replace("GN", "")
+			validCNSConstraints.append(line.replace("ASSI",""))
 		elif RegResi.search(line)<>None:
 			validCNSConstraints[-1]=validCNSConstraints[-1]+line
 
@@ -301,7 +314,7 @@ def convertTypeDyana(atType):
 	else:
 		return atType
 
-def dyana(dyanaFile,managerName):
+def dyana(dyanaFile, managerName):
 	""""
 	Return a ConstraintSetManager loaded with CYANA/DYANA constraints
 	"""
@@ -338,15 +351,15 @@ def parseCNSConstraint(aCNSConstraint):
 	constraintParsingResult=[]
 	for aResidue in residuesList:
 		residueParsingResult={}
-		for aDefinition in Sharp.sub('*', aResidue).split("and"):
+		for aDefinition in Sharp.sub('*', aResidue).split("AND"):
 			definitionArray=aDefinition.split()
-			residueParsingResult[definitionArray[0].strip()]=definitionArray[1].strip()
+			residueParsingResult[definitionArray[0].strip().lower()]=definitionArray[1].strip()
 		constraintParsingResult.append(residueParsingResult)
 	numericValues=[]
 	for aValue in constraintValuesList:
 		numericValues.append(float(aValue))
 	constraintParsingResult.append(numericValues)
-	return constraintParsingResult#
+	return constraintParsingResult
 
 class ConstraintDrawer(object):
 	"""
@@ -984,7 +997,7 @@ class NMRGUI(Tk.Tk):
 		infos={}
 		for panel in self.panelsList:
 			infos.update(panel.getInfo())
-		return infos
+		return infos#Needed to upload custom modules
 
 Core=NMRCore()
 	
@@ -1069,18 +1082,11 @@ def cleanScreen(filename):
 	if filename in Core.ManagersList:
 		Core.cleanScreen(filename)
 
-if __name__=="__main__":
-	pyNMR.startGUI()
-	pyNMR.NMRInterface.mainloop()
-	
-try:
-	extend("loadNOE", loadNOE)
-	extend("showNOE", showNOE)
-	extend("showNOEDensity", showNOEDensity)
-	extend("loadAndShow", loadAndShow)
-
-except ImportError:
-	stderr.write("Demo mode.\n")
+extend("loadNOE", loadNOE)
+extend("showNOE", showNOE)
+extend("showNOEDensity", showNOEDensity)
+extend("loadAndShow", loadAndShow)
 
 def __init__(self):
 	self.menuBar.addmenuitem('Plugin', 'command', 'PyNMR', label = 'PyNMR', command = lambda s=self : pyNMR.startGUI())
+

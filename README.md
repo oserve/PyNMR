@@ -20,7 +20,7 @@ Installation :
 - Edit variable "installDir" in pymolNMR.py (Hopefully this should not be needed in the future)
 
 ###For user friendly version :
-- Download "plugin.py"
+- Download "PyNMRPG.py"
 - Use the Pymol standard plugin install in the main menu
 
 Start plugin :
@@ -36,12 +36,21 @@ Start PyNMR from the plugin menu.
 
 Usage :
 -----
-The GUI is quite straightforward for NMR people I think. The listbox behaviour is quite eratic for now, use it just before the display buttons.
-For CLI, read pymolNMR.py.
+The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
 
 Possible future features :
 ------------------------
 
-* Display of angular constraints
-* Text list of constraints with color code
+* Display of angular, dihedral and h-bonds constraints
+* Text list of constraints with :
+	* Color code
+	* Link to 3D display
+	* Real-time edit / display
 * Increase speed
+
+Known difficulties :
+------------------
+* When displaying a large number of constraints as sticks, Pymol performances decrease rapidly :
+	* Avoid to draw all constraints if not necessary
+	* Remove them before any other action if you can
+* The listbox behaviour is a bit eratic for now, use it just before the display buttons.
