@@ -74,7 +74,7 @@ class FileSelectionPanel(Panel):
 			constraintDefinition="CYANA"
 		if filename:
 			self.NMRCommands.loadNOE(filename, constraintDefinition)
-			self.updateFileList()
+			self.updateFilelist()
 			self.constraintsList.setvalue(path.basename(filename))
 
 	def updateFilelist(self):
@@ -125,7 +125,6 @@ class StructureSelectionPanel(Panel):
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="Structure")
 		self.residueRanges=Tk.StringVar(self)
-		self.pdb=Tk.StringVar(self)
 		self.widgetCreation()
 
 	def widgetCreation(self):
@@ -145,7 +144,6 @@ class StructureSelectionPanel(Panel):
 	
 	def updatePdbList(self, event):
 		self.comboPDB.setlist(self.mainApp.getModelsNames())
-		self.pdb.set(self.mainApp.getModelsNames())
 
 class NOEDrawingPanel(Panel):
 	def __init__(self, master):

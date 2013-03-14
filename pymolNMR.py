@@ -39,9 +39,9 @@ chdir(installDir)
 
 from NMRCore import NMRCore
 from NMRGUI import NMRGUI
-chdir(workingDir)
+from MolecularViewerInterface import get_names
 
-from pymol.cmd import get_names
+chdir(workingDir)
 
 Core=NMRCore()
 	
@@ -78,9 +78,11 @@ class NMRApplication(object):
 			if len(self.NMRCommands.ManagersList):
 				for managerName in self.NMRCommands.ManagersList.keys():
 					if name.find(managerName)<0:
-						results.append(name)
+						if name not in results:
+							results.append(name)
 			else:
-				results.append(name)
+				if name not in results:
+					results.append(name)
 		return results
 
 pyNMR=NMRApplication(Core)
