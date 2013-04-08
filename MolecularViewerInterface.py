@@ -62,7 +62,7 @@ try:
         PymolCmd.delete(selectionName)
     
     def get_names():
-        return PymlCmd.get_names()
+        return PymolCmd.get_names()
 
 except ImportError:
     def select(selectionName, selection):

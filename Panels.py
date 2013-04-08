@@ -37,15 +37,20 @@ import tkFileDialog
 import tkColorChooser
 
 class Panel(Tk.LabelFrame):
+	"""Abstract Class used for definition of the different
+	section of the GUI, mostly a Tk.LableFrame
+	"""
 	def __init__(self, master, frameText = ""):
-		"""Abstract Class
-		"""
 		Tk.LabelFrame.__init__(self, master, text=frameText)
 
 	def getInfo(self):
 		return {}
 
 class FileSelectionPanel(Panel):
+	"""This panel allows to import constraint file
+	into the Core. Also it allows the selection of the file
+	for the following calculations.
+	"""
 	def __init__(self, master):
 		Panel.__init__(self, master, frameText="Constraints Files")
 		self.widgetCreation()
@@ -66,6 +71,10 @@ class FileSelectionPanel(Panel):
 		self.constraintDefinitions.grid(row=1, column=0, columnspan=2)
 
 	def loadFile(self):
+		"""Use a standard Tk dialog to get filename,
+		constraint type is selected prior to the opening of dialog.
+		Use the filename to load the constraint file in the Core.
+		"""
 		filename=tkFileDialog.askopenfilename(title="Open a constraint " + self.constraintDefinitions.getvalue() + " file ")
 		constraintType=""
 		if self.constraintDefinitions.getvalue()=="CNS/XPLOR":
@@ -78,6 +87,8 @@ class FileSelectionPanel(Panel):
 			self.constraintsList.setvalue(path.basename(filename))
 
 	def updateFilelist(self):
+		"""
+		"""
 		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
 	def removeFile(self):

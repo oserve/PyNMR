@@ -57,6 +57,9 @@ class NOE(Constraint):
 			self.violated = 'not violated'
 
 	def getRange(self):
+		"""Return the range name, according to the usual NMR specification
+		range depends on the number of residus between the atomsets
+		"""
 		if not (int(self.resis[0]['number'])-int(self.resis[1]['number'])):
 			return 'intra'
 		elif abs(int(self.resis[0]['number'])-int(self.resis[1]['number'])) == 1:
@@ -91,7 +94,7 @@ class NOE(Constraint):
 			return 1
 
 	def getResisNumber(self):
+		"""Utility method
 		"""
-		"""
-		return [self.resis[0]['number'],self.resis[1]['number']]
+		return [self.resis[0]['number'], self.resis[1]['number']]
 

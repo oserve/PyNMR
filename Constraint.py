@@ -51,6 +51,8 @@ class Constraint(object):
 		self.numberOfAtomsSets = 0
 
 	def setName(self,aName):
+		"""Utility method to set constraint name
+		"""
 		self.id['name'] = aName
 
 	def setConstraintValues(self, constraintValue, Vmin, Vplus):
@@ -77,7 +79,7 @@ class Constraint(object):
 		return self.isValid()
 	
 	def isValid(self):
-		"""
+		"""Return yes or no if one of the atomset is not valid
 		"""
 		validity=1
 		for atomsSetNumber in range(self.numberOfAtomsSets):

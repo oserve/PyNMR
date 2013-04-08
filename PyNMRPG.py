@@ -7,7 +7,7 @@
 # 
 # ----------------------------------------------------------------------
 #               This PyMOL Plugin is Copyright (C) 2013 by 
-#                 olivier serve <olivier do serve at gmail dot com>
+#                 olivier serve <olivier dot serve at gmail dot com>
 # 
 #                        All Rights Reserved
 # 
