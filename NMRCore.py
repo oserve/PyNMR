@@ -38,7 +38,7 @@ from os.path import basename, exists
 from sys import stderr, stdout
 #Custom Class
 from NOE import NOE
-from ConstraintLoading import *
+from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 from MolecularViewerInterface import select, zoom, delete
@@ -54,12 +54,8 @@ class NMRCore(object):
 		"""load NMR distance constraints, call for the correct file format (CNS/CYANA),
 		"""
 		managerName=basename(filename)
-		if consDef in ['XPLOR', 'CNS']:
-			self.ManagersList[managerName]=cns(filename, managerName)
-		elif consDef in ['DYANA', 'CYANA']:
-			self.ManagersList[managerName]=dyana(filename,managerName)
-		else:
-			stderr.write("incorrect or unsupported constraint type.\n")
+		loader=ConstraintLoader(filename, managerName, consDef)		
+		self.ManagersList[managerName]=loader.loadConstraints()
 	
 	def showSticks(self, managerName, pdb, colors, radius):
 		self.ManagersList[managerName].setPDB(pdb)
