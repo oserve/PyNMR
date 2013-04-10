@@ -3,7 +3,13 @@ PyNMR
 Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) abilities to molecular viewer [Pymol](http://pymol.org), including :
 
 - Display distance constraints as sticks between atoms / group of atoms with color code
+
+![NOESticks](pictures/sticks.tiff)
+
 - Display distance constraint density as a color gradient on the molecular skeleton
+
+![NOEDensity](pictures/density.tiff)
+
 - Possibility to choose :
 	- Method of distance calculation (ambiguous restraints)
 	- Colors and size of NOE representations
@@ -28,7 +34,7 @@ Start plugin :
 
 ###For development version :
 
-It is not yet a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.startGUI()
+It is not a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.startGUI()
 
 ###For user friendly version :
 
@@ -37,6 +43,8 @@ Start PyNMR from the plugin menu.
 Usage :
 -----
 The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
+
+![Interface](pictures/mainWindow.tiff)
 
 Possible future features :
 ------------------------
