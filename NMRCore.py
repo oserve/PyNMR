@@ -55,7 +55,7 @@ class NMRCore(object):
 		"""
 		managerName=basename(filename)
 		loader=ConstraintLoader(filename, managerName, consDef)		
-		self.ManagersList[managerName]=loader.loadConstraints()
+		self.ManagersList[managerName]=loader.loadConstraintsFromFile()
 	
 	def showSticks(self, managerName, pdb, colors, radius):
 		self.ManagersList[managerName].setPDB(pdb)
@@ -115,7 +115,7 @@ class NMRCore(object):
 					for i in range(int(aRange[0]),int(aRange[1])+1):
 						resList=resList+[str(i)]
 				elif len(aRange)==1:
-					resList=resList+[str(aRange)]
+					resList=resList+[str(aRange[0])]
 				else:
 					stderr.write("Residues set definition error : "+residuesList+"\n")
 		if type(dist_range)<>type([]):

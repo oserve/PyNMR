@@ -53,19 +53,24 @@ class ConstraintLoader(object):
 		self.SharpReg=re.compile('[#]')# used in cns constraints loading. Replace # by *
 		self.AtTypeReg=re.compile('[CHON][A-Z]*')
 	
+	def loadConstraintsFromFile(self):
+		self.loadFile()
+		return self.loadConstraints()
+
 	def loadConstraints(self):
 		"""Starts constraints loading, uses appropriate function
 		depending on file type
 		"""
-		self.loadFile()
 		aManager=ConstraintSetManager(self.managerName)
 		if self.constraintDefinition in ['XPLOR', 'CNS']:
+			self.synthesizeCNSFile()
 			self.CNSConstraintLoading(aManager)
 		elif self.constraintDefinition in ['DYANA', 'CYANA']:
 			self.CYANAConstraintLoading(aManager)
 		else:
 			stderr.write("incorrect or unsupported constraint type.\n")
 		self.inFileTab=[]
+		
 		return aManager
 	
 	def loadFile(self):
@@ -77,25 +82,23 @@ class ConstraintLoader(object):
 			else:
 				stderr.write(txt+" skipped. Commented out.\n")
 		fin.close()
-		
+	
+	def synthesizeCNSFile(self):
+		self.validCNSConstraints=[]
+		for line in self.inFileTab:
+			if line.find("ASSI")>-1:
+				line=line.replace("GN", "")
+				self.validCNSConstraints.append(line.replace("ASSI",""))
+			elif self.RegResi.search(line)<>None:
+				self.validCNSConstraints[-1]=self.validCNSConstraints[-1]+line
 	
 	def CNSConstraintLoading(self, aManager):
 		"""
 		Return a ConstraintSetManager loaded with cns/xplor constraints
 		"""
-		
-		validCNSConstraints=[]
-
-		for line in self.inFileTab:
-			if line.find("ASSI")>-1:
-				line=line.replace("GN", "")
-				validCNSConstraints.append(line.replace("ASSI",""))
-			elif self.RegResi.search(line)<>None:
-				validCNSConstraints[-1]=validCNSConstraints[-1]+line
-	
 		constraint_number=1
 				
-		for aConstLine in validCNSConstraints:#itemizing constraints
+		for aConstLine in self.validCNSConstraints:#itemizing constraints
 			#avoid empty lines
 			if re.search('\d', aConstLine):
 				parsingResult = self.parseCNSConstraint(aConstLine)
@@ -139,7 +142,7 @@ class ConstraintLoader(object):
 				else:
 					cons_tab=aConstLine.split()
 					try: #For errors not filtered previously
-						aConstraint=NOE.initWith(i, cons_tab[0], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[2])), cons_tab[3], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[5])), aConstLine)
+						aConstraint=NOE.initWith(counter, cons_tab[0], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[2])), cons_tab[3], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[5])), aConstLine)
 						aConstraint.setConstraintValues(str(1.8+(float(cons_tab[6])-1.8)/2),'1.8',cons_tab[6])
 						aManager.addConstraint(aConstraint)
 						counter=counter+1
