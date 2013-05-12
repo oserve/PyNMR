@@ -42,6 +42,9 @@ class ConstraintSetManager(object):
 	def __str__(self):
 		return self.name + " contains "+str(len(self.constraints))+" constraints.\n"
 	
+	def __len__(self):
+		return len(self.constraints)
+	
 	__repr__=__str__
 
 	#Constraints management methods

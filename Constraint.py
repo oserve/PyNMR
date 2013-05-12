@@ -50,6 +50,11 @@ class Constraint(object):
 		self.constraintValues = {}
 		self.numberOfAtomsSets = 0
 
+	def __str__(self):
+		return self.definition
+	
+	__repr__=__str__
+
 	def setName(self,aName):
 		"""Utility method to set constraint name
 		"""

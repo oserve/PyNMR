@@ -128,7 +128,7 @@ class ConstraintLoader(object):
 			else:
 				stderr.write("This line : "+aConstLine+" is not a valid constraint.\n")
 				continue
-		stdout.write(str(len(aManager.constraints))+" constraints loaded.\n")
+		stdout.write(str(len(aManager))+" constraints loaded.\n")
 
 	def CYANAConstraintLoading(self, aManager):
 		""""
@@ -151,7 +151,7 @@ class ConstraintLoader(object):
 			else:
 				stderr.write("Empty line, skipping.\n")
 	
-		stdout.write(str(len(aManager.constraints))+" constraints loaded.\n")
+		stdout.write(str(len(aManager))+" constraints loaded.\n")
 		
 	def parseCNSConstraint(self, aCNSConstraint):
 		"""Split CNS/XPLOR type constraint into an array, contening the name of the residues (as arrays),

@@ -38,7 +38,7 @@ class AtomSet(object):
 		and the atom type of the atom
 	"""
 	
-	def __init__(self, pdbName,resi_number, resi_type):
+	def __init__(self, pdbName, resi_number, resi_type):
 		"""Initialisation sets the residu number
 			and the atom type
 		"""

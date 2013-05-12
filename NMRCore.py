@@ -62,7 +62,7 @@ class NMRCore(object):
 		theFilter=self.filter
 		drawer=ConstraintDrawer()
 		selectedConstraints=[]
-		if len(self.ManagersList[managerName].constraints):
+		if len(self.ManagersList[managerName]):
 			if self.ManagersList[managerName].associateToPDB():
 				filteredConstraints=self.filter.filterConstraints(self.ManagersList[managerName].constraints)
 				selectedConstraints=[]
@@ -71,7 +71,7 @@ class NMRCore(object):
 						selectedConstraints.append(constraint)
 				self.displayedConstraints=self.displayedConstraints+selectedConstraints
 				results=drawer.drC(selectedConstraints, radius, colors)
-				stdout.write(str(results['DrawnConstraints'])+" constraints drawn on a total of "+str(len(self.ManagersList[managerName].constraints))+"\n")			
+				stdout.write(str(results['DrawnConstraints'])+" constraints drawn on a total of "+str(len(self.ManagersList[managerName]))+"\n")			
 				zoomSelection=self.ManagersList[managerName].pdb+" &"
 				if len(results['Residueslist']):
 					for residue in results['Residueslist']:
@@ -88,7 +88,7 @@ class NMRCore(object):
 		self.ManagersList[managerName].setPDB(pdb)
 		theFilter=self.filter
 		drawer=ConstraintDrawer()
-		if len(self.ManagersList[managerName].constraints):
+		if len(self.ManagersList[managerName]):
 			if self.ManagersList[managerName].associateToPDB():
 				selectedConstraints=theFilter.filterConstraints(self.ManagersList[managerName].constraints)
 				self.displayedConstraints=self.displayedConstraints+selectedConstraints
