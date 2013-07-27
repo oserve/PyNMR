@@ -37,150 +37,150 @@ from NOE import NOE
 from ConstraintManager import ConstraintSetManager
 
 class ConstraintLoader(object):
-	"""Classes used to lad constraints from
-	files and returns a constraintSetManager filled
-	with constraints
-	"""
-	def __init__(self, fileName, managerName, constraintDefinition):
-		self.fileName = fileName
-		self.managerName = managerName
-		self.constraintDefinition = constraintDefinition
-		self.inFileTab=[]
-		#Useful RegEx definitions
-		self.ParReg=re.compile('[()]')# used in cns constraints loading. Suppression of ()
-		self.SParReg=re.compile("\(.*\)")#used in cns constraint loading.
-		self.RegResi=re.compile("RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")#match CNS Residue definition
-		self.SharpReg=re.compile('[#]')# used in cns constraints loading. Replace # by *
-		self.AtTypeReg=re.compile('[CHON][A-Z]*')
-	
-	def loadConstraintsFromFile(self):
-		self.loadFile()
-		return self.loadConstraints()
+    """Classes used to lad constraints from
+    files and returns a constraintSetManager filled
+    with constraints
+    """
+    def __init__(self, fileName, managerName, constraintDefinition):
+        self.fileName = fileName
+        self.managerName = managerName
+        self.constraintDefinition = constraintDefinition
+        self.inFileTab = []
+        #Useful RegEx definitions
+        self.ParReg = re.compile('[()]')# used in cns constraints loading. Suppression of ()
+        self.SParReg = re.compile("\(.*\)")#used in cns constraint loading.
+        self.RegResi = re.compile("RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")#match CNS Residue definition
+        self.SharpReg = re.compile('[#]')# used in cns constraints loading. Replace # by *
+        self.AtTypeReg = re.compile('[CHON][A-Z]*')
+    
+    def loadConstraintsFromFile(self):
+        self.loadFile()
+        return self.loadConstraints()
 
-	def loadConstraints(self):
-		"""Starts constraints loading, uses appropriate function
-		depending on file type
-		"""
-		aManager=ConstraintSetManager(self.managerName)
-		if self.constraintDefinition in ['XPLOR', 'CNS']:
-			self.synthesizeCNSFile()
-			self.CNSConstraintLoading(aManager)
-		elif self.constraintDefinition in ['DYANA', 'CYANA']:
-			self.CYANAConstraintLoading(aManager)
-		else:
-			stderr.write("incorrect or unsupported constraint type.\n")
-		self.inFileTab=[]
-		
-		return aManager
-	
-	def loadFile(self):
-		fin=open(self.fileName,'r')
-		for txt in fin:
-			txt=txt.lstrip()
-			if txt.find('!')<0:
-				self.inFileTab.append(txt.upper().rstrip())
-			else:
-				stderr.write(txt+" skipped. Commented out.\n")
-		fin.close()
-	
-	def synthesizeCNSFile(self):
-		self.validCNSConstraints=[]
-		for line in self.inFileTab:
-			if line.find("ASSI")>-1:
-				line=line.replace("GN", "")
-				self.validCNSConstraints.append(line.replace("ASSI",""))
-			elif self.RegResi.search(line)<>None:
-				self.validCNSConstraints[-1]=self.validCNSConstraints[-1]+line
-	
-	def CNSConstraintLoading(self, aManager):
-		"""
-		Return a ConstraintSetManager loaded with cns/xplor constraints
-		"""
-		constraint_number=1
-				
-		for aConstLine in self.validCNSConstraints:#itemizing constraints
-			#avoid empty lines
-			if re.search('\d', aConstLine):
-				parsingResult = self.parseCNSConstraint(aConstLine)
-				if len(parsingResult)==3:#2 residues + distances (matches also H-Bonds)
-					aConstraint=NOE()
-				else:
-					#No other constraint type supported ... for now !
-					break
-				aConstraint.id["number"]=constraint_number
-				aConstraint.definition=aConstLine
-				for position in range(aConstraint.numberOfAtomsSets):
-					currentResidue={}
-					if  "resid" in parsingResult[position].keys():
-						currentResidue["number"]=parsingResult[position]["resid"]
-					else:
-						currentResidue["number"]=parsingResult[position]["resi"]						
-					currentResidue["atoms"]=self.AtTypeReg.match(parsingResult[position]["name"]).group()
-					currentResidue["atoms_number"]=self.AtTypeReg.sub('', parsingResult[position]["name"])
-					currentResidue["ambiguity"]=self.AtTypeReg.sub('', parsingResult[position]["name"]).find('*')
-					if "segid" in parsingResult[position].keys():
-						currentResidue["segid"]=parsingResult[position]["segid"]
-					aConstraint.resis.append(currentResidue)
-				aConstraint.setConstraintValues(parsingResult[-1][0],parsingResult[-1][1],parsingResult[-1][2])#Values always at the end of the array
-				
-				aManager.addConstraint(aConstraint)
-				constraint_number=constraint_number+1
-			else:
-				stderr.write("This line : "+aConstLine+" is not a valid constraint.\n")
-				continue
-		stdout.write(str(len(aManager))+" constraints loaded.\n")
+    def loadConstraints(self):
+        """Starts constraints loading, uses appropriate function
+        depending on file type
+        """
+        aManager=ConstraintSetManager(self.managerName)
+        if self.constraintDefinition in ['XPLOR', 'CNS']:
+            self.synthesizeCNSFile()
+            self.CNSConstraintLoading(aManager)
+        elif self.constraintDefinition in ['DYANA', 'CYANA']:
+            self.CYANAConstraintLoading(aManager)
+        else:
+            stderr.write("incorrect or unsupported constraint type.\n")
+        self.inFileTab = []
+        
+        return aManager
+    
+    def loadFile(self):
+        fin=open(self.fileName,'r')
+        for txt in fin:
+            txt=txt.lstrip()
+            if txt.find('!')<0:
+                self.inFileTab.append(txt.upper().rstrip())
+            else:
+                stderr.write(txt+" skipped. Commented out.\n")
+        fin.close()
+    
+    def synthesizeCNSFile(self):
+        self.validCNSConstraints = []
+        for line in self.inFileTab:
+            if line.find("ASSI") > -1:
+                line = line.replace("GN", "")
+                self.validCNSConstraints.append(line.replace("ASSI",""))
+            elif self.RegResi.search(line) <> None:
+                self.validCNSConstraints[-1] = self.validCNSConstraints[-1] + line
+    
+    def CNSConstraintLoading(self, aManager):
+        """
+        Return a ConstraintSetManager loaded with cns/xplor constraints
+        """
+        constraint_number = 1
 
-	def CYANAConstraintLoading(self, aManager):
-		""""
-		Return a ConstraintSetManager loaded with CYANA/DYANA constraints
-		"""
-		counter=1
-		for aConstLine in self.inFileTab:
-			if len(aConstLine)>1:
-				if aConstLine.find('#')==0:
-					stderr.write(aConstLine+" skipped. Commented out.\n")
-				else:
-					cons_tab=aConstLine.split()
-					try: #For errors not filtered previously
-						aConstraint=NOE.initWith(counter, cons_tab[0], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[2])), cons_tab[3], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[5])), aConstLine)
-						aConstraint.setConstraintValues(str(1.8+(float(cons_tab[6])-1.8)/2),'1.8',cons_tab[6])
-						aManager.addConstraint(aConstraint)
-						counter=counter+1
-					except:
-						stderr.write("Unknown error while loading constraint :\n"+aConstLine+"\n")
-			else:
-				stderr.write("Empty line, skipping.\n")
-	
-		stdout.write(str(len(aManager))+" constraints loaded.\n")
-		
-	def parseCNSConstraint(self, aCNSConstraint):
-		"""Split CNS/XPLOR type constraint into an array, contening the name of the residues (as arrays),
-		and the values of the parameter associated to the constraint. It should be independant
-		from the type of constraint (dihedral, distance, ...)
-		"""
-		residuesList=self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
-		constraintValuesList=self.SParReg.sub("", aCNSConstraint).split()
-		constraintParsingResult=[]
-		for aResidue in residuesList:
-			residueParsingResult={}
-			for aDefinition in self.SharpReg.sub('*', aResidue).split("AND"):
-				definitionArray=aDefinition.split()
-				residueParsingResult[definitionArray[0].strip().lower()]=definitionArray[1].strip()
-			constraintParsingResult.append(residueParsingResult)
-		numericValues=[]
-		for aValue in constraintValuesList:
-			numericValues.append(float(aValue))
-		constraintParsingResult.append(numericValues)
-		return constraintParsingResult
+        for aConstLine in self.validCNSConstraints:#itemizing constraints
+            #avoid empty lines
+            if re.search('\d', aConstLine):
+                parsingResult = self.parseCNSConstraint(aConstLine)
+                if len(parsingResult) == 3:#2 residues + distances (matches also H-Bonds)
+                    aConstraint = NOE()
+                else:
+                    #No other constraint type supported ... for now !
+                    break
+                aConstraint.id["number"] = constraint_number
+                aConstraint.definition = aConstLine
+                for position in range(aConstraint.numberOfAtomsSets):
+                    currentResidue = {}
+                    if "resid" in parsingResult[position].keys():
+                        currentResidue["number"] = parsingResult[position]["resid"]
+                    else:
+                        currentResidue["number"] = parsingResult[position]["resi"]                        
+                    currentResidue["atoms"] = self.AtTypeReg.match(parsingResult[position]["name"]).group()
+                    currentResidue["atoms_number"] = self.AtTypeReg.sub('', parsingResult[position]["name"])
+                    currentResidue["ambiguity"] = self.AtTypeReg.sub('', parsingResult[position]["name"]).find('*')
+                    if "segid" in parsingResult[position].keys():
+                        currentResidue["segid"] = parsingResult[position]["segid"]
+                    aConstraint.resis.append(currentResidue)
+                aConstraint.setConstraintValues(parsingResult[-1][0],parsingResult[-1][1],parsingResult[-1][2])#Values always at the end of the array
 
-	def convertTypeDyana(self, atType):
-		"""
-		Adapt xeasy nomenclature Q to pymol *
-		"""
-		if atType.count('Q'):
-			newType=atType.replace('Q','H',1)
-			newType=newType+('*') # Q is replaced by H and a star at the end of the atom type
-			newType=newType.replace('Q','')# avoid QQ (QQD-> HD*)
-			return newType
-		else:
-			return atType
+                aManager.addConstraint(aConstraint)
+                constraint_number = constraint_number+1
+            else:
+                stderr.write("This line : " + aConstLine + " is not a valid constraint.\n")
+                continue
+        stdout.write(str(len(aManager)) + " constraints loaded.\n")
+
+    def CYANAConstraintLoading(self, aManager):
+        """"
+        Return a ConstraintSetManager loaded with CYANA/DYANA constraints
+        """
+        counter=1
+        for aConstLine in self.inFileTab:
+            if len(aConstLine) > 1:
+                if aConstLine.find('#') == 0:
+                    stderr.write(aConstLine+" skipped. Commented out.\n")
+                else:
+                    cons_tab=aConstLine.split()
+                    try: #For errors not filtered previously
+                        aConstraint = NOE.initWith(counter, cons_tab[0], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[2])), cons_tab[3], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[5])), aConstLine)
+                        aConstraint.setConstraintValues(str(1.8 + (float(cons_tab[6])-1.8)/2), '1.8', cons_tab[6])
+                        aManager.addConstraint(aConstraint)
+                        counter = counter + 1
+                    except:
+                        stderr.write("Unknown error while loading constraint :\n" + aConstLine + "\n")
+            else:
+                stderr.write("Empty line, skipping.\n")
+    
+        stdout.write(str(len(aManager)) + " constraints loaded.\n")
+        
+    def parseCNSConstraint(self, aCNSConstraint):
+        """Split CNS/XPLOR type constraint into an array, contening the name of the residues (as arrays),
+        and the values of the parameter associated to the constraint. It should be independant
+        from the type of constraint (dihedral, distance, ...)
+        """
+        residuesList = self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
+        constraintValuesList = self.SParReg.sub("", aCNSConstraint).split()
+        constraintParsingResult = []
+        for aResidue in residuesList:
+            residueParsingResult = {}
+            for aDefinition in self.SharpReg.sub('*', aResidue).split("AND"):
+                definitionArray = aDefinition.split()
+                residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
+            constraintParsingResult.append(residueParsingResult)
+        numericValues = []
+        for aValue in constraintValuesList:
+            numericValues.append(float(aValue))
+        constraintParsingResult.append(numericValues)
+        return constraintParsingResult
+
+    def convertTypeDyana(self, atType):
+        """
+        Adapt xeasy nomenclature Q to pymol *
+        """
+        if atType.count('Q'):
+            newType = atType.replace('Q','H',1)
+            newType = newType+('*') # Q is replaced by H and a star at the end of the atom type
+            newType = newType.replace('Q','')# avoid QQ (QQD-> HD*)
+            return newType
+        else:
+            return atType

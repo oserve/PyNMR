@@ -43,11 +43,11 @@ try:
         return PymolCmd.get_model(model)
 
     def alterBFactors(pdb,bFactor):
-        PymolCmd.alter(pdb,"b="+ str(bFactor))
+        PymolCmd.alter(pdb, "b=" + str(bFactor))
 
     def spectrum(color_gradient,pdb):
-        PymolCmd.spectrum("b",color_gradient,pdb)
-    
+        PymolCmd.spectrum("b", color_gradient,pdb)
+
     def zoom(selection):
         PymolCmd.zoom(selection)
 
@@ -55,7 +55,7 @@ try:
             """used to draw a NOE constraint between two sets of atoms
                     using cgo from Pymol
             """
-            cons =[CYLINDER]+list(points[0])+list(points[1])+[aRadius]+color
+            cons = [CYLINDER] + list(points[0]) + list(points[1]) + [aRadius] + color
             PymolCmd.load_cgo(cons, ID)
 
     def delete(selectionName):

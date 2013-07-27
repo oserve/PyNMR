@@ -36,330 +36,346 @@ import Pmw
 import tkFileDialog
 import tkColorChooser
 
-class Panel(Tk.LabelFrame):
-	"""Abstract Class used for definition of the different
-	section of the GUI, mostly a Tk.LableFrame
-	"""
-	def __init__(self, master, frameText = ""):
-		Tk.LabelFrame.__init__(self, master, text=frameText)
 
-	def getInfo(self):
-		return {}
+class Panel(Tk.LabelFrame):
+    """Abstract Class used for definition of the different
+    section of the GUI, mostly a Tk.LableFrame
+    """
+    def __init__(self, master, frameText = ""):
+        Tk.LabelFrame.__init__(self, master, text=frameText)
+
+    def getInfo(self):
+        return {}
+
+    def widgetCreation(self):
+        pass
 
 class FileSelectionPanel(Panel):
-	"""This panel allows to import constraint file
-	into the Core. Also it allows the selection of the file
-	for the following calculations.
-	"""
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="Constraints Files")
-		self.widgetCreation()
-		self.NMRCommands=""#Must be set by application at run time
+    """This panel allows to import constraint file
+    into the Core. Also it allows the selection of the file
+    for the following calculations.
+    """
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="Constraints Files")
+        self.widgetCreation()
+        self.NMRCommands = ""#Must be set by application at run time
 
-	def widgetCreation(self):
-		self.constraintFilesButtonBox = Pmw.ButtonBox(self, labelpos = 'nw', orient='vertical')
-		self.constraintFilesButtonBox.add("Load Constraints", command=self.loadFile)
-		self.constraintFilesButtonBox.add("Remove Constraints", command=self.removeFile)
-		self.constraintFilesButtonBox.grid(row=0, column=0)
-		self.constraintsList=Pmw.ScrolledListBox(self)
-		self.constraintsList.component("listbox").exportselection=0
-		self.constraintsList.grid(row=0, column=1)
-		self.constraintDefinitions = Pmw.RadioSelect(self, label_text="Select constraints definition type :",labelpos = 'nw', buttontype='radiobutton')
-		self.constraintDefinitions.add("CNS/XPLOR")
-		self.constraintDefinitions.add("CYANA/DYANA")
-		self.constraintDefinitions.setvalue("CNS/XPLOR")
-		self.constraintDefinitions.grid(row=1, column=0, columnspan=2)
+    def widgetCreation(self):
+        self.constraintFilesButtonBox = Pmw.ButtonBox(self, labelpos = 'nw', orient = 'vertical')
+        self.constraintFilesButtonBox.add("Load Constraints", command = self.loadFile)
+        self.constraintFilesButtonBox.add("Remove Constraints", command = self.removeFile)
+        self.constraintFilesButtonBox.grid(row=0, column=0)
+        self.constraintsList=Pmw.ScrolledListBox(self)
+        self.constraintsList.component("listbox").exportselection=0
+        self.constraintsList.grid(row=0, column=1)
+        self.constraintDefinitions = Pmw.RadioSelect(self, label_text="Select constraints definition type :",labelpos = 'nw', buttontype = 'radiobutton')
+        self.constraintDefinitions.add("CNS/XPLOR")
+        self.constraintDefinitions.add("CYANA/DYANA")
+        self.constraintDefinitions.setvalue("CNS/XPLOR")
+        self.constraintDefinitions.grid(row=1, column=0, columnspan=2)
 
-	def loadFile(self):
-		"""Use a standard Tk dialog to get filename,
-		constraint type is selected prior to the opening of dialog.
-		Use the filename to load the constraint file in the Core.
-		"""
-		filename=tkFileDialog.askopenfilename(title="Open a constraint " + self.constraintDefinitions.getvalue() + " file ")
-		constraintType=""
-		if self.constraintDefinitions.getvalue()=="CNS/XPLOR":
-			constraintDefinition="CNS"
-		else:
-			constraintDefinition="CYANA"
-		if filename:
-			self.NMRCommands.loadNOE(filename, constraintDefinition)
-			self.updateFilelist()
-			self.constraintsList.setvalue(path.basename(filename))
+    def loadFile(self):
+        """Use a standard Tk dialog to get filename,
+        constraint type is selected prior to the opening of dialog.
+        Use the filename to load the constraint file in the Core.
+        """
+        filename = tkFileDialog.askopenfilename(title="Open a constraint " + self.constraintDefinitions.getvalue() + " file ")
+        constraintType = ""
+        if self.constraintDefinitions.getvalue() == "CNS/XPLOR":
+            constraintDefinition = "CNS"
+        else:
+            constraintDefinition = "CYANA"
+        if filename:
+            self.NMRCommands.loadNOE(filename, constraintDefinition)
+            self.updateFilelist()
+            self.constraintsList.setvalue(path.basename(filename))
 
-	def updateFilelist(self):
-		"""
-		"""
-		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+    def updateFilelist(self):
+        """
+        """
+        self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
-	def removeFile(self):
-		toRemove=self.constraintsList.getvalue()
-		if toRemove:
-			for manager in toRemove:
-				del self.NMRCommands.ManagersList[manager]
-		self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+    def removeFile(self):
+        toRemove = self.constraintsList.getvalue()
+        if toRemove:
+            for manager in toRemove:
+                del self.NMRCommands.ManagersList[manager]
+        self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
-	def getInfo(self):
-		if len(self.constraintsList.getvalue()):
-			return {"constraintFile":self.constraintsList.getvalue()[0]}
-		else:
-			return {"constraintFile":""}
+    def getInfo(self):
+        if len(self.constraintsList.getvalue()):
+            return {"constraintFile": self.constraintsList.getvalue()[0]}
+        else:
+            return {"constraintFile": ""}
 
 class ConstraintSelectionPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="Constraints Selection")
-		self.panelsList=[]
-		self.widgetCreation()
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="Constraints Selection")
+        self.panelsList = []
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		#Creation of range input
-		self.consRangeFrame=RangeSelectionPanel(self)
-		self.consRangeFrame.grid(row=0, column=0)
-		self.panelsList.append(self.consRangeFrame)
+    def widgetCreation(self):
+        #Creation of range input
+        self.consRangeFrame = RangeSelectionPanel(self)
+        self.consRangeFrame.grid(row=0, column=0)
+        self.panelsList.append(self.consRangeFrame)
 
-		#Creation of Violations inputs
-		self.violationsFrame=ViolationSelectionPanel(self)
-		self.violationsFrame.grid(row=0, column=1)
-		self.panelsList.append(self.violationsFrame)
+        #Creation of Violations inputs
+        self.violationsFrame = ViolationSelectionPanel(self)
+        self.violationsFrame.grid(row=0, column=1)
+        self.panelsList.append(self.violationsFrame)
 
-		#Creation of structure inputs
-		self.structureManagement = StructureSelectionPanel(self)
-		self.structureManagement.grid(row=1, column=0, columnspan=2)
-		self.panelsList.append(self.structureManagement)
-
-	def getInfo(self):
-		infos={}
-		for panel in self.panelsList:
-			infos.update(panel.getInfo())
-		return infos
+        #Creation of structure inputs
+        self.structureManagement = StructureSelectionPanel(self)
+        self.structureManagement.grid(row=1, column=0, columnspan=2)
+        self.panelsList.append(self.structureManagement)
+        
+    def getInfo(self):
+        infos = {}
+        for panel in self.panelsList:
+            infos.update(panel.getInfo())
+        return infos
 
 class StructureSelectionPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="Structure")
-		self.residueRanges=Tk.StringVar(self)
-		self.widgetCreation()
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="Structure")
+        self.residueRanges = Tk.StringVar(self)
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		Tk.Label(self, text="Structure :").grid(row=0, column=0)
-		x=Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
-		self.comboPDB=Pmw.ComboBox(self)
-		self.comboPDB.grid(row=0, column=1)
-		self.comboPDB.bind('<Enter>', self.updatePdbList)
+    def widgetCreation(self):
+        Tk.Label(self, text="Structure :").grid(row=0, column=0)
+        x = Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+        self.comboPDB = Pmw.ComboBox(self)
+        self.comboPDB.grid(row=0, column=1)
+        self.comboPDB.bind('<Enter>', self.updatePdbList)
 
-		Tk.Label(self, text='Residues ranges :').grid(row=2, column=0, sticky=Tk.W)
-		self.entry_res=Tk.Entry(self, textvariable=self.residueRanges)
-		self.entry_res.grid(row=2, column=1)
-		self.residueRanges.set('all')
+        Tk.Label(self, text = 'Residues ranges :').grid(row=2, column=0, sticky=Tk.W)
+        self.entry_res = Tk.Entry(self, textvariable=self.residueRanges)
+        self.entry_res.grid(row=2, column=1)
+        self.residueRanges.set('all')
 
-	def getInfo(self):
-		return {"pdb":self.comboPDB.component("entryfield").getvalue(), "ranges":self.residueRanges.get()}
-	
-	def updatePdbList(self, event):
-		self.comboPDB.setlist(self.mainApp.getModelsNames())
+    def getInfo(self):
+        return {"pdb": self.comboPDB.component("entryfield").getvalue(), "ranges": self.residueRanges.get()}
+
+    def updatePdbList(self, event):
+        self.comboPDB.setlist(self.mainApp.getModelsNames())
 
 class NOEDrawingPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="NOE Representation")
-		self.widgetCreation()
-		self.mainApp=""#Must be set at run time
-		self.NMRCommands=""#Must be set by application at run time
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="NOE Representation")
+        self.widgetCreation()
+        self.mainApp = ""#Must be set at run time
+        self.NMRCommands = ""#Must be set by application at run time
 
-	def widgetCreation(self):
-		self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='horizontal')
-		self.drawingNOEButtonBox.add('Sticks', command = self.showSticks)
-		self.drawingNOEButtonBox.add('Density', command = self.showDensity)
-		self.drawingNOEButtonBox.add('Clean NOEs', command = self.cleanAll)
-		self.drawingNOEButtonBox.grid(row=0, column=0)
-		self.drawingNOEButtonBox.setdefault('Sticks')
+    def widgetCreation(self):
+        self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='horizontal')
+        self.drawingNOEButtonBox.add('Sticks', command=self.showSticks)
+        self.drawingNOEButtonBox.add('Density', command=self.showDensity)
+        self.drawingNOEButtonBox.add('Clean NOEs', command=self.cleanAll)
+        self.drawingNOEButtonBox.grid(row=0, column=0)
+        self.drawingNOEButtonBox.setdefault('Sticks')
 
-	def showSticks(self):
-		infos= self.mainApp.getInfo()
-		infoCheck=1
+    def showSticks(self):
+        infos = self.mainApp.getInfo()
+        infoCheck = 1
 
-		if self.infoCheck(infos):
-			self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
-			self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
+        if self.infoCheck(infos):
+            self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+            self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
-	def showDensity(self):
-		infos= self.mainApp.getInfo()
+    def showDensity(self):
+        infos= self.mainApp.getInfo()
 
-		if self.infoCheck(infos):
-			self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
-			self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["gradient"])
+        if self.infoCheck(infos):
+            self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
+            self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["gradient"])
 
-	def cleanAll(self):
-		infos= self.mainApp.getInfo()
-		
-		if self.infoCheck(infos):
-			self.NMRCommands.cleanScreen(infos["constraintFile"])
+    def cleanAll(self):
+        infos = self.mainApp.getInfo()
 
-	def infoCheck(self, infos):
-		check=1
-		for item in infos:
-			if infos[item]=="":
-				check=0
-				break
-		return check
+        if self.infoCheck(infos):
+            self.NMRCommands.cleanScreen(infos["constraintFile"])
+
+    def infoCheck(self, infos):
+        check = 1
+        for item in infos:
+            if infos[item] == "":
+                check = 0
+                break
+        return check
 
 class RangeSelectionPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="Range Selection")
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="Range Selection")
 
-		self.RangesVars={}
-		self.RangesCB={}
-		self.RangesFunctions={}
-		self.widgetCreation()
+        self.RangesVars = {}
+        self.RangesCB = {}
+        self.RangesFunctions = {}
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		rowPosition=0
-		for consRange in ['intra', 'sequential', 'medium', 'long']:
-			self.RangesVars[consRange]=Tk.IntVar(self)
-			self.RangesCB[consRange]=Tk.Checkbutton(self, text=': ' + consRange, command=self.tick, variable=self.RangesVars[consRange])
-			self.RangesCB[consRange].grid(row=rowPosition, column=0, sticky=Tk.W)
-			rowPosition=rowPosition+1
-		self.RangesVars["all"]=Tk.IntVar(self)
-		self.RangesCB["all"]=Tk.Checkbutton(self, text=': all', command=self.tickAll, variable=self.RangesVars["all"])
-		self.RangesCB["all"].grid(row=rowPosition, column=0, sticky=Tk.W)
-		self.RangesCB["all"].invoke()
+    def widgetCreation(self):
+        rowPosition=0
+        for consRange in ['intra', 'sequential', 'medium', 'long']:
+            self.RangesVars[consRange] = Tk.IntVar(self)
+            self.RangesCB[consRange] = Tk.Checkbutton(self, text=': ' + consRange, command=self.tick, variable=self.RangesVars[consRange])
+            self.RangesCB[consRange].grid(row=rowPosition, column=0, sticky=Tk.W)
+            rowPosition=rowPosition + 1
+        self.RangesVars["all"] = Tk.IntVar(self)
+        self.RangesCB["all"] = Tk.Checkbutton(self, text=': all', command=self.tickAll, variable=self.RangesVars["all"])
+        self.RangesCB["all"].grid(row=rowPosition, column=0, sticky=Tk.W)
+        self.RangesCB["all"].invoke()
 
-	def tickAll(self):
-		if self.RangesVars["all"].get()==1:
-			for consRange in ['intra', 'sequential', 'medium', 'long']:
-				self.RangesCB[consRange].select()
-		if self.RangesVars["all"].get()==0:
-			for consRange in ['intra', 'sequential', 'medium', 'long']:
-				self.RangesCB[consRange].deselect()
-	def tick(self):
-		self.RangesCB["all"].select()
-		for aRange in ['intra', 'sequential', 'medium', 'long']:
-			if self.RangesVars[aRange].get()==0:
-				self.RangesCB["all"].deselect()
-				break
-	def getInfo(self):
-		ranges=[]
-		for consRange in ['intra', 'sequential', 'medium', 'long']:
-			if self.RangesVars[consRange].get()==1:
-				ranges.append(consRange)
-		return {"residuesRange":ranges}
+    def tickAll(self):
+        if self.RangesVars["all"].get() == 1:
+            for consRange in ['intra', 'sequential', 'medium', 'long']:
+                self.RangesCB[consRange].select()
+        if self.RangesVars["all"].get()==0:
+            for consRange in ['intra', 'sequential', 'medium', 'long']:
+                self.RangesCB[consRange].deselect()
+    def tick(self):
+        self.RangesCB["all"].select()
+        for aRange in ['intra', 'sequential', 'medium', 'long']:
+            if self.RangesVars[aRange].get() == 0:
+                self.RangesCB["all"].deselect()
+                break
+    def getInfo(self):
+        ranges=[]
+        for consRange in ['intra', 'sequential', 'medium', 'long']:
+            if self.RangesVars[consRange].get()==1:
+                ranges.append(consRange)
+        return {"residuesRange":ranges}
 
 class ViolationSelectionPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="Violation state Selection")
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="Violation state Selection")
 
-		self.ViolationsVars={}
-		self.ViolatedCB={}
-		self.cutOff=Tk.DoubleVar(self)
-		self.widgetCreation()
+        self.ViolationsVars = {}
+        self.ViolatedCB = {}
+        self.cutOff = Tk.DoubleVar(self)
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		rowPosition=0
-		for violationType in ['violated', 'not violated']:
-			self.ViolationsVars[violationType]=Tk.IntVar(self)
-			self.ViolatedCB[violationType]=Tk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
-			self.ViolatedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
-			self.ViolatedCB[violationType].select()
-			rowPosition=rowPosition+1
+    def widgetCreation(self):
+        rowPosition = 0
+        for violationType in ['violated', 'not violated']:
+            self.ViolationsVars[violationType] = Tk.IntVar(self)
+            self.ViolatedCB[violationType] = Tk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
+            self.ViolatedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
+            self.ViolatedCB[violationType].select()
+            rowPosition = rowPosition + 1
 
-		Tk.Label(self, text='Distance CutOff (A)').grid(row=rowPosition+1, column=0)
+        Tk.Label(self, text='Distance CutOff (A)').grid(row=rowPosition + 1, column=0)
 
-		self.spinBox_cutOff=Tk.Spinbox(self, textvariable=self.cutOff, from_=0.0, to=10.0, increment=0.1)
-		self.spinBox_cutOff.grid(row=rowPosition+2, column=0)
+        self.spinBox_cutOff = Tk.Spinbox(self, textvariable=self.cutOff, from_=0.0, to=10.0, increment=0.1)
+        self.spinBox_cutOff.grid(row=rowPosition+2, column=0)
 
-	def getInfo(self):
-		violationState=[]
-		for violationType in ['violated','not violated']:
-			if self.ViolationsVars[violationType].get()==1:
-				violationState.append(violationType)
-		return {"cutOff":self.cutOff.get(), "violationState":violationState}
+    def getInfo(self):
+        violationState = []
+        for violationType in ['violated','not violated']:
+            if self.ViolationsVars[violationType].get() == 1:
+                violationState.append(violationType)
+        return {"cutOff": self.cutOff.get(), "violationState": violationState}
 
 class SticksPreferencesPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="NOE Sticks Preferences")
-		self.radius=Tk.DoubleVar(self)
-		self.colors={}
-		self.widgetCreation()
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="NOE Sticks Preferences")
+        self.radius = Tk.DoubleVar(self)
+        self.colors = {}
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
-		self.spinBox_Radius=Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
-		self.spinBox_Radius.grid(row=0, column=1)
-		Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
-		self.satisfiedColorButton=Tk.Button(self, text="Choose color", command=self.setSatisfiedColor)
-		self.satisfiedColorButton.grid(row=1, column=1)
-		Tk.Label(self, text="Atoms too far").grid(row=2, column=0)
-		self.tooFarButton=Tk.Button(self, text="Choose color", command=self.setTooFarColor)
-		self.tooFarButton.grid(row=2, column=1)
-		Tk.Label(self, text="Atoms too close").grid(row=3, column=0)
-		self.tooCloseButton=Tk.Button(self, text="Choose color", command=self.setTooCloseColor)
-		self.tooCloseButton.grid(row=3, column=1)
+    def widgetCreation(self):
+        Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
+        self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
+        self.spinBox_Radius.grid(row=0, column=1)
+        Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
+        self.satisfiedColorButton = Tk.Button(self, text="Choose color", command=self.setSatisfiedColor)
+        self.satisfiedColorButton.grid(row=1, column=1)
+        Tk.Label(self, text="Atoms too far").grid(row=2, column=0)
+        self.tooFarButton = Tk.Button(self, text="Choose color", command=self.setTooFarColor)
+        self.tooFarButton.grid(row=2, column=1)
+        Tk.Label(self, text="Atoms too close").grid(row=3, column=0)
+        self.tooCloseButton = Tk.Button(self, text="Choose color", command=self.setTooCloseColor)
+        self.tooCloseButton.grid(row=3, column=1)
 
-	def getInfo(self):
-		return {"radius":self.radius.get(), "colors":self.colors}
+    def getInfo(self):
+        return {"radius": self.radius.get(), "colors": self.colors}
 
-	def setSatisfiedColor(self):
-		currentColor = self.float2intColor(self.colors["notViolated"])
-		result = tkColorChooser.askcolor(currentColor)
-		if result[0]:
-			self.colors["notViolated"]=self.int2floatColor(result[0])
+    def setSatisfiedColor(self):
+        currentColor = self.float2intColor(self.colors["notViolated"])
+        result = tkColorChooser.askcolor(currentColor)
+        if result[0]:
+            self.colors["notViolated"] = self.int2floatColor(result[0])
 
-	def setTooFarColor(self):
-		currentColor = self.float2intColor(self.colors["tooFar"])
-		result = tkColorChooser.askcolor(currentColor)
-		if result[0]:
-			self.colors["tooFar"]=self.int2floatColor(result[0])
+    def setTooFarColor(self):
+        currentColor = self.float2intColor(self.colors["tooFar"])
+        result = tkColorChooser.askcolor(currentColor)
+        if result[0]:
+            self.colors["tooFar"]=self.int2floatColor(result[0])
 
-	def setTooCloseColor(self):
-		currentColor = self.float2intColor(self.colors["tooClose"])
-		result = tkColorChooser.askcolor(currentColor)
-		if result[0]:
-			self.colors["tooClose"]=self.int2floatColor(result[0])
+    def setTooCloseColor(self):
+        currentColor = self.float2intColor(self.colors["tooClose"])
+        result = tkColorChooser.askcolor(currentColor)
+        if result[0]:
+            self.colors["tooClose"]=self.int2floatColor(result[0])
 
-	#This should be in an different file probably
-	def float2intColor(self, color):
-		return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
+    #This should be in an different file probably
+    def float2intColor(self, color):
+        return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
 
-	def int2floatColor(self, color):
-		return [color[0]/255.0, color[1]/255.0, color[2]/255.0, color[0]/255.0, color[1]/255.0, color[2]/255.0]
-	
+    def int2floatColor(self, color):
+        return [color[0]/255.0, color[1]/255.0, color[2]/255.0, color[0]/255.0, color[1]/255.0, color[2]/255.0]
+
+
 class DensityPreferencesPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="NOE density Preferences")
-		self.gradient=Tk.StringVar(self)
-		self.widgetCreation()
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="NOE density Preferences")
+        self.gradient = Tk.StringVar(self)
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		Tk.Label(self, text='Gradient :').grid(row=0, column=0)
-		x=Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
-		self.gradientSelection = Pmw.ComboBox(self)
-		self.gradientSelection.grid(row=0, column=1)
-	
-	def getInfo(self):
-		return {"gradient":self.gradientSelection.component("entryfield").getvalue()}
+    def widgetCreation(self):
+        Tk.Label(self, text='Gradient :').grid(row=0, column=0)
+        x = Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+        self.gradientSelection = Pmw.ComboBox(self)
+        self.gradientSelection.grid(row=0, column=1)
+    
+    def getInfo(self):
+        return {"gradient": self.gradientSelection.component("entryfield").getvalue()}
 
 class PreferencesPanel(Panel):
-	def __init__(self, master):
-		Panel.__init__(self, master, frameText="NOE Preferences")
-		self.panelsList=[]
-		self.widgetCreation()
+    def __init__(self, master):
+        Panel.__init__(self, master, frameText="NOE Preferences")
+        self.panelsList=[]
+        self.widgetCreation()
 
-	def widgetCreation(self):
-		Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
+    def widgetCreation(self):
+        Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
 
-		self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
-		self.methodSelection.add("sum6", text="Sum of r^6")
-		self.methodSelection.add("average6", text="Average of r^6")
-		self.methodSelection.grid(row=0, column=1)
-		self.methodSelection.setvalue("sum6")
+        self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
+        self.methodSelection.add("sum6", text="Sum of r^6")
+        self.methodSelection.add("average6", text="Average of r^6")
+        self.methodSelection.grid(row=0, column=1)
+        self.methodSelection.setvalue("sum6")
 
-		self.sticksPanel = SticksPreferencesPanel(self)
-		self.sticksPanel.grid(row=1, column=0, columnspan=2)
-		self.panelsList.append(self.sticksPanel)
+        self.sticksPanel = SticksPreferencesPanel(self)
+        self.sticksPanel.grid(row=1, column=0, columnspan=2)
+        self.panelsList.append(self.sticksPanel)
 
-		self.densityPanel = DensityPreferencesPanel(self)
-		self.densityPanel.grid(row=2, column=0, columnspan=2)
-		self.panelsList.append(self.densityPanel)
+        self.densityPanel = DensityPreferencesPanel(self)
+        self.densityPanel.grid(row=2, column=0, columnspan=2)
+        self.panelsList.append(self.densityPanel)
 
-	def getInfo(self):
-		infos={"method":self.methodSelection.getvalue()}
-		for panel in self.panelsList:
-			infos.update(panel.getInfo())
-		return infos
+    def getInfo(self):
+        infos={"method": self.methodSelection.getvalue()}
+        for panel in self.panelsList:
+            infos.update(panel.getInfo())
+        return infos
+
+
+class ConstraintTextPanel(Panel):
+    def __init__(self, master):
+        Panel.__init__(self, master)
+        self.widgetCreation()
+
+    def widgetCreation(self):
+        self.constraintText = Tk.Text(self)
+
+        self.constraintText.grid(row=1, column=0, columnspan=2)

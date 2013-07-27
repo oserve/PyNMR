@@ -31,64 +31,68 @@
 from AtomClass import AtomSet
 from Geom import *
 
+
 class Constraint(object):
-	"""
-	Abstract Constraint Class
-	Contains informations about constraints
-		atoms, model value, theoretical value,
-		constraint number, constraint name
-		and methods that allows to get these informations
-		or to determine if the constraints is violated or not (TODO)
-	"""
-	
-	def __init__(self):
-		self.id = {}
-		self.resis = []
-		self.violated = ''
-		self.definition = ''
-		self.atoms = []
-		self.constraintValues = {}
-		self.numberOfAtomsSets = 0
+    """
+    Abstract Constraint Class
+    Contains informations about constraints
+        atoms, model value, theoretical value,
+        constraint number, constraint name
+        and methods that allows to get these informations
+        or to determine if the constraints is violated or not (TODO)
+    """
 
-	def __str__(self):
-		return self.definition
-	
-	__repr__=__str__
+    def __init__(self):
+        self.id = {}
+        self.resis = []
+        self.violated = ''
+        self.definition = ''
+        self.atoms = []
+        self.constraintValues = {}
+        self.numberOfAtomsSets = 0
 
-	def setName(self,aName):
-		"""Utility method to set constraint name
-		"""
-		self.id['name'] = aName
+    def __str__(self):
+        return self.definition
 
-	def setConstraintValues(self, constraintValue, Vmin, Vplus):
-		"""
-		Set constraints values for violations
-			determination
-		"""
-		self.constraintValues['constraint'] = float(constraintValue)
-		self.constraintValues['min'] = float(Vmin)
-		self.constraintValues['plus'] = float(Vplus)
+    __repr__ = __str__
 
-	def isViolated(self):
-		"""returns yes or no according to the violation state
-		"""
-		return self.violated
+    def setName(self, aName):
+        """Utility method to set constraint name
+        """
+        self.id['name'] = aName
 
-	def associatePDBAtoms(self):
-		"""
-		Sets atoms sets, checks for inconsistency with pdb file
-		"""
-		for atomsSetNumber in range(self.numberOfAtomsSets):
-			self.atoms.append( AtomSet(self.pdbName, self.resis[atomsSetNumber]['number'], self.resis[atomsSetNumber]['atoms'] + self.resis[atomsSetNumber]['atoms_number']))
+    def setConstraintValues(self, constraintValue, Vmin, Vplus):
+        """
+        Set constraints values for violations
+            determination
+        """
+        self.constraintValues['constraint'] = float(constraintValue)
+        self.constraintValues['min'] = float(Vmin)
+        self.constraintValues['plus'] = float(Vplus)
 
-		return self.isValid()
-	
-	def isValid(self):
-		"""Return yes or no if one of the atomset is not valid
-		"""
-		validity=1
-		for atomsSetNumber in range(self.numberOfAtomsSets):
-			if "noID" in self.atoms[atomsSetNumber].getID():
-				validity=0
-				break
-		return validity
+    def isViolated(self):
+        """returns yes or no according to the violation state
+        """
+        return self.violated
+
+    def associatePDBAtoms(self):
+        """
+        Sets atoms sets, checks for inconsistency with pdb file
+        """
+        for atomsSetNumber in range(self.numberOfAtomsSets):
+            self.atoms.append(AtomSet(self.pdbName, self.resis[atomsSetNumber]['number'],
+				      self.resis[atomsSetNumber]['atoms'] + self.resis[atomsSetNumber]['atoms_number']))
+
+        return self.isValid()
+
+    def isValid(self):
+        """Return yes or no if one of the atomset is not valid
+        """
+        validity = 1
+        for atomsSetNumber in range(self.numberOfAtomsSets):
+            if "noID" in self.atoms[atomsSetNumber].getID():
+                validity = 0
+                break
+        return validity
+
+#    def addAtomGroup(self, anAtomGroup):

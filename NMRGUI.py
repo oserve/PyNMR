@@ -28,55 +28,58 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from sys import stdout
-from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
 
-from Panels import ConstraintSelectionPanel, FileSelectionPanel, NOEDrawingPanel, PreferencesPanel
+from Panels import ConstraintSelectionPanel, FileSelectionPanel, NOEDrawingPanel, PreferencesPanel, ConstraintTextPanel
 
 class NMRGUI(Tk.Tk):
-	def __init__ (self):
-		Tk.Tk.__init__(self)
-		self.title('PymolNMR')
-		self.panelsList=[]
-		
-	def createPanels(self):
-		#Main Frames (not IBM)
-		
-		self.noteBook = Pmw.NoteBook(self)
-		self.mainPage = self.noteBook.add("Main")
-		
-		self.constraintSelectionManagement = ConstraintSelectionPanel(self.mainPage)
-		self.panelsList.append(self.constraintSelectionManagement)
+    def __init__ (self):
+        Tk.Tk.__init__(self)
+        self.title('PymolNMR')
+        self.panelsList = []
 
-		self.constraintFilesManagement = FileSelectionPanel(self.mainPage)
-		self.panelsList.append(self.constraintFilesManagement)
+    def createPanels(self):
+        #Main Frames (not IBM)
 
-		self.NOEDrawingManagement = NOEDrawingPanel(self.mainPage)
-		self.panelsList.append(self.NOEDrawingManagement)
+        self.noteBook = Pmw.NoteBook(self)
+        self.mainPage = self.noteBook.add("Main")
 
-		self.preferencesPage = self.noteBook.add("Preferences")
+        self.constraintSelectionManagement = ConstraintSelectionPanel(self.mainPage)
+        self.panelsList.append(self.constraintSelectionManagement)
 
-		self.preferencesPanel= PreferencesPanel(self.preferencesPage)
-		self.panelsList.append(self.preferencesPanel)
-	
-		self.constraintFilesManagement.grid(row=0, column=0)
-		self.constraintSelectionManagement.grid(row=1, column=0)
-		self.NOEDrawingManagement.grid(row=2, column=0)
-		self.preferencesPanel.grid(row=0, column=0)		
-		self.noteBook.setnaturalsize()
+        self.constraintFilesManagement = FileSelectionPanel(self.mainPage)
+        self.panelsList.append(self.constraintFilesManagement)
 
-	def startGUI(self):
-		self.createPanels()
-		self.noteBook.grid(row=0, column=0)
-		self.setDelegation()
+        self.NOEDrawingManagement = NOEDrawingPanel(self.mainPage)
+        self.panelsList.append(self.NOEDrawingManagement)
 
-	def setDelegation(self):
-		self.NOEDrawingManagement.mainApp=self
-		
-	def getInfo(self):
-		infos={}
-		for panel in self.panelsList:
-			infos.update(panel.getInfo())
-		return infos
+        self.preferencesPage = self.noteBook.add("Preferences")
+
+        self.preferencesPanel = PreferencesPanel(self.preferencesPage)
+        self.panelsList.append(self.preferencesPanel)
+
+        self.editionPage = self.noteBook.add("Edition")
+
+        self.constraintText = ConstraintTextPanel(self.editionPage)
+        self.constraintText.grid(row=0, column=0)
+
+        self.constraintFilesManagement.grid(row=0, column=0)
+        self.constraintSelectionManagement.grid(row=1, column=0)
+        self.NOEDrawingManagement.grid(row=2, column=0)
+        self.preferencesPanel.grid(row=0, column=0)
+        self.noteBook.setnaturalsize()
+
+    def startGUI(self):
+        self.createPanels()
+        self.noteBook.grid(row=0, column=0)
+        self.setDelegation()
+
+    def setDelegation(self):
+        self.NOEDrawingManagement.mainApp = self
+
+    def getInfo(self):
+        infos = {}
+        for panel in self.panelsList:
+            infos.update(panel.getInfo())
+        return infos

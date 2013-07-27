@@ -31,53 +31,53 @@
 from sys import stderr
 
 class ConstraintFilter(object):
-	"""
+    """
 
-	"""
+    """
 
-	def __init__(self, pdb, residuesList, dist_range, violationState, violCutoff, method):
-		"""Defines parameters for filtering the constraints
-		"""
-		self.parameters = {}
-		self.parameters['residuesList'] = residuesList
-		self.parameters['range'] = dist_range
-		self.parameters['violationState'] = violationState
-		self.parameters['cutOff'] = violCutoff
-		self.parameters['pdb'] = pdb
-		self.parameters['method'] = method
+    def __init__(self, pdb, residuesList, dist_range, violationState, violCutoff, method):
+        """Defines parameters for filtering the constraints
+        """
+        self.parameters = {}
+        self.parameters['residuesList'] = residuesList
+        self.parameters['range'] = dist_range
+        self.parameters['violationState'] = violationState
+        self.parameters['cutOff'] = violCutoff
+        self.parameters['pdb'] = pdb
+        self.parameters['method'] = method
 
-	def filter(self, aConstraint):
-		"""Filter the constraints to be drawn (there should be a better way to implement it)
-		"""
-		if aConstraint.getRange() in self.parameters['range']:
-			inList=0
-			for aNumber in aConstraint.getResisNumber():
-				if aNumber in self.parameters['residuesList']:
-					inList=1
-					break
-			if inList:
-				aConstraint.pdbName = self.parameters['pdb']
-				if aConstraint.isValid():
-					if aConstraint.setDistance(self.parameters['method']):
-						aConstraint.setViolationState(self.parameters['cutOff'])
-						if aConstraint.isViolated() in self.parameters['violationState']:
-							return 1
-						else:
-							return 0
-					else:
-						stderr.write("Distance issue with constraint :\n" + aConstraint.definition+"\n")
-						return 0
-				else:
-					stderr.write("Selection issue with constraint :\n" + aConstraint.definition+"\n")
-					return 0	
-			else:
-				return 0
-		else:
-			return 0
-	
-	def filterConstraints(self, constraintList):
-		selectedConstraint=[]
-		for aConstraint in constraintList:
-			if self.filter(aConstraint):
-				selectedConstraint.append(aConstraint)
-		return selectedConstraint
+    def filter(self, aConstraint):
+        """Filter the constraints to be drawn (there should be a better way to implement it)
+        """
+        if aConstraint.getRange() in self.parameters['range']:
+            inList = 0
+            for aNumber in aConstraint.getResisNumber():
+                if aNumber in self.parameters['residuesList']:
+                    inList = 1
+                    break
+            if inList:
+                aConstraint.pdbName = self.parameters['pdb']
+                if aConstraint.isValid():
+                    if aConstraint.setDistance(self.parameters['method']):
+                        aConstraint.setViolationState(self.parameters['cutOff'])
+                        if aConstraint.isViolated() in self.parameters['violationState']:
+                            return 1
+                        else:
+                            return 0
+                    else:
+                        stderr.write("Distance issue with constraint :\n" + aConstraint.definition + "\n")
+                        return 0
+                else:
+                    stderr.write("Selection issue with constraint :\n" + aConstraint.definition + "\n")
+                    return 0
+            else:
+                return 0
+        else:
+            return 0
+
+    def filterConstraints(self, constraintList):
+        selectedConstraint = []
+        for aConstraint in constraintList:
+            if self.filter(aConstraint):
+                selectedConstraint.append(aConstraint)
+        return selectedConstraint
