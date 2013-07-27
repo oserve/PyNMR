@@ -44,7 +44,7 @@ from ConstraintsDrawing import ConstraintDrawer
 from MolecularViewerInterface import select, zoom, delete
 
 class NMRCore(object):
-    
+
     def __init__(self):
         self.ManagersList = {}
         self.filter = ""
@@ -56,7 +56,7 @@ class NMRCore(object):
         managerName = basename(filename)
         loader = ConstraintLoader(filename, managerName, consDef)        
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
-    
+
     def showSticks(self, managerName, pdb, colors, radius):
         self.ManagersList[managerName].setPDB(pdb)
         theFilter = self.filter
@@ -69,15 +69,15 @@ class NMRCore(object):
                 for constraint in filteredConstraints:
                     if constraint not in self.displayedConstraints:
                         selectedConstraints.append(constraint)
-                self.displayedConstraints=self.displayedConstraints+selectedConstraints
+                self.displayedConstraints = self.displayedConstraints+selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 stdout.write(str(results['DrawnConstraints']) + " constraints drawn on a total of " + str(len(self.ManagersList[managerName])) + "\n") 
                 zoomSelection = self.ManagersList[managerName].pdb + " &"
                 if len(results['Residueslist']):
                     for residue in results['Residueslist']:
-                        zoomSelection=zoomSelection + " resi " + residue + " +"
+                        zoomSelection = zoomSelection + " resi " + residue + " +"
                     zoom(zoomSelection.rstrip(' +'))
-                    select('involRes',zoomSelection.rstrip(' +'))
+                    select('involRes', zoomSelection.rstrip(' +'))
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
 
@@ -101,7 +101,7 @@ class NMRCore(object):
                         zoomSelection=zoomSelection + " resi " + residue + " +"
                     zoom(zoomSelection.rstrip(' +'))
                     select('involRes', zoomSelection.rstrip(' +'))
-    
+
     def commandsInterpretation(self, pdb, managerName, residuesList, dist_range, violationState, violCutoff, method):
         """Setup Filter for constraints
         """
@@ -112,25 +112,25 @@ class NMRCore(object):
             for resi_range in residuesList.split("+"):
                 aRange = resi_range.split("-")
                 if len(aRange) == 2:
-                    for i in range(int(aRange[0]),int(aRange[1])+1):
-                        resList = resList+[str(i)]
+                    for residueNumber in range(int(aRange[0]), int(aRange[1]) + 1):
+                        resList = resList + [str(residueNumber)]
                 elif len(aRange) == 1:
                     resList = resList + [str(aRange[0])]
                 else:
-                    stderr.write("Residues set definition error : " + residuesList+"\n")
-        if type(dist_range) <> type([]):
+                    stderr.write("Residues set definition error : " + residuesList + "\n")
+        if type(dist_range) != type([]):
             if dist_range == 'all':
                 dist_range = ['intra', 'sequential', 'medium', 'long']
             else:
                 dist_range = [dist_range]
 
-        if type(violationState)<>type([]):
+        if type(violationState) != type([]):
             if violationState == 'all':
                 violationState = ['violated', 'not violated']
             else:
                 violationState = [violationState]
-        self.filter=ConstraintFilter(pdb, resList, dist_range, violationState, violCutoff, method)
-    
+        self.filter = ConstraintFilter(pdb, resList, dist_range, violationState, violCutoff, method)
+
     def cleanScreen(self, managerName):
         self.displayedConstraints = []
         delete(managerName + "*")

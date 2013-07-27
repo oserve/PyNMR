@@ -31,13 +31,13 @@
 
 import re
 from MolecularViewerInterface import select
-lastDigit=re.compile('\d(\b|\Z)')#look for last digit of atom type (used in MyAtom)
+lastDigit = re.compile('\d(\b|\Z)')  #look for last digit of atom type (used in MyAtom)
 
 class AtomSet(object):
     """Base Class contains residu number
         and the atom type of the atom
     """
-    
+
     def __init__(self, pdbName, resi_number, resi_type):
         """Initialisation sets the residu number
             and the atom type
@@ -45,7 +45,7 @@ class AtomSet(object):
         self.pdb = pdbName
         self.number = resi_number
         self.atType = resi_type
-    
+
     def __str__(self):
         return self.getID()
 
@@ -61,16 +61,16 @@ class AtomSet(object):
             should be more independent from pymol, maybe should not be here at all ...
         """
         selection = self.pdb + " & i. " + str(self.number) + " & n. " + str(self.atType)
-        if not select("",selection):# often due to different format (e.g. : HB2 -> 2HB)
+        if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
             if self.atType == 'HN':
                 self.atType = 'H'
             elif self.atType == 'H':
                 self.atType = 'HN'
             elif lastDigit.search(self.atType):
                 digit = lastDigit.search(self.atType).group()[0]
-                self.atType = digit + lastDigit.sub('',self.atType)# put final digit at the beginning)
+                self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning)
             self.atType = '*' + self.atType
             selection = self.pdb + " & i. " + str(self.number) + " & n. " + str(self.atType)
-            if not select("",selection):
+            if not select("", selection):
                 selection = "noID"
         return selection

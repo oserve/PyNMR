@@ -75,7 +75,7 @@ class NOE(Constraint):
     def getID(self):
         """Returns name of constraints : Name_(constraint number)_(pdbName)_(violation_state)
         """
-        if self.violated <> '':
+        if self.violated != '':
             if self.violated == 'violated':
                 return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
             else:

@@ -38,14 +38,14 @@ class ConstraintSetManager(object):
         self.residuesList = []
         self.pdb = ''
         self.name = managerName
-        
+
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
-    
+
     def __len__(self):
         return len(self.constraints)
-    
-    __repr__=__str__
+
+    __repr__ = __str__
 
     #Constraints management methods
 
@@ -60,11 +60,11 @@ class ConstraintSetManager(object):
     def associateToPDB(self):
         """Invokes associatePDBAtoms function on all constraints
         """
-        result=0
-        if self.pdb <> '':
+        result = 0
+        if self.pdb != '':
             if len(self.constraints):
                 for constraint in self.constraints:
-                    constraint.associatePDBAtoms()
+                    constraint.associatePDBAtoms(self.pdb)
                     result = 1
         return result
 

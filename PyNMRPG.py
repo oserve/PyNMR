@@ -192,7 +192,7 @@ class NOE(Constraint):
     def getID(self):
         """Returns name of constraints : Name_(constraint number)_(pdbName)_(violation_state)
         """
-        if self.violated <> '':
+        if self.violated != '':
             if self.violated == 'violated':
                 return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
             else:
@@ -240,7 +240,7 @@ class ConstraintSetManager(object):
         """Invokes associatePDBAtoms function on all constraints
         """
         result=0
-        if self.pdb <> '':
+        if self.pdb != '':
             if len(self.constraints):
                 for constraint in self.constraints:
                     constraint.associatePDBAtoms()
@@ -295,7 +295,7 @@ def cns(cnsFile, managerName):
         if line.find("ASSI")>-1:
             line=line.replace("GN", "")
             validCNSConstraints.append(line.replace("ASSI",""))
-        elif RegResi.search(line)<>None:
+        elif RegResi.search(line)!=None:
             validCNSConstraints[-1]=validCNSConstraints[-1]+line
 
     constraint_number=1
@@ -648,13 +648,13 @@ class NMRCore(object):
                     resList=resList+[str(aRange)]
                 else:
                     stderr.write("Residues set definition error : "+residuesList+"\n")
-        if type(dist_range)<>type([]):
+        if type(dist_range)!=type([]):
             if dist_range=='all':
                 dist_range=['intra', 'sequential', 'medium', 'long']
             else:
                 dist_range=[dist_range]
 
-        if type(violationState)<>type([]):
+        if type(violationState)!=type([]):
             if violationState=='all':
                 violationState=['violated', 'not violated']
             else:
