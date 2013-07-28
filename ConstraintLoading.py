@@ -127,11 +127,14 @@ class ConstraintLoader(object):
         for aConstLine in self.inFileTab:
             if len(aConstLine) > 1:
                 if aConstLine.find('#') == 0:
-                    stderr.write(aConstLine+" skipped. Commented out.\n")
+                    stderr.write(aConstLine + " skipped. Commented out.\n")
                 else:
-                    cons_tab=aConstLine.split()
+                    cons_tab = aConstLine.split()
+                    aConstraint = NOE()
                     try:  #For errors not filtered previously
-                        aConstraint = NOE.initWith(counter, cons_tab[0], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[2])), cons_tab[3], self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group(), self.AtTypeReg.sub('', self.convertTypeDyana(cons_tab[5])), aConstLine)
+                        parsed = [{'resid': int(cons_tab[0]), 'name': self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group()},
+                                  {'resid': int(cons_tab[3]), 'name': self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group()}]
+                        aConstraint.addAtomGroups(parsed)
                         aConstraint.setConstraintValues(str(1.8 + (float(cons_tab[6])-1.8)/2), '1.8', cons_tab[6])
                         aManager.addConstraint(aConstraint)
                         counter = counter + 1

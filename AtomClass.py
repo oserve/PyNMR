@@ -68,7 +68,7 @@ class AtomSet(object):
                 self.atType = 'HN'
             elif lastDigit.search(self.atType):
                 digit = lastDigit.search(self.atType).group()[0]
-                self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning)
+                self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning
             self.atType = '*' + self.atType
             selection = self.pdb + " & i. " + str(self.number) + " & n. " + str(self.atType)
             if not select("", selection):

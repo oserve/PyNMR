@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 from Constraint import Constraint
 
+
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
     """

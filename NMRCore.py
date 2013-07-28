@@ -34,9 +34,9 @@
 #and show violated constraints according to a cutOff
 #with different color (White for not violated, blue for lower limit violation, red for upper limit violation for NOEs)
 #Required modules
-from os.path import basename, exists
+from os.path import basename
 from sys import stderr, stdout
-#Custom Class
+#Custom Classes
 from NOE import NOE
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
@@ -54,7 +54,7 @@ class NMRCore(object):
         """load NMR distance constraints, call for the correct file format (CNS/CYANA),
         """
         managerName = basename(filename)
-        loader = ConstraintLoader(filename, managerName, consDef)        
+        loader = ConstraintLoader(filename, managerName, consDef)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
     def showSticks(self, managerName, pdb, colors, radius):
@@ -71,7 +71,8 @@ class NMRCore(object):
                         selectedConstraints.append(constraint)
                 self.displayedConstraints = self.displayedConstraints+selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
-                stdout.write(str(results['DrawnConstraints']) + " constraints drawn on a total of " + str(len(self.ManagersList[managerName])) + "\n") 
+                stdout.write(str(results['DrawnConstraints']) + " constraints drawn on a total of " +
+                             str(len(self.ManagersList[managerName])) + "\n") 
                 zoomSelection = self.ManagersList[managerName].pdb + " &"
                 if len(results['Residueslist']):
                     for residue in results['Residueslist']:
@@ -118,13 +119,13 @@ class NMRCore(object):
                     resList = resList + [str(aRange[0])]
                 else:
                     stderr.write("Residues set definition error : " + residuesList + "\n")
-        if type(dist_range) != type([]):
+        if not isinstance(dist_range, list):
             if dist_range == 'all':
                 dist_range = ['intra', 'sequential', 'medium', 'long']
             else:
                 dist_range = [dist_range]
 
-        if type(violationState) != type([]):
+        if not isinstance(violationState, list):
             if violationState == 'all':
                 violationState = ['violated', 'not violated']
             else:
