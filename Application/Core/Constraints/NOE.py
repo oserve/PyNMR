@@ -31,7 +31,7 @@
 
 from sys import stderr
 from Constraint import Constraint
-from Geom import centerOfMass, calcDistance
+from ...Core.Geom import centerOfMass, calcDistance
 
 
 class NOE(Constraint):

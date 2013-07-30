@@ -31,7 +31,10 @@
 import Tkinter as Tk
 import Pmw
 
-from Panels import ConstraintSelectionPanel, FileSelectionPanel, NOEDrawingPanel, PreferencesPanel, ConstraintTextPanel
+from Panels.Preferences import PreferencesPanel
+from Panels.FileSelection import FileSelectionPanel
+from Panels.ConstraintSelection import ConstraintSelectionPanel
+from Panels.NOEDrawing import NOEDrawingPanel
 
 class NMRGUI(Tk.Tk):
     def __init__ (self):
@@ -58,11 +61,6 @@ class NMRGUI(Tk.Tk):
 
         self.preferencesPanel = PreferencesPanel(self.preferencesPage)
         self.panelsList.append(self.preferencesPanel)
-
-        self.editionPage = self.noteBook.add("Edition")
-
-        self.constraintText = ConstraintTextPanel(self.editionPage)
-        self.constraintText.grid(row=0, column=0)
 
         self.constraintFilesManagement.grid(row=0, column=0)
         self.constraintSelectionManagement.grid(row=1, column=0)

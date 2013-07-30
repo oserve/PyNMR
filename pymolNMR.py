@@ -37,8 +37,8 @@ INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
 WORKING_DIR = getcwd()
 chdir(INSTALL_DIR)
 
-from NMRCore import NMRCore
-from NMRApplication import NMRApplication
+from Application.Core.NMRCore import NMRCore
+from Application.NMRApplication import NMRApplication
 
 chdir(WORKING_DIR)
 

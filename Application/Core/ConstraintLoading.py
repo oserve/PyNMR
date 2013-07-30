@@ -33,8 +33,9 @@
 from sys import stderr, stdout
 import re
 
-from NOE import NOE
+from .Constraints.NOE import NOE
 from ConstraintManager import ConstraintSetManager
+
 
 class ConstraintLoader(object):
     """Classes used to lad constraints from
@@ -46,6 +47,7 @@ class ConstraintLoader(object):
         self.managerName = managerName
         self.constraintDefinition = constraintDefinition
         self.inFileTab = []
+
         #Useful RegEx definitions
         self.ParReg = re.compile('[()]')  # used in cns constraints loading. Suppression of ()
         self.SParReg = re.compile("\(.*\)")  #used in cns constraint loading.

@@ -28,7 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Constraint import Constraint
+from .Constraints.Constraint import Constraint
 
 
 class ConstraintSetManager(object):

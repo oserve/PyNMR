@@ -1,5 +1,5 @@
-from NMRGUI import NMRGUI
-from MolecularViewerInterface import get_names
+from GUI.NMRGUI import NMRGUI
+from Core.MolecularViewerInterface import get_names
 
 
 class NMRApplication(object):

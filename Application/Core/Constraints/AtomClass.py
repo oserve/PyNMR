@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 
 import re
-from MolecularViewerInterface import select
+from ...Core.MolecularViewerInterface import select
 lastDigit = re.compile('\d(\b|\Z)')  #look for last digit of atom type (used in MyAtom)
 
 class AtomSet(object):

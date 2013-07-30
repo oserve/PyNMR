@@ -29,7 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from AtomClass import AtomSet
-from Geom import *
+#from Core.Geom import *
 import re
 
 

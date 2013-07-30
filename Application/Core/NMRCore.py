@@ -37,11 +37,12 @@
 from os.path import basename
 from sys import stderr, stdout
 #Custom Classes
-from NOE import NOE
+from Constraints.NOE import NOE
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 from MolecularViewerInterface import select, zoom, delete
+
 
 class NMRCore(object):
 
