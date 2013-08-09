@@ -8,7 +8,7 @@ class NMRApplication(object):
         self.log = ""
         self.defaults = {"radius": 0.03, "cutOff": 0.3, "colors": {'notViolated': [1, 1, 1, 1, 1, 1],
                          'tooFar': [1, 0, 0, 1, 0, 0], 'tooClose': [0, 0, 1, 0, 0, 1]},
-                         'gradient': "blue_white_red"}
+                         'gradient': "blue_white_red", "method": "sum6"}
         self.gradientColorList = ["blue_green", "blue_magenta", "blue_red", "blue_white_green", "blue_white_magenta",
                                   "blue_white_red", "blue_white_yellow", "blue_yellow", "cbmr", "cyan_magenta",
                                   "cyan_red", "cyan_white_magenta", "cyan_white_red", "cyan_white_yellow", "cyan_yellow",
@@ -35,6 +35,7 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
+        self.NMRInterface.preferencesPanel.methodSelection.setvalue(self.defaults["method"])
         self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.setlist(self.getModelsNames())
         self.NMRInterface.constraintFilesManagement.updateFilelist()
 

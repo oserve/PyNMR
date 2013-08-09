@@ -41,7 +41,7 @@ from Constraints.NOE import NOE
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
-from MolecularViewerInterface import select, zoom, delete
+from MolecularViewerInterface import select, zoom, delete, createSelection
 
 
 class NMRCore(object):
@@ -73,13 +73,11 @@ class NMRCore(object):
                 self.displayedConstraints = self.displayedConstraints+selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 stdout.write(str(results['DrawnConstraints']) + " constraints drawn on a total of " +
-                             str(len(self.ManagersList[managerName])) + "\n") 
-                zoomSelection = self.ManagersList[managerName].pdb + " &"
-                if len(results['Residueslist']):
-                    for residue in results['Residueslist']:
-                        zoomSelection = zoomSelection + " resi " + residue + " +"
-                    zoom(zoomSelection.rstrip(' +'))
-                    select('involRes', zoomSelection.rstrip(' +'))
+                             str(len(self.ManagersList[managerName])) + "\n")
+                selection = createSelection([self.ManagersList[managerName].pdb] + results['Residueslist'])
+                select('involRes', selection)
+                zoom(selection)
+
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
 
@@ -99,10 +97,9 @@ class NMRCore(object):
                 if len(densityList):
                     stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
                     stdout.write(str(len(densityList)) + " residues involved.\n")
-                    for residue in densityList.keys():
-                        zoomSelection=zoomSelection + " resi " + residue + " +"
-                    zoom(zoomSelection.rstrip(' +'))
-                    select('involRes', zoomSelection.rstrip(' +'))
+                    selection = createSelection([self.ManagersList[managerName].pdb] + densityList.keys())
+                    zoom(selection)
+                    select('involRes', selection)
 
     def commandsInterpretation(self, pdb, managerName, residuesList, dist_range, violationState, violCutoff, method):
         """Setup Filter for constraints

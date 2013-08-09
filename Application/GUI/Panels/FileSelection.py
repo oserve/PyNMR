@@ -29,12 +29,9 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from sys import stdout
-from os import getcwd, chdir, path
-import Tkinter as Tk
+from os import path
 import Pmw
 import tkFileDialog
-import tkColorChooser
 from Panel import Panel
 
 class FileSelectionPanel(Panel):

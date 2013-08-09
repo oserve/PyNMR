@@ -29,12 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from sys import stdout
-from os import getcwd, chdir, path
-import Tkinter as Tk
 import Pmw
-import tkFileDialog
-import tkColorChooser
 
 from Panel import Panel
 
@@ -43,8 +38,8 @@ class NOEDrawingPanel(Panel):
     def __init__(self, master):
         Panel.__init__(self, master, frameText="NOE Representation")
         self.widgetCreation()
-        self.mainApp = ""#Must be set at run time
-        self.NMRCommands = ""#Must be set by application at run time
+        self.mainApp = ""  #Must be set at run time
+        self.NMRCommands = ""  #Must be set by application at run time
 
     def widgetCreation(self):
         self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='horizontal')

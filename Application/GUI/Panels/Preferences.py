@@ -29,11 +29,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from sys import stdout
-from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
-import tkFileDialog
 import tkColorChooser
 
 from Panel import Panel
@@ -97,10 +94,10 @@ class DensityPreferencesPanel(Panel):
 
     def widgetCreation(self):
         Tk.Label(self, text='Gradient :').grid(row=0, column=0)
-        x = Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+        x = Pmw.EntryField()  #Do not remove this line if combobox is the first Pmw combobox, Pmw bug
         self.gradientSelection = Pmw.ComboBox(self)
         self.gradientSelection.grid(row=0, column=1)
-    
+
     def getInfo(self):
         return {"gradient": self.gradientSelection.component("entryfield").getvalue()}
 
@@ -117,7 +114,6 @@ class PreferencesPanel(Panel):
         self.methodSelection.add("sum6", text="Sum of r^6")
         self.methodSelection.add("average6", text="Average of r^6")
         self.methodSelection.grid(row=0, column=1)
-        self.methodSelection.setvalue("sum6")
 
         self.sticksPanel = SticksPreferencesPanel(self)
         self.sticksPanel.grid(row=1, column=0, columnspan=2)
@@ -128,18 +124,7 @@ class PreferencesPanel(Panel):
         self.panelsList.append(self.densityPanel)
 
     def getInfo(self):
-        infos={"method": self.methodSelection.getvalue()}
+        infos = {"method": self.methodSelection.getvalue()}
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
-
-
-class ConstraintTextPanel(Panel):
-    def __init__(self, master):
-        Panel.__init__(self, master)
-        self.widgetCreation()
-
-    def widgetCreation(self):
-        self.constraintText = Tk.Text(self)
-
-        self.constraintText.grid(row=1, column=0, columnspan=2)

@@ -29,12 +29,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from sys import stdout
-from os import getcwd, chdir, path
 import Tkinter as Tk
 import Pmw
-import tkFileDialog
-import tkColorChooser
 
 from Panel import Panel
 
@@ -60,7 +56,7 @@ class ConstraintSelectionPanel(Panel):
         self.structureManagement = StructureSelectionPanel(self)
         self.structureManagement.grid(row=1, column=0, columnspan=2)
         self.panelsList.append(self.structureManagement)
-        
+
     def getInfo(self):
         infos = {}
         for panel in self.panelsList:
