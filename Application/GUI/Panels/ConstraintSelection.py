@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 
 import Tkinter as Tk
+import ttk
 import Pmw
 
 from Panel import Panel
@@ -142,8 +143,9 @@ class StructureSelectionPanel(Panel):
 
     def widgetCreation(self):
         Tk.Label(self, text="Structure :").grid(row=0, column=0)
-        x = Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
-        self.comboPDB = Pmw.ComboBox(self)
+        #x = Pmw.EntryField()#Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+#        self.comboPDB = Pmw.ComboBox(self)
+        self.comboPDB = ttk.Combobox(self)
         self.comboPDB.grid(row=0, column=1)
         self.comboPDB.bind('<Enter>', self.updatePdbList)
 

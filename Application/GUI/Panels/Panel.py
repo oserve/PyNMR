@@ -35,7 +35,7 @@ import Tkinter as Tk
 
 class Panel(Tk.LabelFrame):
     """Abstract Class used for definition of the different
-    section of the GUI, mostly a Tk.LableFrame
+    section of the GUI, mostly a Tk.LabelFrame
     """
     def __init__(self, master, frameText = ""):
         Tk.LabelFrame.__init__(self, master, text=frameText)

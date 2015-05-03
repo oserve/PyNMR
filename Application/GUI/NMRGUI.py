@@ -29,7 +29,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import Tkinter as Tk
-import Pmw
+import ttk
+#import Pmw
 
 from Panels.Preferences import PreferencesPanel
 from Panels.FileSelection import FileSelectionPanel
@@ -43,37 +44,38 @@ class NMRGUI(Tk.Tk):
         self.panelsList = []
 
     def createPanels(self):
-        #Main Frames (not IBM)
-
-        self.noteBook = Pmw.NoteBook(self)
-        self.mainPage = self.noteBook.add("Main")
-
-        self.constraintSelectionManagement = ConstraintSelectionPanel(self.mainPage)
+        #Main Frames (not IBM ;-)
+        self.mainFrame = Tk.Frame(self).pack()
+        self.noteBook = ttk.Notebook(self.mainFrame)
+        # self.mainPage = self.noteBook.add("Main")
+        self.noteBook.grid(row=0, column=0)
+        self.constraintSelectionManagement = ConstraintSelectionPanel(self.noteBook)
+        self.noteBook.add(self.constraintSelectionManagement, text = "Selection")
         self.panelsList.append(self.constraintSelectionManagement)
 
-        self.constraintFilesManagement = FileSelectionPanel(self.mainPage)
-        self.panelsList.append(self.constraintFilesManagement)
-
-        self.NOEDrawingManagement = NOEDrawingPanel(self.mainPage)
+        self.constraintFilesManagement = FileSelectionPanel(self.noteBook)
+        self.panelsList.append(self.constraintFilesManagement,)
+        self.noteBook.add(self.constraintFilesManagement, text = "Management") 
+        self.NOEDrawingManagement = NOEDrawingPanel(self.noteBook)
         self.panelsList.append(self.NOEDrawingManagement)
+        self.noteBook.add(self.NOEDrawingManagement, text = "Drawings")
+        # self.preferencesPage = self.noteBook.add("Preferences")
 
-        self.preferencesPage = self.noteBook.add("Preferences")
-
-        self.preferencesPanel = PreferencesPanel(self.preferencesPage)
+        self.preferencesPanel = PreferencesPanel(self.noteBook)
         self.panelsList.append(self.preferencesPanel)
-
-        self.constraintFilesManagement.grid(row=0, column=0)
-        self.constraintSelectionManagement.grid(row=1, column=0)
-        self.NOEDrawingManagement.grid(row=2, column=0)
-        self.preferencesPanel.grid(row=0, column=0)
-        self.noteBook.setnaturalsize()
+        self.noteBook.add(self.preferencesPanel, text = "Preferences")
+        
+        # self.constraintFilesManagement.grid(row=0, column=0)
+        # self.constraintSelectionManagement.grid(row=1, column=0)
+        # self.NOEDrawingManagement.grid(row=2, column=0)
+        # self.preferencesPanel.grid(row=0, column=0)
+        # self.noteBook.setnaturalsize()
 
     def startGUI(self):
         self.createPanels()
-        self.noteBook.grid(row=0, column=0)
-        self.setDelegation()
+        self.setDelegations()
 
-    def setDelegation(self):
+    def setDelegations(self):
         self.NOEDrawingManagement.mainApp = self
 
     def getInfo(self):

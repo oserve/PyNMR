@@ -30,13 +30,13 @@ class NMRApplication(object):
         self.setDefaults()
 
     def setDefaults(self):
-        self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.setlist(self.gradientColorList)
-        self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.component("entryfield").setvalue(self.defaults["gradient"])
+        self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.values = self.gradientColorList
+        self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.set(self.defaults["gradient"])
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
-        self.NMRInterface.preferencesPanel.methodSelection.setvalue(self.defaults["method"])
-        self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.setlist(self.getModelsNames())
+        #self.NMRInterface.preferencesPanel.methodSelection.setvalue(self.defaults["method"])
+        self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.values = self.getModelsNames()
         self.NMRInterface.constraintFilesManagement.updateFilelist()
 
     def GUIBindings(self):

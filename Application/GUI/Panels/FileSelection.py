@@ -30,9 +30,11 @@
 # ----------------------------------------------------------------------
 
 from os import path
-import Pmw
+#import Pmw
 import tkFileDialog
 from Panel import Panel
+import Tkinter as Tk
+from ScrolledList import ScrolledList
 
 class FileSelectionPanel(Panel):
     """This panel allows to import constraint file
@@ -45,18 +47,30 @@ class FileSelectionPanel(Panel):
         self.NMRCommands = ""  #Must be set by application at run time
 
     def widgetCreation(self):
-        self.constraintFilesButtonBox = Pmw.ButtonBox(self, labelpos='nw', orient='vertical')
-        self.constraintFilesButtonBox.add("Load Constraints", command=self.loadFile)
-        self.constraintFilesButtonBox.add("Remove Constraints", command=self.removeFile)
-        self.constraintFilesButtonBox.grid(row=0, column=0)
-        self.constraintsList = Pmw.ScrolledListBox(self)
-        self.constraintsList.component("listbox").exportselection = 0
+#         self.constraintFilesButtonBox = Pmw.ButtonBox(self, labelpos='nw', orient='vertical')
+#         self.constraintFilesButtonBox.add("Load Constraints", command=self.loadFile)
+#         self.constraintFilesButtonBox.add("Remove Constraints", command=self.removeFile)
+#         self.constraintFilesButtonBox.grid(row=0, column=0)
+# #        self.constraintsList = Pmw.ScrolledListBox(self)
+        self.constraintsList = ScrolledList(self)
+#         self.constraintsList = Tk.Listbox(self)
+#         self.constraintsScroll = Tk.Scrollbar(self)
+#         self.constraintsScroll.config(command = self.constraintsList.yview)
+#         self.constraintsList.config(yscrollcommand = self.constraintsScroll.set)
+        self.constraintsList.listbox.exportselection = 0
         self.constraintsList.grid(row=0, column=1)
-        self.constraintDefinitions = Pmw.RadioSelect(self, label_text="Select constraints definition type :",labelpos='nw', buttontype='radiobutton')
-        self.constraintDefinitions.add("CNS/XPLOR")
-        self.constraintDefinitions.add("CYANA/DYANA")
-        self.constraintDefinitions.setvalue("CNS/XPLOR")
-        self.constraintDefinitions.grid(row=1, column=0, columnspan=2)
+        self.constraintsDefType = 0
+ #       self.constraintsDefType.set(1)
+        constraintsDefTypes = [("CNS/XPLOR", 1), ("CYANA/DYANA",2)]
+        position = 1
+        for constraintType, val in constraintsDefTypes:
+            Tk.Radiobutton(self, text = constraintType, variable = self.constraintsDefType, value = val).grid(row=position, column=0, columnspan=2)
+            position = position +1
+        # self.constraintDefinitions = Pmw.RadioSelect(self, label_text="Select constraints definition type :",labelpos='nw', buttontype='radiobutton')
+        # self.constraintDefinitions.add("CNS/XPLOR")
+        # self.constraintDefinitions.add("CYANA/DYANA")
+        # self.constraintDefinitions.setvalue("CNS/XPLOR")
+        #self.constraintDefinitions.grid(row=1, column=0, columnspan=2)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -77,7 +91,7 @@ class FileSelectionPanel(Panel):
     def updateFilelist(self):
         """
         """
-        self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+        self.constraintsList.values = self.NMRCommands.ManagersList.keys()
 
     def removeFile(self):
         toRemove = self.constraintsList.getvalue()

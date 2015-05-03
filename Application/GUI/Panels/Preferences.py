@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 
 import Tkinter as Tk
+import ttk
 import Pmw
 import tkColorChooser
 
@@ -94,8 +95,8 @@ class DensityPreferencesPanel(Panel):
 
     def widgetCreation(self):
         Tk.Label(self, text='Gradient :').grid(row=0, column=0)
-        x = Pmw.EntryField()  #Do not remove this line if combobox is the first Pmw combobox, Pmw bug
-        self.gradientSelection = Pmw.ComboBox(self)
+        #x = Pmw.EntryField()  #Do not remove this line if combobox is the first Pmw combobox, Pmw bug
+        self.gradientSelection = ttk.Combobox(self)
         self.gradientSelection.grid(row=0, column=1)
 
     def getInfo(self):
@@ -109,11 +110,17 @@ class PreferencesPanel(Panel):
 
     def widgetCreation(self):
         Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0)
+        self.method = 0
+        methodSelectionTypes = [("Sum of r^6", 1), ("Average of r^6",2)]
+        position = 1
+        for methodSelection, val in methodSelectionTypes:
+            Tk.Radiobutton(self, text = methodSelection, variable = self.method, value = val).grid(row=position, column=1)
+            position = position +1
 
-        self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
-        self.methodSelection.add("sum6", text="Sum of r^6")
-        self.methodSelection.add("average6", text="Average of r^6")
-        self.methodSelection.grid(row=0, column=1)
+        # self.methodSelection = Pmw.RadioSelect(self, buttontype='radiobutton', orient='vertical')
+        # self.methodSelection.add("sum6", text="Sum of r^6")
+        # self.methodSelection.add("average6", text="Average of r^6")
+        # self.methodSelection.grid(row=0, column=1)
 
         self.sticksPanel = SticksPreferencesPanel(self)
         self.sticksPanel.grid(row=1, column=0, columnspan=2)
