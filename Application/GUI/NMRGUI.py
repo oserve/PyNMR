@@ -37,16 +37,18 @@ from Panels.FileSelection import FileSelectionPanel
 from Panels.ConstraintSelection import ConstraintSelectionPanel
 from Panels.NOEDrawing import NOEDrawingPanel
 
-class NMRGUI(Tk.Tk):
-    def __init__ (self):
-        Tk.Tk.__init__(self)
-        self.title('PymolNMR')
+class NMRGUI:
+    def __init__(self, root):
+        #Tk.Tk.__init__(self)
+        self.root = Tk.Toplevel()
+        self.root.title = "PyNMR"
+        #self.title('PymolNMR')
         self.panelsList = []
 
     def createPanels(self):
         #Main Frames (not IBM ;-)
-        self.mainFrame = Tk.Frame(self).pack()
-        self.noteBook = ttk.Notebook(self.mainFrame)
+        #self.mainFrame = Tk.Frame(self).grid()
+        self.noteBook = ttk.Notebook(self.root)
         # self.mainPage = self.noteBook.add("Main")
         self.noteBook.grid(row=0, column=0)
         self.constraintSelectionManagement = ConstraintSelectionPanel(self.noteBook)

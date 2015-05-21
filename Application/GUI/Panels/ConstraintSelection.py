@@ -99,7 +99,7 @@ class RangeSelectionPanel(Panel):
                 self.RangesCB["all"].deselect()
                 break
     def getInfo(self):
-        ranges=[]
+        ranges = []
         for consRange in ['intra', 'sequential', 'medium', 'long']:
             if self.RangesVars[consRange].get()==1:
                 ranges.append(consRange)
@@ -155,7 +155,7 @@ class StructureSelectionPanel(Panel):
         self.residueRanges.set('all')
 
     def getInfo(self):
-        return {"pdb": self.comboPDB.component("entryfield").getvalue(), "ranges": self.residueRanges.get()}
+        return {"pdb": self.comboPDB.value, "ranges": self.residueRanges.get()}
 
     def updatePdbList(self, event):
-        self.comboPDB.setlist(self.mainApp.getModelsNames())
+        self.comboPDB.values = self.mainApp.getModelsNames()

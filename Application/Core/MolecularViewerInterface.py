@@ -93,6 +93,16 @@ except ImportError:
     def delete(selectionName):
         pass
 
+    def createSelection(Items):
+        if len(Items) > 2:
+            selection = Items.pop(0) + " &"
+            for residue in Items:
+                selection = selection + " resi " + residue + " +"
+        return selection.rstrip("+")
+
+    def get_names():
+        return []
+
 def zeroBFactors(pdb):
         alterBFactors(pdb, 0)
 

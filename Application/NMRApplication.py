@@ -3,7 +3,8 @@ from Core.MolecularViewerInterface import get_names
 
 
 class NMRApplication(object):
-    def __init__(self, Core):
+    def __init__(self, Core, app="NoGUI"):
+        print "Starting PyNMR\n"
         self.NMRCommands = Core
         self.log = ""
         self.defaults = {"radius": 0.03, "cutOff": 0.3, "colors": {'notViolated': [1, 1, 1, 1, 1, 1],
@@ -22,9 +23,15 @@ class NMRApplication(object):
                                   "yellow_blue", "yellow_cyan", "yellow_cyan_white", "yellow_green", "yellow_magenta",
                                   "yellow_red", "yellow_white_blue", "yellow_white_green", "yellow_white_magenta",
                                   "yellow_white_red", "yrmbcg"]
+        if isinstance(app, str):
+            print "Starting CLI"
+        else:
+            print "Starting PyNMR GUI ..."
+            self.parent = app.root
+            self.startGUI()
 
     def startGUI(self):
-        self.NMRInterface = NMRGUI()
+        self.NMRInterface = NMRGUI(self.parent)
         self.NMRInterface.startGUI()
         self.GUIBindings()
         self.setDefaults()

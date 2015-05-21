@@ -47,6 +47,18 @@ Core = NMRCore()
 
 pyNMR = NMRApplication(Core)
 
+def __init__(self):
+    """
+    Init PyMOL, by adding APBSTools to the GUI under Plugins
+    
+    Creates the APBS widget/notebook.  Once the event is received,
+    we create a new instance of APBSTools2 which is a Pmw, which upon
+    creation shows itself.
+    """
+    self.menuBar.addmenuitem('Plugin', 'command',
+                             'PyNMR',
+                             label='PyNMR...',
+                             command = lambda s=self: NMRApplication(Core, s))
 
 def showNOE(pdb='', managerName="", residuesList='all', dist_range='all', violationState='all', violCutoff=pyNMR.defaults["cutOff"], method="sum6", radius=pyNMR.defaults["radius"], colors=pyNMR.defaults["colors"]):
     if managerName == '' and len(Core.ManagersList) == 0:
@@ -96,7 +108,7 @@ def cleanScreen(filename):
 
 if __name__ == "__main__":
     pyNMR.startGUI()
-    pyNMR.NMRInterface.mainloop()
+    #pyNMR.NMRInterface.mainloop()
 
 try:
     from pymol.cmd import extend
