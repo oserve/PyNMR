@@ -36,7 +36,7 @@ class ScrolledList(Frame):
     """
 
     def __init__ ( self, master=None, width=DEFAULT_WIDTH,
-        height=DEFAULT_HEIGHT, vscroll=1, hscroll=0, callback=None ):
+        height=DEFAULT_HEIGHT, vscroll=1, hscroll=0, callback=None, listvariable=None ):
         """Constructor for ScrolledList.
         """
         #-- 1 --
@@ -50,9 +50,9 @@ class ScrolledList(Frame):
         self.callback  =  callback
         #-- 3 --
         # [ self  :=  self with all widgets created and registered ]
-        self.__createWidgets()
+        self.__createWidgets(listvariable)
 
-    def __createWidgets ( self ):
+    def __createWidgets ( self, alistvariable ):
         """Lay out internal widgets.
         """
         #-- 1 --
@@ -76,7 +76,7 @@ class ScrolledList(Frame):
         #   self.listbox  :=  that widget ]
         self.listbox  =  Listbox ( self, relief=SUNKEN,
             width=self.width, height=self.height,
-            borderwidth=2 )
+            borderwidth=2, listvariable=alistvariable )
         self.listbox.grid ( row=0, column=0 )
         #-- 4 --
         # [ if self.vscroll ->
