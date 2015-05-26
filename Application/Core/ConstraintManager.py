@@ -1,16 +1,16 @@
 # Copyright Notice
 # ================
-# 
+#
 # The PyMOL Plugin source code in this file is copyrighted, but you can
 # freely use and copy it as long as you don't change or remove any of
 # the copyright notices.
-# 
+#
 # ----------------------------------------------------------------------
-#               This PyMOL Plugin is Copyright (C) 2013 by 
+#               This PyMOL Plugin is Copyright (C) 2013 by
 #                 olivier serve <olivier dot serve at gmail dot com>
-# 
+#
 #                        All Rights Reserved
-# 
+#
 # Permission to use, copy, modify, distribute, and distribute modified
 # versions of this software and its documentation for any purpose and
 # without fee is hereby granted, provided that the above copyright
@@ -19,7 +19,7 @@
 # the name(s) of the author(s) not be used in advertising or publicity
 # pertaining to distribution of the software without specific, written
 # prior permission.
-# 
+#
 # THE AUTHOR(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
 # INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN
 # NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
@@ -28,9 +28,6 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from .Constraints.Constraint import Constraint
-
-
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
     """
@@ -51,7 +48,8 @@ class ConstraintSetManager(object):
     #Constraints management methods
 
     def setPDB(self, pdb):
-        """Sets the name of the structure (usually a PDB File) on which the distance should be calculated
+        """Sets the name of the structure (usually a PDB File) on which the
+        distance should be calculated
         """
         self.pdb = pdb
         if len(self.constraints):
@@ -77,7 +75,8 @@ class ConstraintSetManager(object):
                 self.constraints.remove(constraint)
 
     def addConstraint(self, aConstraint):
-        """Add a constraint to the constraint list of the manager and update the list of residues
+        """Add a constraint to the constraint list of the manager and
+        update the list of residues
         """
         self.constraints.append(aConstraint)
         aConstraint.setName(self.name)

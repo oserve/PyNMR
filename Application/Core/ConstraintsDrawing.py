@@ -1,16 +1,16 @@
 # Copyright Notice
 # ================
-# 
+#
 # The PyMOL Plugin source code in this file is copyrighted, but you can
 # freely use and copy it as long as you don't change or remove any of
 # the copyright notices.
-# 
+#
 # ----------------------------------------------------------------------
-#               This PyMOL Plugin is Copyright (C) 2013 by 
+#               This PyMOL Plugin is Copyright (C) 2013 by
 #                 olivier serve <olivier dot serve at gmail dot com>
-# 
+#
 #                        All Rights Reserved
-# 
+#
 # Permission to use, copy, modify, distribute, and distribute modified
 # versions of this software and its documentation for any purpose and
 # without fee is hereby granted, provided that the above copyright
@@ -19,7 +19,7 @@
 # the name(s) of the author(s) not be used in advertising or publicity
 # pertaining to distribution of the software without specific, written
 # prior permission.
-# 
+#
 # THE AUTHOR(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
 # INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN
 # NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
@@ -30,9 +30,7 @@
 # ----------------------------------------------------------------------
 
 #Module for drawing constraints
-from sys import stderr, stdout
 from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
-from ConstraintManager import ConstraintSetManager
 
 class ConstraintDrawer(object):
     """
@@ -40,7 +38,8 @@ class ConstraintDrawer(object):
     """
     def drC(self, selectedConstraint, radius, colors):
         """
-        Draw an array of constraints according to the filter defined by user, using the drawConstraint function
+        Draw an array of constraints according to the filter defined by user,
+        using the drawConstraint function
         """    
         involvedResidueslist = []
         numberOfDrawnConstraints = 0
@@ -55,10 +54,12 @@ class ConstraintDrawer(object):
                 color = colors['notViolated']
             drawConstraint(aConstraint.points, color, radius, aConstraint.getID())
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
-        return {'Residueslist':involvedResidueslist, 'DrawnConstraints':numberOfDrawnConstraints}
+        return {'Residueslist':involvedResidueslist,
+                'DrawnConstraints':numberOfDrawnConstraints}
 
     def constraintsDensity(self, selectedConstraints):
-        """Calculate number of constraints per residue for selected constraints by the filter
+        """Calculate number of constraints per residue for selected constraints
+        by the filter
         """
         list = {}
         constraintsUsed = 0

@@ -1,16 +1,16 @@
 # Copyright Notice
 # ================
-# 
+#
 # The PyMOL Plugin source code in this file is copyrighted, but you can
 # freely use and copy it as long as you don't change or remove any of
 # the copyright notices.
-# 
+#
 # ----------------------------------------------------------------------
-#               This PyMOL Plugin is Copyright (C) 2013 by 
+#               This PyMOL Plugin is Copyright (C) 2013 by
 #                 olivier serve <olivier dot serve at gmail dot com>
-# 
+#
 #                        All Rights Reserved
-# 
+#
 # Permission to use, copy, modify, distribute, and distribute modified
 # versions of this software and its documentation for any purpose and
 # without fee is hereby granted, provided that the above copyright
@@ -19,7 +19,7 @@
 # the name(s) of the author(s) not be used in advertising or publicity
 # pertaining to distribution of the software without specific, written
 # prior permission.
-# 
+#
 # THE AUTHOR(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
 # INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN
 # NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
@@ -134,23 +134,34 @@ class ConstraintLoader(object):
                     cons_tab = aConstLine.split()
                     aConstraint = NOE()
                     try:  #For errors not filtered previously
-                        parsed = [{'resid': int(cons_tab[0]), 'name': self.AtTypeReg.match(self.convertTypeDyana(cons_tab[2])).group()},
-                                  {'resid': int(cons_tab[3]), 'name': self.AtTypeReg.match(self.convertTypeDyana(cons_tab[5])).group()}]
+                        parsed = [
+                            {'resid': int(cons_tab[0]),
+                             'name': self.AtTypeReg.match(
+                                self.convertTypeDyana(cons_tab[2])).group()},
+                            {'resid': int(cons_tab[3]),
+                             'name': self.AtTypeReg.match(
+                                self.convertTypeDyana(cons_tab[5])).group()}
+                            ]
                         aConstraint.addAtomGroups(parsed)
-                        aConstraint.setConstraintValues(str(1.8 + (float(cons_tab[6])-1.8)/2), '1.8', cons_tab[6])
+                        aConstraint.setConstraintValues(str(1.8 +
+                                                            (float(cons_tab[6])
+                                                             -1.8)/2),
+                                                        '1.8', cons_tab[6])
                         aManager.addConstraint(aConstraint)
                         counter = counter + 1
                     except:
-                        stderr.write("Unknown error while loading constraint :\n" + aConstLine + "\n")
+                        stderr.write("Unknown error while loading constraint "
+                                     +":\n"+ aConstLine + "\n")
             else:
                 stderr.write("Empty line, skipping.\n")
 
         stdout.write(str(len(aManager)) + " constraints loaded.\n")
 
     def parseCNSConstraint(self, aCNSConstraint):
-        """Split CNS/XPLOR type constraint into an array, contening the name of the residues (as arrays),
-        and the values of the parameter associated to the constraint. It should be independant
-        from the type of constraint (dihedral, distance, ...)
+        """Split CNS/XPLOR type constraint into an array, contening the name of
+        the residues (as arrays), and the values of the parameter associated to
+        the constraint. It should be independant from the type of constraint
+        (dihedral, distance, ...)
         """
         residuesList = self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
         constraintValuesList = self.SParReg.sub("", aCNSConstraint).split()
