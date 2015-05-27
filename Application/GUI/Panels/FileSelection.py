@@ -29,7 +29,6 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from os import path
 import tkFileDialog
 from Panel import Panel
 import Tkinter as Tk
@@ -57,7 +56,6 @@ class FileSelectionPanel(Panel):
         self.removeFileButton = Tk.Button(self, text="Remove selected file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
-        #self.constraintsList.listbox.listvariable = self.constraintsFileList
         self.constraintsList.listbox.exportselection = 0
         self.constraintsList.grid(row=0, column=0, columnspan=2)
         position = 0
@@ -89,7 +87,10 @@ class FileSelectionPanel(Panel):
     def updateFilelist(self):
         """
         """
-        self.constraintsFileList.set(self.NMRCommands.ManagersList.keys())
+        managerList = ""
+        for item in self.NMRCommands.ManagersList.keys():
+            managerList = managerList + " " + item
+        self.constraintsFileList.set(managerList)
 
     def removeFile(self):
         """
@@ -104,7 +105,7 @@ class FileSelectionPanel(Panel):
     def getInfo(self):
         """
         """
-        if len(self.constraintsFileList):
-            return {"constraintFile": self.constraintsList.listbox.get()[0]}
+        if len(self.constraintsFileList.get()):
+            return {"constraintFile": self.constraintsFileList.get()[self.constraintsList.listbox.curselection()[0]]}
         else:
             return {"constraintFile": ""}
