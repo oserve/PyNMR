@@ -22,21 +22,15 @@ Installation :
 ------------
 ###For development version :
 - Copy the files into a single directory anywhere on your disk
-- Edit .pymolrc in your home directory and add "run /path/to/files/pymolNMR.py"
 - Edit variable "installDir" in pymolNMR.py (Hopefully this should not be needed in the future)
 
 ###For user friendly version :
 - Download "PyNMRPG.py"
-- Use the Pymol standard plugin install in the main menu
+
+For both versions, use the Pymol standard plugin install in the main menu
 
 Start plugin :
 ------------
-
-###For development version :
-
-It is not a standard pymol plugin, so you have to type in the command line (or add in .pymolrc) : pyNMR.startGUI()
-
-###For user friendly version :
 
 Start PyNMR from the plugin menu.
 
@@ -55,10 +49,10 @@ Possible future features :
     * Link to 3D display
     * Real-time edit / display
 * Increase speed
+* Download restraints from pdb.org
 
 Known difficulties :
 ------------------
 * When displaying a large number of constraints as sticks, Pymol performances decrease rapidly :
     * Avoid to draw all constraints if not necessary
     * Remove them before any other action if you can
-* The listbox behaviour is a bit eratic for now, use it just before the display buttons.
