@@ -173,7 +173,4 @@ class StructureSelectionPanel(Panel):
     def updatePdbList(self, event):
         """
         """
-        structures = ""
-        for astructure in self.mainApp.getModelsNames():
-            structures = structures + " " + astructure
-        self.structureList.set(structures)
+        self.comboPDB['values'] = self.mainApp.getModelsNames()
