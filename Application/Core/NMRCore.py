@@ -46,7 +46,8 @@ from MolecularViewerInterface import select, zoom, delete, createSelection
 
 
 class NMRCore(object):
-
+    """
+    """
     def __init__(self):
         self.ManagersList = {}
         self.filter = ""
@@ -142,5 +143,7 @@ class NMRCore(object):
                                        violationState, violCutoff, method)
 
     def cleanScreen(self, managerName):
+        """
+        """
         self.displayedConstraints = []
         delete(managerName + "*")

@@ -3,7 +3,11 @@ from Core.MolecularViewerInterface import get_names
 
 
 class NMRApplication(object):
+    """
+    """
     def __init__(self, Core, app="NoGUI"):
+        """
+        """
         self.NMRCommands = Core
         self.log = ""
         self.defaults = {
@@ -42,12 +46,16 @@ class NMRApplication(object):
             self.startGUI()
 
     def startGUI(self):
+        """
+        """
         self.NMRInterface = NMRGUI()
         self.NMRInterface.startGUI()
         self.GUIBindings()
         self.setDefaults()
 
     def setDefaults(self):
+        """
+        """
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.values = self.gradientColorList
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.set(self.defaults["gradient"])
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
@@ -58,11 +66,15 @@ class NMRApplication(object):
         self.NMRInterface.constraintFilesManagement.updateFilelist()
 
     def GUIBindings(self):
+        """
+        """
         self.NMRInterface.constraintFilesManagement.NMRCommands = self.NMRCommands
         self.NMRInterface.NOEDrawingManagement.NMRCommands = self.NMRCommands
         self.NMRInterface.constraintSelectionManagement.structureManagement.mainApp = self
 
     def getModelsNames(self):
+        """
+        """
         results = []
         objectsLists = get_names()
         for name in objectsLists:

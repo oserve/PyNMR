@@ -139,13 +139,19 @@ class ViolationSelectionPanel(Panel):
         return {"cutOff": self.cutOff.get(), "violationState": violationState}
 
 class StructureSelectionPanel(Panel):
+    """
+    """
     def __init__(self, master):
+        """
+        """
         Panel.__init__(self, master, frameText="Structure")
         self.residueRanges = Tk.StringVar()
         self.structureList = Tk.StringVar()
         self.widgetCreation()
 
     def widgetCreation(self):
+        """
+        """
         Tk.Label(self, text="Structure :").grid(row=0, column=0)
         self.comboPDB = ttk.Combobox(self, state='readonly',
                                      textvariable=self.structureList)
@@ -158,10 +164,14 @@ class StructureSelectionPanel(Panel):
         self.residueRanges.set('all')
 
     def getInfo(self):
+        """
+        """
         return {"pdb": self.structureList.get(),
                 "ranges": self.residueRanges.get()}
 
     def updatePdbList(self, event):
+        """
+        """
         structures = ""
         for astructure in self.mainApp.getModelsNames():
             structures = structures + " " + astructure
