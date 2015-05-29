@@ -28,46 +28,34 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-import Tkinter as Tk
-import ttk
-from Panels.Preferences import PreferencesPanel
-from Panels.main import mainPanel
 
-class NMRGUI(Tk.Toplevel):
+from Panel import Panel
+from ConstraintSelection import ConstraintSelectionPanel
+from FileSelection import FileSelectionPanel
+from NOEDrawing import NOEDrawingPanel
+
+class mainPanel(Panel):
     """
     """
-    def __init__(self):
+    def __init__(self, master):
         """
         """
-        Tk.Toplevel.__init__(self)
-        self.title('PymolNMR')
-        self.noteBook = ttk.Notebook(self)
-        self.mainPanel = mainPanel(self.noteBook)
-        self.preferencesPanel = PreferencesPanel(self.noteBook)
-        self.panelsList = []
+        Panel.__init__(self, master)
+        self.fileSelection = FileSelectionPanel(self)
+        self.constraintPanel = ConstraintSelectionPanel(self)
+        self.NOEDrawing = NOEDrawingPanel(self)
+        self.panelsList = [self.fileSelection, self.constraintPanel,
+                           self.NOEDrawing]
+        self.widgetCreation()
 
-    def createPanels(self):
-        """Main Frames (not IBM ;-)
-        """
 
-        self.noteBook.grid(row=0, column=0)
 
-        self.noteBook.add(self.mainPanel, text="Main")
-        self.panelsList.append(self.mainPanel)
-
-        self.panelsList.append(self.preferencesPanel)
-        self.noteBook.add(self.preferencesPanel, text="Preferences")
-
-    def startGUI(self):
+    def widgetCreation(self):
         """
         """
-        self.createPanels()
-        self.setDelegations()
-
-    def setDelegations(self):
-        """
-        """
-        self.mainPanel.NOEDrawing.mainApp = self
+        self.fileSelection.grid(row=0, column=0)
+        self.constraintPanel.grid(row=1, column=0)
+        self.NOEDrawing.grid(row=2, column=0)
 
     def getInfo(self):
         """

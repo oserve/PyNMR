@@ -15,7 +15,7 @@ from Tkinter import *
 #----------------------------------------------------------------
 
 DEFAULT_WIDTH   =  "40"
-DEFAULT_HEIGHT  =  "25"
+DEFAULT_HEIGHT  =  "15"
 
 class ScrolledList(Frame):
     """A compound widget containing a listbox and up to two scrollbars.

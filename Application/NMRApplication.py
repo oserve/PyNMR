@@ -60,17 +60,17 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection.set(self.defaults["gradient"])
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
-        self.NMRInterface.constraintSelectionManagement.violationsFrame.cutOff.set(self.defaults["cutOff"])
+        self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
         #self.NMRInterface.preferencesPanel.methodSelection.setvalue(self.defaults["method"])
-        self.NMRInterface.constraintSelectionManagement.structureManagement.comboPDB.values = self.getModelsNames()
-        self.NMRInterface.constraintFilesManagement.updateFilelist()
+        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames()
+        self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 
     def GUIBindings(self):
         """
         """
-        self.NMRInterface.constraintFilesManagement.NMRCommands = self.NMRCommands
-        self.NMRInterface.NOEDrawingManagement.NMRCommands = self.NMRCommands
-        self.NMRInterface.constraintSelectionManagement.structureManagement.mainApp = self
+        self.NMRInterface.mainPanel.fileSelection.NMRCommands = self.NMRCommands
+        self.NMRInterface.mainPanel.NOEDrawing.NMRCommands = self.NMRCommands
+        self.NMRInterface.mainPanel.constraintPanel.structureManagement.mainApp = self
 
     def getModelsNames(self):
         """

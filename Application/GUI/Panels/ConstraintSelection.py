@@ -40,24 +40,21 @@ class ConstraintSelectionPanel(Panel):
     """
     def __init__(self, master):
         Panel.__init__(self, master, frameText="Constraints Selection")
-        self.panelsList = []
+        self.consRangeFrame = RangeSelectionPanel(self)
+        self.violationsFrame = ViolationSelectionPanel(self)
+        self.structureManagement = StructureSelectionPanel(self)
+        self.panelsList = [self.consRangeFrame, self.violationsFrame, self.structureManagement]
         self.widgetCreation()
 
     def widgetCreation(self):
         #Creation of range input
-        self.consRangeFrame = RangeSelectionPanel(self)
         self.consRangeFrame.grid(row=0, column=0)
-        self.panelsList.append(self.consRangeFrame)
 
         #Creation of Violations inputs
-        self.violationsFrame = ViolationSelectionPanel(self)
         self.violationsFrame.grid(row=0, column=1)
-        self.panelsList.append(self.violationsFrame)
 
         #Creation of structure inputs
-        self.structureManagement = StructureSelectionPanel(self)
         self.structureManagement.grid(row=1, column=0, columnspan=2)
-        self.panelsList.append(self.structureManagement)
 
     def getInfo(self):
         infos = {}
@@ -66,6 +63,8 @@ class ConstraintSelectionPanel(Panel):
         return infos
 
 class RangeSelectionPanel(Panel):
+    """
+    """
     def __init__(self, master):
         Panel.__init__(self, master, frameText="Range Selection")
 
@@ -107,6 +106,8 @@ class RangeSelectionPanel(Panel):
         return {"residuesRange":ranges}
 
 class ViolationSelectionPanel(Panel):
+    """
+    """
     def __init__(self, master):
         Panel.__init__(self, master, frameText="Violation state Selection")
 
