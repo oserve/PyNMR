@@ -105,7 +105,8 @@ class FileSelectionPanel(Panel):
     def getInfo(self):
         """
         """
-        if len(self.constraintsFileList.get()):
-            return {"constraintFile": self.constraintsFileList.get()[self.constraintsList.listbox.curselection()[0]]}
+        fileList = self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'","").split(',')
+        if len(fileList):
+            return {"constraintFile": fileList[self.constraintsList.listbox.curselection()[0]]}
         else:
             return {"constraintFile": ""}

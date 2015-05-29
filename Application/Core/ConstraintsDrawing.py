@@ -36,14 +36,14 @@ class ConstraintDrawer(object):
     """
 
     """
-    def drC(self, selectedConstraint, radius, colors):
+    def drC(self, selectedConstraints, radius, colors):
         """
         Draw an array of constraints according to the filter defined by user,
         using the drawConstraint function
         """    
         involvedResidueslist = []
         numberOfDrawnConstraints = 0
-        for aConstraint in selectedConstraint:
+        for aConstraint in selectedConstraints:
             if not aConstraint.resis[0]['number'] in involvedResidueslist:
                 involvedResidueslist.append(aConstraint.resis[0]['number'])
             if not aConstraint.resis[1]['number'] in involvedResidueslist:

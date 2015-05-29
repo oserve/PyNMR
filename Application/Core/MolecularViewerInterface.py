@@ -62,6 +62,7 @@ try:
         PymolCmd.delete(selectionName)
 
     def createSelection(Items):
+        selection = ""
         if len(Items) > 2:
             selection = Items.pop(0) + " &"
             for residue in Items:
