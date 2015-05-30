@@ -57,13 +57,13 @@ class FileSelectionPanel(Panel):
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.constraintsList.listbox.exportselection = 0
-        self.constraintsList.grid(row=0, column=0, columnspan=2)
+        self.constraintsList.grid(row=0, column=1, rowspan=2)
         position = 0
         for constraintType in self.constraintsDefTypes:
             Tk.Radiobutton(self, text=constraintType,
                            variable=self.constraintsDefType,
-                           value=constraintType).grid(row=1, column=position)
-            position = position +1
+                           value=constraintType).grid(row=position, column=0)
+            position = position + 1
         self.loadFileButton.grid(row=2, column=0)
         self.removeFileButton.grid(row=2, column=1)
 
@@ -82,7 +82,6 @@ class FileSelectionPanel(Panel):
         if filename:
             self.NMRCommands.loadNOE(filename, constraintDefinition)
             self.updateFilelist()
-            #self.constraintsList.setvalue(path.basename(filename))
 
     def updateFilelist(self):
         """

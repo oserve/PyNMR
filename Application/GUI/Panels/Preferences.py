@@ -145,7 +145,7 @@ class PreferencesPanel(Panel):
         """
         """
         Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0, rowspan=2)
-        position = 1
+        position = 0
         for methodName, method in self.methodsList:
             Tk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                            value=method).grid(row=position, column=1)

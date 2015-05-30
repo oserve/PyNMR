@@ -28,55 +28,14 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+from Panel import Panel
 import Tkinter as Tk
-import ttk
-from Panels.Preferences import PreferencesPanel
-from Panels.main import mainPanel
-from Panels.About import About
 
-class NMRGUI(Tk.Toplevel):
+class About(Panel):
     """
     """
-    def __init__(self):
+    def __init__(self, master=None):
         """
         """
-        Tk.Toplevel.__init__(self)
-        self.title('PymolNMR')
-        self.noteBook = ttk.Notebook(self)
-        self.mainPanel = mainPanel(self.noteBook)
-        self.preferencesPanel = PreferencesPanel(self.noteBook)
-        self.About =  About(self)
-        self.panelsList = []
-
-    def createPanels(self):
-        """Main Frames (not IBM ;-)
-        """
-
-        self.noteBook.grid(row=0, column=0)
-
-        self.noteBook.add(self.mainPanel, text="Main")
-        self.panelsList.append(self.mainPanel)
-
-        self.panelsList.append(self.preferencesPanel)
-        self.noteBook.add(self.preferencesPanel, text="Preferences")
-
-        self.noteBook.add(self.About, text="About")
-
-    def startGUI(self):
-        """
-        """
-        self.createPanels()
-        self.setDelegations()
-
-    def setDelegations(self):
-        """
-        """
-        self.mainPanel.NOEDrawing.mainApp = self
-
-    def getInfo(self):
-        """
-        """
-        infos = {}
-        for panel in self.panelsList:
-            infos.update(panel.getInfo())
-        return infos
+        Panel.__init__(self, master, frameText="")
+        Tk.Label(self, text="This Pymol plugin has been written \n because I thought it would be useful \n to check my NOEs during my \npostdocship. I hope it'll help you as well.\n Feel free to send any comments to :\n olivier.serve@gmail.com\nThis plugin is free and maybe copied \nas long as you respect the copyright").grid(row=0, column=0)
