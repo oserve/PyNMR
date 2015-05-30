@@ -41,6 +41,8 @@ class NOE(Constraint):
     """
 
     def __init__(self):
+        """
+        """
         super(NOE, self).__init__()
         self.points = {}
         self.numberOfAtomsSets = 2
@@ -73,7 +75,8 @@ class NOE(Constraint):
             stderr.write('How come ?\n')
 
     def getID(self):
-        """Returns name of constraints : Name_(constraint number)_(pdbName)_(violation_state)
+        """Returns name of constraints :
+        Name_(constraint number)_(pdbName)_(violation_state)
         """
         if self.violated != '':
             if self.violated == 'violated':

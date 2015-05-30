@@ -72,7 +72,7 @@ class ConstraintFilter(object):
                         return 0
                 else:
                     stderr.write("Selection issue with constraint :\n"
-                                 + aConstraint.definition + "\n")
+                                 + aConstraint + "\n")
                     return 0
             else:
                 return 0
@@ -80,6 +80,8 @@ class ConstraintFilter(object):
             return 0
 
     def filterConstraints(self, constraintList):
+        """
+        """
         selectedConstraint = []
         for aConstraint in constraintList:
             if self.filter(aConstraint):

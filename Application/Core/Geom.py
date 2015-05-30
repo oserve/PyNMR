@@ -29,7 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
-from math import sqrt, pow
+from math import sqrt
 from MolecularViewerInterface import get_model
 
 def centerOfMass(selection):
@@ -38,10 +38,10 @@ def centerOfMass(selection):
     model = get_model(selection)
     if len(model.atom) > 0:
         x, y, z = 0, 0, 0
-        for a in model.atom:
-            x += a.coord[0]
-            y += a.coord[1]
-            z += a.coord[2]
+        for AtomA in model.atom:
+            x += AtomA.coord[0]
+            y += AtomA.coord[1]
+            z += AtomA.coord[2]
         return (x/len(model.atom), y/len(model.atom), z/len(model.atom))
     else:
         stderr.write("selection is empty :"+ str(selection)+"\n")
@@ -58,7 +58,7 @@ def calcDistance(selection_init, selection_final, method):
         return sumDistance_6(selection_init, selection_final)
     else:
         stderr.write("This method of calculation is not defined : "
-                     +str(method)+"\n")
+                     + str(method) + "\n")
 
 def averageDistance_6(selection_init, selection_final):
     """
@@ -69,11 +69,11 @@ def averageDistance_6(selection_init, selection_final):
     model_final = get_model(selection_final)
     if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []
-        for a in model_init.atom:
-            for b in model_final.atom:
-                distance_list.append(sqrt(pow((a.coord[0] - b. coord[0]), 2)
-                                          + pow((a.coord[1] - b.coord[1]), 2)
-                                          + pow((a.coord[2] - b.coord[2]), 2))
+        for AtomA in model_init.atom:
+            for AtomB in model_final.atom:
+                distance_list.append(sqrt(pow((AtomA.coord[0] - AtomB.coord[0]), 2)
+                                          + pow((AtomA.coord[1] - AtomB.coord[1]), 2)
+                                          + pow((AtomA.coord[2] - AtomB.coord[2]), 2))
                                     )
         sum6 = 0
         for distance in distance_list:
@@ -96,26 +96,26 @@ def sumDistance_6(selection_init, selection_final):
     model_init = get_model(selection_init)
     model_final = get_model(selection_final)
 
-    if len(model_init.atom)>0 and len(model_final.atom)>0:
+    if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []
-        for a in model_init.atom:
-            for b in model_final.atom:
-                distance_list.append(sqrt(pow((a.coord[0]-b.coord[0]), 2)
-                                          +pow((a.coord[1]-b.coord[1]), 2)
-                                          +pow((a.coord[2]-b.coord[2]), 2))
+        for AtomA in model_init.atom:
+            for AtomB in model_final.atom:
+                distance_list.append(sqrt(pow((AtomA.coord[0] - AtomB.coord[0]), 2)
+                                          +pow((AtomA.coord[1] - AtomB.coord[1]), 2)
+                                          +pow((AtomA.coord[2] - AtomB.coord[2]), 2))
                                     )
         sum6 = 0
         for distance in distance_list:
             try:
                 sum6 = sum6 + pow(distance, -6)
             except:
-                stderr.write("Problem with selection : "+selection_init+" "
-                             +selection_final + "\n" + "distance is : "
-                             +str(distance)+" A")
+                stderr.write("Problem with selection : "+ selection_init + " "
+                             + selection_final + "\n" + "distance is : "
+                             + str(distance) + " A")
         result = pow(sum6, -1./6)
         return result
 
     else:
-        stderr.write("selection is empty : "+selection_init+" "
-                     +selection_final+"\n")
+        stderr.write("selection is empty : " + selection_init + " "
+                     + selection_final + "\n")
         return 0.0

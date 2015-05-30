@@ -29,7 +29,6 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from AtomClass import AtomSet
-#from Core.Geom import *
 import re
 
 
@@ -44,6 +43,8 @@ class Constraint(object):
     """
 
     def __init__(self):
+        """
+        """
         self.id = {}
         self.resis = []
         self.violated = ''
@@ -52,8 +53,11 @@ class Constraint(object):
         self.constraintValues = {}
         self.numberOfAtomsSets = 0
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
+        self.pdbname = ""
 
     def __str__(self):
+        """
+        """
         return self.definition
 
     __repr__ = __str__
@@ -83,8 +87,9 @@ class Constraint(object):
         Sets atoms sets, checks for inconsistency with pdb file
         """
         for atomsSetNumber in range(self.numberOfAtomsSets):
-            self.atoms.append(AtomSet(pdbName, self.resis[atomsSetNumber]['number'],
-                                    self.resis[atomsSetNumber]['atoms'] + self.resis[atomsSetNumber]['atoms_number']))
+            self.atoms.append(AtomSet(pdbName,
+                                      self.resis[atomsSetNumber]['number'],
+                                      self.resis[atomsSetNumber]['atoms'] + self.resis[atomsSetNumber]['atoms_number']))
 
         return self.isValid()
 
@@ -99,6 +104,8 @@ class Constraint(object):
         return validity
 
     def addAtomGroups(self, parsingResult):
+        """
+        """
         for position in range(self.numberOfAtomsSets):
             currentResidue = {}
             if "resid" in parsingResult[position].keys():

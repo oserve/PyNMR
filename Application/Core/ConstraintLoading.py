@@ -32,10 +32,8 @@
 #DistanceConstraints loading functions
 from sys import stderr, stdout
 import re
-
 from .Constraints.NOE import NOE
 from ConstraintManager import ConstraintSetManager
-
 
 class ConstraintLoader(object):
     """Classes used to lad constraints from
@@ -43,6 +41,8 @@ class ConstraintLoader(object):
     with constraints
     """
     def __init__(self, fileName, managerName, constraintDefinition):
+        """
+        """
         self.fileName = fileName
         self.managerName = managerName
         self.constraintDefinition = constraintDefinition
@@ -56,6 +56,8 @@ class ConstraintLoader(object):
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def loadConstraintsFromFile(self):
+        """
+        """
         self.loadFile()
         return self.loadConstraints()
 
@@ -76,6 +78,8 @@ class ConstraintLoader(object):
         return aManager
 
     def loadFile(self):
+        """
+        """
         fin = open(self.fileName, 'r')
         for txt in fin:
             txt = txt.lstrip()
@@ -86,6 +90,8 @@ class ConstraintLoader(object):
         fin.close()
 
     def synthesizeCNSFile(self):
+        """
+        """
         self.validCNSConstraints = []
         for line in self.inFileTab:
             if line.find("ASSI") > -1:
@@ -112,7 +118,9 @@ class ConstraintLoader(object):
                 aConstraint.id["number"] = constraint_number
                 aConstraint.definition = aConstLine
                 aConstraint.addAtomGroups(parsingResult)
-                aConstraint.setConstraintValues(parsingResult[-1][0], parsingResult[-1][1], parsingResult[-1][2])  #Values always at the end of the array
+                aConstraint.setConstraintValues(parsingResult[-1][0],
+                                                parsingResult[-1][1],
+                                                parsingResult[-1][2])  #Values always at the end of the array
 
                 aManager.addConstraint(aConstraint)
                 constraint_number = constraint_number + 1

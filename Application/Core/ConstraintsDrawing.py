@@ -1,3 +1,5 @@
+"""Module for drawing constraints
+"""
 # Copyright Notice
 # ================
 #
@@ -29,7 +31,6 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-#Module for drawing constraints
 from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
 
 class ConstraintDrawer(object):
@@ -40,7 +41,7 @@ class ConstraintDrawer(object):
         """
         Draw an array of constraints according to the filter defined by user,
         using the drawConstraint function
-        """    
+        """
         involvedResidueslist = []
         numberOfDrawnConstraints = 0
         for aConstraint in selectedConstraints:
@@ -52,7 +53,8 @@ class ConstraintDrawer(object):
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.violated == 'not violated':
                 color = colors['notViolated']
-            drawConstraint(aConstraint.points, color, radius, aConstraint.getID())
+            drawConstraint(aConstraint.points, color, radius,
+                           aConstraint.getID())
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist':involvedResidueslist,
                 'DrawnConstraints':numberOfDrawnConstraints}
@@ -61,19 +63,19 @@ class ConstraintDrawer(object):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
-        list = {}
+        constraintList = {}
         constraintsUsed = 0
         for aConstraint in selectedConstraints:
-            if not aConstraint.resis[0]['number'] in list.keys():
-                list[aConstraint.resis[0]['number']] = 10
+            if not aConstraint.resis[0]['number'] in constraintList.keys():
+                constraintList[aConstraint.resis[0]['number']] = 10
             else:
-                list[aConstraint.resis[0]['number']] = list[aConstraint.resis[0]['number']] + 10
-            if not aConstraint.resis[1]['number'] in list.keys():
-                list[aConstraint.resis[1]['number']] = 10
+                constraintList[aConstraint.resis[0]['number']] = constraintList[aConstraint.resis[0]['number']] + 10
+            if not aConstraint.resis[1]['number'] in constraintList.keys():
+                constraintList[aConstraint.resis[1]['number']] = 10
             else:
-                list[aConstraint.resis[1]['number']] = list[aConstraint.resis[1]['number']] + 10
+                constraintList[aConstraint.resis[1]['number']] = constraintList[aConstraint.resis[1]['number']] + 10
             constraintsUsed = constraintsUsed + 1
-        return list
+        return constraintList
 
     def paD(self, selectedConstraints, pdb, color_gradient):
         """Uses b-factors to simulate constraint density on structure
