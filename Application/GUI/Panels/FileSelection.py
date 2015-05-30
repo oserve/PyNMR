@@ -45,17 +45,17 @@ class FileSelectionPanel(Panel):
         self.constraintsDefTypes = ["CNS/XPLOR", "CYANA/DYANA"]
         self.constraintsDefType.set(self.constraintsDefTypes[0])
         self.constraintsFileList = Tk.StringVar()
+        self.loadFileButton = Tk.Button(self, text="Load file",
+                                        command=self.loadFile)
+        self.removeFileButton = Tk.Button(self, text="Remove selected file",
+                                          command=self.removeFile)
+        self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.widgetCreation()
         self.NMRCommands = ""  #Must be set by application at run time
 
     def widgetCreation(self):
         """
         """
-        self.loadFileButton = Tk.Button(self, text="Load file",
-                                        command=self.loadFile)
-        self.removeFileButton = Tk.Button(self, text="Remove selected file",
-                                          command=self.removeFile)
-        self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.constraintsList.listbox.exportselection = 0
         self.constraintsList.grid(row=0, column=1, rowspan=2)
         position = 0
@@ -73,7 +73,7 @@ class FileSelectionPanel(Panel):
         Use the filename to load the constraint file in the Core.
         """
         filename = tkFileDialog.askopenfilename(
-            title="Open a constraint " + self.constraintsDefType.get() + " file ")
+            title="Open a constraint " + self.constraintsDefType.get() + " file")
         constraintType = ""
         if self.constraintsDefType.get() == "CNS/XPLOR":
             constraintDefinition = "CNS"
@@ -94,18 +94,27 @@ class FileSelectionPanel(Panel):
     def removeFile(self):
         """
         """
-        toRemove = self.constraintsList.listbox.get()
+        toRemove = self.selectedFile()
         if toRemove:
-            for manager in toRemove:
-                del self.NMRCommands.ManagersList[manager]
+            del self.NMRCommands.ManagersList[toRemove]
         self.updateFilelist()
         #self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
+
+    def fileList(self):
+        """
+        """
+        return self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'","").split(',')
+
+    def selectedFile(self):
+        """
+        """
+        if len(self.constraintsList.listbox.curselection()):
+            return self.fileList()[self.constraintsList.listbox.curselection()[0]]
 
     def getInfo(self):
         """
         """
-        fileList = self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'","").split(',')
-        if len(fileList):
-            return {"constraintFile": fileList[self.constraintsList.listbox.curselection()[0]]}
+        if len(self.fileList()):
+            return {"constraintFile": self.selectedFile()}
         else:
             return {"constraintFile": ""}
