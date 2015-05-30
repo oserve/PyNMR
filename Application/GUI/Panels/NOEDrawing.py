@@ -29,10 +29,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-import Pmw
-
 from Panel import Panel
-
+import Tkinter as Tk
 
 class NOEDrawingPanel(Panel):
     """
@@ -41,19 +39,22 @@ class NOEDrawingPanel(Panel):
         """
         """
         Panel.__init__(self, master, frameText="NOE Representation")
-        self.widgetCreation()
+        self.sticksButton = Tk.Button(self, text="Sticks",
+                                      command=self.showSticks)
+        self.densityButton = Tk.Button(self, text="Density",
+                                       command=self.showDensity)
+        self.cleanButton = Tk.Button(self, text="Clean Sticks",
+                                     command=self.cleanAll)
         self.mainApp = ""  #Must be set at run time
         self.NMRCommands = ""  #Must be set by application at run time
+        self.widgetCreation()
 
     def widgetCreation(self):
         """
         """
-        self.drawingNOEButtonBox = Pmw.ButtonBox(self, orient='horizontal')
-        self.drawingNOEButtonBox.add('Sticks', command=self.showSticks)
-        self.drawingNOEButtonBox.add('Density', command=self.showDensity)
-        self.drawingNOEButtonBox.add('Clean NOEs', command=self.cleanAll)
-        self.drawingNOEButtonBox.grid(row=0, column=0)
-        self.drawingNOEButtonBox.setdefault('Sticks')
+        self.sticksButton.grid(row=0, column=0)
+        self.densityButton.grid(row=0, column=1)
+        self.cleanButton.grid(row=0, column=2)
 
     def showSticks(self):
         """
