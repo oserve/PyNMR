@@ -1,1 +1,3 @@
-__all__ = ["Panel", "Panels", "FileSelection", "ConstraintSelection", "NOEDrawing", "Preferences", "Constraints", "Main"]
+__all__ = ["Panel", "Panels", "FileSelection", "ConstraintSelection",
+           "NOEDrawing", "Preferences", "Constraints", "Main", "About",
+           "ScrolledList"]

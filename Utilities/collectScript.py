@@ -1,18 +1,47 @@
-fileList=['AtomClass.py', 'Constraint.py', 'NOE.py', "ConstraintManager.py", 'ConstraintLoading.py', 'ConstraintsDrawing.py', 'Filtering.py', 'Geom.py', 'NMRCore.py', 'Panels.py', 'NMRGUI.py', 'pymolNMR.py']
+"""Helper script
 
-collection=""
-for fileName in fileList:
-    fin=open(fileName,'r')
-    for line in fin:
-        if line.find("import")==-1:
-            collection = collection+line
-    fin.close()
-        
-print "import re\nfrom sys import stderr, stdout\nfrom math import sqrt, pow\nfrom os.path import basename, exists\nfrom os import getcwd, chdir, path\nimport Tkinter as Tk\nimport Pmw\nimport tkFileDialog\nimport tkColorChooser\nfrom pymol.cmd import select, get_names, get_model, zoom, spectrum, extend, delete, load_cgo, alter\nfrom pymol.cgo import CYLINDER"
-print "def drawConstraint(points, color, aRadius, ID):\n\tcons =[CYLINDER]+list(points[0])+list(points[1])+[aRadius]+color\n\tload_cgo(cons, ID)\n"
-print "def alterBFactors(pdb, bFactor):\n\talter(pdb,\"b=\"+ str(bFactor))"
-print "def zeroBFactors(pdb):\n\talterBFactors(pdb, 0)"
-print "def setBfactor(selection, bFactor):\n\talterBFactors(selection, bFactor)"
-print "def paintDensity(color_gradient, pdb):\n\tspectrum(\"b\", color_gradient, pdb)"
-print collection
-print "def __init__(self):\n\tself.menuBar.addmenuitem('Plugin', 'command', 'PyNMR', label = 'PyNMR', command = lambda s=self : pyNMR.startGUI())\n"
+    Gathers all python files into one
+    the final file needs clean up
+"""
+from os import chdir, listdir
+from sys import stderr, stdout
+
+collection = ""
+importCollection = ""
+
+mainDirectory = "/Users/olivier/Pymol_scripts/PyNMR"
+directoriesList = ['/Application', '/Application/Core',
+                   '/Application/Core/Constraints',
+                   '/Application/GUI', '/Application/GUI/Panels']
+
+for directory in directoriesList:
+    chdir(mainDirectory+directory)
+    fileList = listdir('.')
+    for aFile in fileList:
+        fileComponents = aFile.split('.')
+        if len(fileComponents) == 2:
+            if fileComponents[1] == 'py':
+                if fileComponents[0] != '__init__':
+                    stderr.write('Parsing file : '+aFile+'\n')
+                    fin = open(aFile, 'r')
+                    for line in fin:
+                        if line.find("import") == -1:
+                            if line.find('#') != 0:
+                                collection = collection + line
+                        else:
+                            if line.find('"""') == -1:
+                                importCollection = importCollection + line
+                            else:
+                                collection = collection + line
+                    fin.close()
+
+fin = open(mainDirectory + "/pymolNMR.py", 'r')
+for line in fin:
+    if line.find("import") == -1:
+        collection = collection + line
+    else:
+        importCollection = importCollection + line
+fin.close()
+
+stdout.write(importCollection)
+stdout.write(collection)
