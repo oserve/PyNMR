@@ -30,7 +30,8 @@ for directory in directoriesList:
                                 collection = collection + line
                         else:
                             if line.find('"""') == -1:
-                                importCollection = importCollection + line
+                                if importCollection.find(line) == -1:
+                                    importCollection = importCollection + line
                             else:
                                 collection = collection + line
                     fin.close()

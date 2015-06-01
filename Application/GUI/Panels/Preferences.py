@@ -138,7 +138,6 @@ class PreferencesPanel(Panel):
         self.panelsList = []
         self.methodsList = [("Sum of r^6", "sum6"), ("Average of r^6", "ave6")]
         self.selectedMethod = Tk.StringVar()
-        self.selectedMethod.set(self.methodsList[0][1])
         self.widgetCreation()
 
     def widgetCreation(self):

@@ -45,7 +45,7 @@ class NMRGUI(Tk.Toplevel):
         self.noteBook = ttk.Notebook(self)
         self.mainPanel = mainPanel(self.noteBook)
         self.preferencesPanel = PreferencesPanel(self.noteBook)
-        self.About =  About(self)
+        self.About =  About(self.noteBook)
         self.panelsList = []
 
     def createPanels(self):

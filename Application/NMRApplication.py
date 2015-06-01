@@ -61,7 +61,7 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
-        #self.NMRInterface.preferencesPanel.methodSelection.setvalue(self.defaults["method"])
+        self.NMRInterface.preferencesPanel.selectedMethod.set(self.defaults["method"])
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames()
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 

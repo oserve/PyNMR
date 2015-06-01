@@ -35,6 +35,7 @@ contains interface for command line functions
 from os import getcwd, chdir
 from sys import stderr
 from os.path import exists
+import Tkinter as Tk
 #Needed to upload custom modules
 INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
 WORKING_DIR = getcwd()
@@ -129,7 +130,9 @@ def cleanScreen(filename):
         Core.cleanScreen(filename)
 
 if __name__ == "__main__":
+    MainWin = Tk.Tk()
     pyNMR.startGUI()
+    MainWin.mainloop()
 
 try:
     from pymol.cmd import extend
