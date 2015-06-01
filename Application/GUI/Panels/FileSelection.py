@@ -33,6 +33,9 @@ import tkFileDialog
 from Panel import Panel
 import Tkinter as Tk
 from ScrolledList import ScrolledList
+import urllib2
+import zipfile
+import os
 
 class FileSelectionPanel(Panel):
     """This panel allows to import constraint file
@@ -50,6 +53,9 @@ class FileSelectionPanel(Panel):
         self.removeFileButton = Tk.Button(self, text="Remove selected file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
+        self.downloadButton = Tk.Button(self, text="Download from PDB",
+                                        command=self.downloadRestraintFileWin)
+        self.PDBCode = Tk.StringVar()
         self.widgetCreation()
         self.NMRCommands = ""  #Must be set by application at run time
 
@@ -66,6 +72,7 @@ class FileSelectionPanel(Panel):
             position = position + 1
         self.loadFileButton.grid(row=2, column=0)
         self.removeFileButton.grid(row=2, column=1)
+        self.downloadButton.grid(row=3, column=0, columnspan=2)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -110,6 +117,64 @@ class FileSelectionPanel(Panel):
         """
         if len(self.constraintsList.listbox.curselection()):
             return self.fileList()[self.constraintsList.listbox.curselection()[0]]
+
+    def downloadRestraintFileWin(self):
+        """
+        """
+        downloadWin = Tk.Toplevel(self)
+        downloadWin.title="Download Restraint File ..."
+        Tk.Label(downloadWin, text="PDB Code :").grid(row=0, column=0)
+        Tk.Entry(downloadWin, textvariable=self.PDBCode).grid(row=0, column=1)
+        Tk.Button(downloadWin, text="Download from PDB",
+                  command=self.downloadFileFromPDB).grid(row=1, column=0)
+        Tk.Button(downloadWin, text="Cancel").grid(row=1, column=1)
+
+    def downloadFileFromPDB(self):
+        """
+        """
+        url = "http://www.rcsb.org/ pdb/files/"+self.PDBCode.get().upper()+".mr.gz"
+
+        file_name = url.split('/')[-1]
+        PDBurl = urllib2.urlopen(url)
+        downloadedFile = open(file_name, 'wb')
+        meta = PDBurl.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+        print "Downloading: %s Bytes: %s" % (file_name, file_size)
+
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            FileBuffer = PDBurl.read(block_sz)
+            if not FileBuffer:
+                break
+
+            file_size_dl += len(FileBuffer)
+            downloadedFile.write(FileBuffer)
+            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+            status = status + chr(8)*(len(status)+1)
+            print status,
+
+        zippedFile = zipfile.ZipFile(downloadedFile)
+        for name in zippedFile.namelist():
+            outfile = open(name, 'wb')
+            outfile.write(zippedFile.read(name))
+            outfile.close()
+        downloadedFile.close()
+
+        constraintDefinition = "CYANA"
+        restraintFile = open(self.PDBCode.get().upper()+".mr")
+        for line in restraintFile:
+            if line.upper().find('ASSI') > 0:
+                constraintDefinition = "CNS"
+                break
+        restraintFile.close()
+
+        self.NMRCommands.loadNOE(self.PDBCode.get().upper() + ".mr", constraintDefinition)
+        self.updateFilelist()
+
+        for name in zippedFile.namelist():
+            os.remove(name)
+        os.remove(downloadedFile)
 
     def getInfo(self):
         """
