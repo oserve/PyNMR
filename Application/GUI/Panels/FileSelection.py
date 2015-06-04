@@ -34,7 +34,8 @@ from Panel import Panel
 import Tkinter as Tk
 from ScrolledList import ScrolledList
 import urllib2
-import zipfile
+import shutil
+import gzip
 import os
 
 class FileSelectionPanel(Panel):
@@ -132,49 +133,30 @@ class FileSelectionPanel(Panel):
     def downloadFileFromPDB(self):
         """
         """
-        url = "http://www.rcsb.org/ pdb/files/"+self.PDBCode.get().upper()+".mr.gz"
-
-        file_name = url.split('/')[-1]
-        PDBurl = urllib2.urlopen(url)
-        downloadedFile = open(file_name, 'wb')
-        meta = PDBurl.info()
-        file_size = int(meta.getheaders("Content-Length")[0])
-        print "Downloading: %s Bytes: %s" % (file_name, file_size)
-
-        file_size_dl = 0
-        block_sz = 8192
-        while True:
-            FileBuffer = PDBurl.read(block_sz)
-            if not FileBuffer:
-                break
-
-            file_size_dl += len(FileBuffer)
-            downloadedFile.write(FileBuffer)
-            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-            status = status + chr(8)*(len(status)+1)
-            print status,
-
-        zippedFile = zipfile.ZipFile(downloadedFile)
-        for name in zippedFile.namelist():
-            outfile = open(name, 'wb')
-            outfile.write(zippedFile.read(name))
-            outfile.close()
-        downloadedFile.close()
-
+        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"# + self.PDBCode.get().upper()+".mr.gz"
+        fileName = self.PDBCode.get().lower()+".mr"
+        zippedFileName = fileName+".gz"
+        restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
+        with open(zippedFileName, 'wb') as f:
+            shutil.copyfileobj(restraintFileRequest, f)
+        restraintFileRequest.close()
+        zippedFile = gzip.open(zippedFileName,'rb')
+        decodedFile = zippedFile.read()
+        restraintFile = open(fileName, 'w')
+        restraintFile.write(decodedFile)
+        zippedFile.close()
+        os.remove(zippedFileName)
         constraintDefinition = "CYANA"
-        restraintFile = open(self.PDBCode.get().upper()+".mr")
+        restraintFile.close()
+        restraintFile = open(fileName, 'r')
         for line in restraintFile:
-            if line.upper().find('ASSI') > 0:
+            if line.upper().find('ASSI') > -1:
                 constraintDefinition = "CNS"
                 break
         restraintFile.close()
-
-        self.NMRCommands.loadNOE(self.PDBCode.get().upper() + ".mr", constraintDefinition)
+        self.NMRCommands.loadNOE(fileName, constraintDefinition)
         self.updateFilelist()
-
-        for name in zippedFile.namelist():
-            os.remove(name)
-        os.remove(downloadedFile)
+        os.remove(fileName)
 
     def getInfo(self):
         """
