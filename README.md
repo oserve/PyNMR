@@ -13,7 +13,7 @@ It can do so in two different ways :
 
 ![NOEDensity](pictures/density.tiff)
 
-I believe this could help a lot in the tedious process of determing whether the 
+I believe this could help a lot in the tedious process of determining whether the 
 constraints extracted from the nmr spectrum make sens or not.
 
 The plugins offers the following possibilities :

@@ -28,7 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
+import tkSimpleDialog
 import tkFileDialog
 from Panel import Panel
 import Tkinter as Tk
@@ -56,7 +56,7 @@ class FileSelectionPanel(Panel):
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = Tk.Button(self, text="Download from PDB",
                                         command=self.downloadRestraintFileWin)
-        self.PDBCode = Tk.StringVar()
+        #self.PDBCode = Tk.StringVar()
         self.widgetCreation()
         self.NMRCommands = ""  #Must be set by application at run time
 
@@ -122,19 +122,18 @@ class FileSelectionPanel(Panel):
     def downloadRestraintFileWin(self):
         """
         """
-        downloadWin = Tk.Toplevel(self)
-        downloadWin.title="Download Restraint File ..."
-        Tk.Label(downloadWin, text="PDB Code :").grid(row=0, column=0)
-        Tk.Entry(downloadWin, textvariable=self.PDBCode).grid(row=0, column=1)
-        Tk.Button(downloadWin, text="Download from PDB",
-                  command=self.downloadFileFromPDB).grid(row=1, column=0)
-        Tk.Button(downloadWin, text="Cancel").grid(row=1, column=1)
+        pdbCode = tkSimpleDialog.askstring('PDB NMR Restraints',
+                                       'Please enter a 4-digit pdb code:',
+                                       parent=self)
+        if pdbCode:
+            self.downloadFileFromPDB(pdbCode)
 
-    def downloadFileFromPDB(self):
+
+    def downloadFileFromPDB(self, pdbCode):
         """
         """
-        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"# + self.PDBCode.get().upper()+".mr.gz"
-        fileName = self.PDBCode.get().lower()+".mr"
+        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
+        fileName = pdbCode.lower()+".mr"
         zippedFileName = fileName+".gz"
         restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
         with open(zippedFileName, 'wb') as f:
