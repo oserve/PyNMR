@@ -28,11 +28,16 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
+import tkSimpleDialog
 import tkFileDialog
 from Panel import Panel
 import Tkinter as Tk
 from ScrolledList import ScrolledList
+import urllib2
+import shutil
+import gzip
+import os
+import sys
 
 class FileSelectionPanel(Panel):
     """This panel allows to import constraint file
@@ -50,6 +55,9 @@ class FileSelectionPanel(Panel):
         self.removeFileButton = Tk.Button(self, text="Remove selected file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
+        self.downloadButton = Tk.Button(self, text="Download from PDB",
+                                        command=self.downloadRestraintFileWin)
+        #self.PDBCode = Tk.StringVar()
         self.widgetCreation()
         self.NMRCommands = ""  #Must be set by application at run time
 
@@ -66,6 +74,7 @@ class FileSelectionPanel(Panel):
             position = position + 1
         self.loadFileButton.grid(row=2, column=0)
         self.removeFileButton.grid(row=2, column=1)
+        self.downloadButton.grid(row=3, column=0, columnspan=2)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -110,6 +119,47 @@ class FileSelectionPanel(Panel):
         """
         if len(self.constraintsList.listbox.curselection()):
             return self.fileList()[self.constraintsList.listbox.curselection()[0]]
+
+    def downloadRestraintFileWin(self):
+        """
+        """
+        pdbCode = tkSimpleDialog.askstring('PDB NMR Restraints',
+                                       'Please enter a 4-digit pdb code:',
+                                       parent=self)
+        if pdbCode:
+            self.downloadFileFromPDB(pdbCode)
+
+
+    def downloadFileFromPDB(self, pdbCode):
+        """
+        """
+        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
+        fileName = pdbCode.lower()+".mr"
+        zippedFileName = fileName+".gz"
+        try:
+            restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
+            with open(zippedFileName, 'wb') as f:
+                shutil.copyfileobj(restraintFileRequest, f)
+            restraintFileRequest.close()
+            zippedFile = gzip.open(zippedFileName,'rb')
+            decodedFile = zippedFile.read()
+            restraintFile = open(fileName, 'w')
+            restraintFile.write(decodedFile)
+            zippedFile.close()
+            os.remove(zippedFileName)
+            constraintDefinition = "CYANA"
+            restraintFile.close()
+            restraintFile = open(fileName, 'r')
+            for line in restraintFile:
+                if line.upper().find('ASSI') > -1:
+                    constraintDefinition = "CNS"
+                    break
+            restraintFile.close()
+            self.NMRCommands.loadNOE(fileName, constraintDefinition)
+            self.updateFilelist()
+            os.remove(fileName)
+        except:
+            sys.stderr("Can not download "+pdbCode+" NMR Restraints file from PDB.\n")
 
     def getInfo(self):
         """
