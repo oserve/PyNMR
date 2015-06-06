@@ -32,6 +32,7 @@ import tkSimpleDialog
 import tkFileDialog
 from Panel import Panel
 import Tkinter as Tk
+import ttk
 from ScrolledList import ScrolledList
 import urllib2
 import shutil
@@ -50,14 +51,13 @@ class FileSelectionPanel(Panel):
         self.constraintsDefTypes = ["CNS/XPLOR", "CYANA/DYANA"]
         self.constraintsDefType.set(self.constraintsDefTypes[0])
         self.constraintsFileList = Tk.StringVar()
-        self.loadFileButton = Tk.Button(self, text="Load file",
+        self.loadFileButton = ttk.Button(self, text="Load file",
                                         command=self.loadFile)
-        self.removeFileButton = Tk.Button(self, text="Remove selected file",
+        self.removeFileButton = ttk.Button(self, text="Remove selected file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
-        self.downloadButton = Tk.Button(self, text="Download from PDB",
+        self.downloadButton = ttk.Button(self, text="Download from PDB",
                                         command=self.downloadRestraintFileWin)
-        #self.PDBCode = Tk.StringVar()
         self.widgetCreation()
         self.NMRCommands = ""  #Must be set by application at run time
 
@@ -68,7 +68,7 @@ class FileSelectionPanel(Panel):
         self.constraintsList.grid(row=0, column=1, rowspan=2)
         position = 0
         for constraintType in self.constraintsDefTypes:
-            Tk.Radiobutton(self, text=constraintType,
+            ttk.Radiobutton(self, text=constraintType,
                            variable=self.constraintsDefType,
                            value=constraintType).grid(row=position, column=0)
             position = position + 1

@@ -31,6 +31,7 @@
 
 from Panel import Panel
 import Tkinter as Tk
+import ttk
 
 class NOEDrawingPanel(Panel):
     """
@@ -39,11 +40,11 @@ class NOEDrawingPanel(Panel):
         """
         """
         Panel.__init__(self, master, frameText="NOE Representation")
-        self.sticksButton = Tk.Button(self, text="Sticks",
+        self.sticksButton = ttk.Button(self, text="Sticks",
                                       command=self.showSticks)
-        self.densityButton = Tk.Button(self, text="Density",
+        self.densityButton = ttk.Button(self, text="Density",
                                        command=self.showDensity)
-        self.cleanButton = Tk.Button(self, text="Clean Sticks",
+        self.cleanButton = ttk.Button(self, text="Clean Sticks",
                                      command=self.cleanAll)
         self.mainApp = ""  #Must be set at run time
         self.NMRCommands = ""  #Must be set by application at run time

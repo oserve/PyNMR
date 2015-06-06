@@ -50,17 +50,17 @@ class SticksPreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        Tk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
+        ttk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
         self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
         self.spinBox_Radius.grid(row=0, column=1)
-        Tk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
-        self.satisfiedColorButton = Tk.Button(self, text="Choose color", command=self.setSatisfiedColor)
+        ttk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
+        self.satisfiedColorButton = ttk.Button(self, text="Choose color", command=self.setSatisfiedColor)
         self.satisfiedColorButton.grid(row=1, column=1)
-        Tk.Label(self, text="Atoms too far").grid(row=2, column=0)
-        self.tooFarButton = Tk.Button(self, text="Choose color", command=self.setTooFarColor)
+        ttk.Label(self, text="Atoms too far").grid(row=2, column=0)
+        self.tooFarButton = ttk.Button(self, text="Choose color", command=self.setTooFarColor)
         self.tooFarButton.grid(row=2, column=1)
-        Tk.Label(self, text="Atoms too close").grid(row=3, column=0)
-        self.tooCloseButton = Tk.Button(self, text="Choose color", command=self.setTooCloseColor)
+        ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
+        self.tooCloseButton = ttk.Button(self, text="Choose color", command=self.setTooCloseColor)
         self.tooCloseButton.grid(row=3, column=1)
 
     def getInfo(self):
@@ -118,7 +118,7 @@ class DensityPreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        Tk.Label(self, text='Gradient :').grid(row=0, column=0)
+        ttk.Label(self, text='Gradient :').grid(row=0, column=0)
         self.gradientSelection = ttk.Combobox(self, state="readonly",
                                               textvariable=self.gradient)
         self.gradientSelection.grid(row=0, column=1)
@@ -143,10 +143,10 @@ class PreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        Tk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0, rowspan=2)
+        ttk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0, rowspan=2)
         position = 0
         for methodName, method in self.methodsList:
-            Tk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
+            ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                            value=method).grid(row=position, column=1)
             position = position +1
 

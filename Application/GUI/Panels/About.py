@@ -29,7 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from Panel import Panel
-import Tkinter as Tk
+import ttk
 
 class About(Panel):
     """
@@ -38,4 +38,4 @@ class About(Panel):
         """
         """
         Panel.__init__(self, master, frameText="")
-        Tk.Label(self, text="This Pymol plugin has been written \n because I thought it would be useful \n to check my NOEs during my \npostdocship. I hope it'll help you as well.\n Feel free to send any comments to :\n olivier.serve@gmail.com\nThis plugin is free and maybe copied \nas long as you respect the copyright").grid(row=0, column=0)
+        ttk.Label(self, text="This Pymol plugin has been written \n because I thought it would be useful \n to check my NOEs during my \npostdocship. I hope it'll help you as well.\n Feel free to send any comments to :\n olivier.serve@gmail.com\nThis plugin is free and maybe copied \nas long as you respect the copyright").grid(row=0, column=0)
