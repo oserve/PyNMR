@@ -37,6 +37,7 @@ import urllib2
 import shutil
 import gzip
 import os
+import sys
 
 class FileSelectionPanel(Panel):
     """This panel allows to import constraint file
@@ -135,27 +136,30 @@ class FileSelectionPanel(Panel):
         url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
         fileName = pdbCode.lower()+".mr"
         zippedFileName = fileName+".gz"
-        restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
-        with open(zippedFileName, 'wb') as f:
-            shutil.copyfileobj(restraintFileRequest, f)
-        restraintFileRequest.close()
-        zippedFile = gzip.open(zippedFileName,'rb')
-        decodedFile = zippedFile.read()
-        restraintFile = open(fileName, 'w')
-        restraintFile.write(decodedFile)
-        zippedFile.close()
-        os.remove(zippedFileName)
-        constraintDefinition = "CYANA"
-        restraintFile.close()
-        restraintFile = open(fileName, 'r')
-        for line in restraintFile:
-            if line.upper().find('ASSI') > -1:
-                constraintDefinition = "CNS"
-                break
-        restraintFile.close()
-        self.NMRCommands.loadNOE(fileName, constraintDefinition)
-        self.updateFilelist()
-        os.remove(fileName)
+        try:
+            restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
+            with open(zippedFileName, 'wb') as f:
+                shutil.copyfileobj(restraintFileRequest, f)
+            restraintFileRequest.close()
+            zippedFile = gzip.open(zippedFileName,'rb')
+            decodedFile = zippedFile.read()
+            restraintFile = open(fileName, 'w')
+            restraintFile.write(decodedFile)
+            zippedFile.close()
+            os.remove(zippedFileName)
+            constraintDefinition = "CYANA"
+            restraintFile.close()
+            restraintFile = open(fileName, 'r')
+            for line in restraintFile:
+                if line.upper().find('ASSI') > -1:
+                    constraintDefinition = "CNS"
+                    break
+            restraintFile.close()
+            self.NMRCommands.loadNOE(fileName, constraintDefinition)
+            self.updateFilelist()
+            os.remove(fileName)
+        except:
+            sys.stderr("Can not download "+pdbCode+" NMR Restraints file from PDB.\n")
 
     def getInfo(self):
         """
