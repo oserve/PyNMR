@@ -72,7 +72,7 @@ class ConstraintFilter(object):
                         return 0
                 else:
                     stderr.write("Selection issue with constraint :\n"
-                                 + aConstraint + "\n")
+                                 + aConstraint.definition + "\n")
                     return 0
             else:
                 return 0
