@@ -22,6 +22,7 @@ The plugins offers the following possibilities :
 - Colors and size of NOE representations
 - Import popular data format [CNS](http://cns-online.org) or [CYANA](http://www.cyana.org)
 - Command line and GUI (using Tk)
+- Download restraints file from pdb.org
 
 This plugin actually works quite well, although some work is remaining.
 
@@ -56,7 +57,6 @@ Possible future features :
     * Link to 3D display
     * Real-time edit / display
 * Increase speed
-* Download restraints from pdb.org (almost here hang on)
 
 Known difficulties :
 ------------------

@@ -9,6 +9,7 @@
 #----------------------------------------------------------------
 
 import Tkinter as Tk
+import ttk
 
 #================================================================
 # Manifest constants
@@ -17,7 +18,7 @@ import Tkinter as Tk
 DEFAULT_WIDTH = "20"
 DEFAULT_HEIGHT = "10"
 
-class ScrolledList(Tk.Frame):
+class ScrolledList(ttk.Frame):
     """A compound widget containing a listbox and up to two scrollbars.
 
       State/invariants:
@@ -41,7 +42,7 @@ class ScrolledList(Tk.Frame):
         """
         #-- 1 --
         # [ self  :=  a new Frame widget child of master ]
-        Tk.Frame.__init__(self, master)
+        ttk.Frame.__init__(self, master)
         #-- 2 --
         self.width = width
         self.height = height
@@ -61,7 +62,7 @@ class ScrolledList(Tk.Frame):
         #     self.vScrollbar  :=  that widget ]
         #   else -> I ]
         if  self.vscroll:
-            self.vScrollbar = Tk.Scrollbar(self, orient=Tk.VERTICAL)
+            self.vScrollbar = ttk.Scrollbar(self, orient=Tk.VERTICAL)
             self.vScrollbar.grid(row=0, column=1, sticky=Tk.N+Tk.S)
         #-- 2 --
         # [ if self.hscroll ->
@@ -69,7 +70,7 @@ class ScrolledList(Tk.Frame):
         #     self.hScrollbar  :=  that widget
         #   else -> I ]
         if  self.hscroll:
-            self.hScrollbar = Tk.Scrollbar(self, orient=Tk.HORIZONTAL)
+            self.hScrollbar = ttk.Scrollbar(self, orient=Tk.HORIZONTAL)
             self.hScrollbar.grid(row=1, column=0, sticky=Tk.E+Tk.W)
         #-- 3 --
         # [ self  :=  self with a Listbox widget added
