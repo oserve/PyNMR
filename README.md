@@ -2,9 +2,10 @@ PyNMR
 =====
 Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) abilities to molecular viewer [Pymol](http://pymol.org).
 
-NMR can provide useful information to create molecular model, such as distance between atoms (usually protons in biomolecuar biology).
+NMR can provide useful information to create molecular models, such as distance between atoms (usually protons in biomolecuar biology).
 This plugin allows to display those informations, called "distance contraints" directly onto the molecular skeleton of proteins.
 It can do so in two different ways :
+
 - Display distance constraints as sticks between atoms / group of atoms with color code
 
 ![NOESticks](pictures/sticks.tiff)
@@ -16,15 +17,13 @@ It can do so in two different ways :
 I believe this could help a lot in the tedious process of determining whether the 
 constraints extracted from the nmr spectrum make sens or not.
 
-The plugins offers the following possibilities :
-
-- Method of distance calculation (ambiguous restraints)
-- Colors and size of NOE representations
+Additional Possibilities :
+---
 - Import popular data format [CNS](http://cns-online.org) or [CYANA](http://www.cyana.org)
-- Command line and GUI (using Tk)
-- Download restraints file from pdb.org
-
-This plugin actually works quite well, although some work is remaining.
+- Command line and GUI
+- Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do)
+- Choose method of distance calculation between atoms (in case of ambiguous restraints)
+- Colors and size of NOE representations
 
 Installation :
 ------------
