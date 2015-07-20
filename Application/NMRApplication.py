@@ -1,3 +1,33 @@
+# Copyright Notice
+# ================
+#
+# The PyMOL Plugin source code in this file is copyrighted, but you can
+# freely use and copy it as long as you don't change or remove any of
+# the copyright notices.
+#
+# ----------------------------------------------------------------------
+#               This PyMOL Plugin is Copyright (C) 2013 by
+#                 olivier serve <olivier dot serve at gmail dot com>
+#
+#                        All Rights Reserved
+#
+# Permission to use, copy, modify, distribute, and distribute modified
+# versions of this software and its documentation for any purpose and
+# without fee is hereby granted, provided that the above copyright
+# notice appear in all copies and that both the copyright notice and
+# this permission notice appear in supporting documentation, and that
+# the name(s) of the author(s) not be used in advertising or publicity
+# pertaining to distribution of the software without specific, written
+# prior permission.
+#
+# THE AUTHOR(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+# INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN
+# NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+# CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
+# USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+# ----------------------------------------------------------------------
 from GUI.NMRGUI import NMRGUI
 from Core.MolecularViewerInterface import get_names
 
@@ -78,11 +108,19 @@ class NMRApplication(object):
         results = []
         objectsLists = get_names()
         for name in objectsLists:
+            ShouldBeAdded = False
             if len(self.NMRCommands.ManagersList):
                 for managerName in self.NMRCommands.ManagersList.keys():
                     if name.find(managerName) < 0:
+                        print name, managerName
                         if name not in results:
-                            results.append(name)
+                            ShouldBeAdded = True
+                        else:
+                            ShouldBeAdded = False
+                    else:
+                        ShouldBeAdded = False
+                if ShouldBeAdded:
+                    results.append(name)
             else:
                 if name not in results:
                     results.append(name)
