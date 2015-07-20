@@ -115,6 +115,8 @@ class ViolationSelectionPanel(Panel):
     """
     """
     def __init__(self, master):
+        """
+        """
         Panel.__init__(self, master, frameText="Violation state Selection")
 
         self.ViolationsVars = {}
@@ -123,6 +125,8 @@ class ViolationSelectionPanel(Panel):
         self.widgetCreation()
 
     def widgetCreation(self):
+        """
+        """
         rowPosition = 0
         for violationType in ['violated', 'not violated']:
             self.ViolationsVars[violationType] = Tk.IntVar(self)
@@ -139,6 +143,8 @@ class ViolationSelectionPanel(Panel):
         self.spinBox_cutOff.grid(row=rowPosition+2, column=0)
 
     def getInfo(self):
+        """
+        """
         violationState = []
         for violationType in ['violated','not violated']:
             if self.ViolationsVars[violationType].get() == 1:

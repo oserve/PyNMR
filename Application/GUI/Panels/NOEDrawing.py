@@ -30,7 +30,6 @@
 # ----------------------------------------------------------------------
 
 from Panel import Panel
-import Tkinter as Tk
 import ttk
 
 class NOEDrawingPanel(Panel):

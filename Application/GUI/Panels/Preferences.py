@@ -44,6 +44,14 @@ class SticksPreferencesPanel(Panel):
         """
         Panel.__init__(self, master, frameText="NOE Sticks Preferences")
         self.radius = Tk.DoubleVar(self)
+        self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius,
+                                         from_=0.00, to=0.5, increment=0.01)
+        self.satisfiedColorButton = ttk.Button(self, text="Choose color",
+                                               command=self.setSatisfiedColor)
+        self.tooFarButton = ttk.Button(self, text="Choose color",
+                                       command=self.setTooFarColor)
+        self.tooCloseButton = ttk.Button(self, text="Choose color",
+                                         command=self.setTooCloseColor)
         self.colors = {}
         self.widgetCreation()
 
@@ -51,16 +59,12 @@ class SticksPreferencesPanel(Panel):
         """
         """
         ttk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
-        self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius, from_=0.00, to=0.5, increment=0.01)
         self.spinBox_Radius.grid(row=0, column=1)
         ttk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
-        self.satisfiedColorButton = ttk.Button(self, text="Choose color", command=self.setSatisfiedColor)
         self.satisfiedColorButton.grid(row=1, column=1)
         ttk.Label(self, text="Atoms too far").grid(row=2, column=0)
-        self.tooFarButton = ttk.Button(self, text="Choose color", command=self.setTooFarColor)
         self.tooFarButton.grid(row=2, column=1)
         ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
-        self.tooCloseButton = ttk.Button(self, text="Choose color", command=self.setTooCloseColor)
         self.tooCloseButton.grid(row=3, column=1)
 
     def getInfo(self):
@@ -82,7 +86,7 @@ class SticksPreferencesPanel(Panel):
         currentColor = self.float2intColor(self.colors["tooFar"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooFar"]=self.int2floatColor(result[0])
+            self.colors["tooFar"] = self.int2floatColor(result[0])
 
     def setTooCloseColor(self):
         """
@@ -90,7 +94,7 @@ class SticksPreferencesPanel(Panel):
         currentColor = self.float2intColor(self.colors["tooClose"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooClose"]=self.int2floatColor(result[0])
+            self.colors["tooClose"] = self.int2floatColor(result[0])
 
     #This should be in an different file probably
     def float2intColor(self, color):
@@ -143,12 +147,13 @@ class PreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(row=0, column=0, rowspan=2)
+        ttk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(
+            row=0, column=0, rowspan=2)
         position = 0
         for methodName, method in self.methodsList:
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                            value=method).grid(row=position, column=1)
-            position = position +1
+            position = position + 1
 
         self.sticksPanel = SticksPreferencesPanel(self)
         self.sticksPanel.grid(row=position, column=0, columnspan=2)

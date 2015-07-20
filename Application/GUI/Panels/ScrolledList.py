@@ -79,6 +79,7 @@ class ScrolledList(ttk.Frame):
             width=self.width, height=self.height,
             borderwidth=2, listvariable=alistvariable)
         self.listbox.grid(row=0, column=0)
+        self.listbox.configure(exportselection=False)
         #-- 4 --
         # [ if self.vscroll ->
         #     self.listbox  :=  self.listbox linked so that
