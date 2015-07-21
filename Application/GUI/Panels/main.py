@@ -34,6 +34,7 @@ from ConstraintSelection import ConstraintSelectionPanel
 from FileSelection import FileSelectionPanel
 from NOEDrawing import NOEDrawingPanel
 
+
 class mainPanel(Panel):
     """
     """

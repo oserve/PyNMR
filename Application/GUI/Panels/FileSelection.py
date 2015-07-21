@@ -40,6 +40,7 @@ import gzip
 import os
 import sys
 
+
 class FileSelectionPanel(Panel):
     """This panel allows to import constraint file
     into the Core. Also it allows the selection of the file
@@ -59,7 +60,7 @@ class FileSelectionPanel(Panel):
         self.downloadButton = ttk.Button(self, text="Download from PDB",
                                         command=self.downloadRestraintFileWin)
         self.widgetCreation()
-        self.NMRCommands = ""  #Must be set by application at run time
+        self.NMRCommands = ""  # Must be set by application at run time
 
     def widgetCreation(self):
         """
@@ -107,12 +108,11 @@ class FileSelectionPanel(Panel):
         if toRemove:
             del self.NMRCommands.ManagersList[toRemove]
         self.updateFilelist()
-        #self.constraintsList.setlist(self.NMRCommands.ManagersList.keys())
 
     def fileList(self):
         """
         """
-        return self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'","").split(',')
+        return self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'", "").split(',')
 
     def selectedFile(self):
         """
@@ -141,7 +141,7 @@ class FileSelectionPanel(Panel):
             with open(zippedFileName, 'wb') as f:
                 shutil.copyfileobj(restraintFileRequest, f)
             restraintFileRequest.close()
-            zippedFile = gzip.open(zippedFileName,'rb')
+            zippedFile = gzip.open(zippedFileName, 'rb')
             decodedFile = zippedFile.read()
             restraintFile = open(fileName, 'w')
             restraintFile.write(decodedFile)
@@ -159,7 +159,7 @@ class FileSelectionPanel(Panel):
             self.updateFilelist()
             os.remove(fileName)
         except:
-            sys.stderr("Can not download "+pdbCode+" NMR Restraints file from PDB.\n")
+            sys.stderr.write("Can not download "+pdbCode+" NMR Restraints file from PDB.\n")
 
     def getInfo(self):
         """

@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 
+
 class ConstraintFilter(object):
     """
 

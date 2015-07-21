@@ -33,6 +33,7 @@ import Tkinter as Tk
 import ttk
 from Panel import Panel
 
+
 class ConstraintSelectionPanel(Panel):
     """
     """
@@ -45,13 +46,13 @@ class ConstraintSelectionPanel(Panel):
         self.widgetCreation()
 
     def widgetCreation(self):
-        #Creation of range input
+        # Creation of range input
         self.consRangeFrame.grid(row=0, column=0)
 
-        #Creation of Violations inputs
+        # Creation of Violations inputs
         self.violationsFrame.grid(row=0, column=1)
 
-        #Creation of structure inputs
+        # Creation of structure inputs
         self.structureManagement.grid(row=1, column=0, columnspan=2)
 
     def getInfo(self):
@@ -59,6 +60,7 @@ class ConstraintSelectionPanel(Panel):
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
+
 
 class RangeSelectionPanel(Panel):
     """
@@ -76,12 +78,12 @@ class RangeSelectionPanel(Panel):
     def widgetCreation(self):
         """
         """
-        rowPosition=0
+        rowPosition = 0
         for consRange in ['intra', 'sequential', 'medium', 'long']:
             self.RangesVars[consRange] = Tk.IntVar(self)
             self.RangesCB[consRange] = ttk.Checkbutton(self, text=': ' + consRange, command=self.tick, variable=self.RangesVars[consRange])
             self.RangesCB[consRange].grid(row=rowPosition, column=0, sticky=Tk.W)
-            rowPosition=rowPosition + 1
+            rowPosition = rowPosition + 1
         self.RangesVars["all"] = Tk.IntVar(self)
         self.RangesCB["all"] = ttk.Checkbutton(self, text=': all', command=self.tickAll, variable=self.RangesVars["all"])
         self.RangesCB["all"].grid(row=rowPosition, column=0, sticky=Tk.W)
@@ -91,7 +93,7 @@ class RangeSelectionPanel(Panel):
         """
         """
         for consRange in ['intra', 'sequential', 'medium', 'long']:
-                self.RangesVars[consRange].set(self.RangesVars["all"].get())
+            self.RangesVars[consRange].set(self.RangesVars["all"].get())
 
     def tick(self):
         """
@@ -107,9 +109,10 @@ class RangeSelectionPanel(Panel):
         """
         ranges = []
         for consRange in ['intra', 'sequential', 'medium', 'long']:
-            if self.RangesVars[consRange].get()==1:
+            if self.RangesVars[consRange].get() == 1:
                 ranges.append(consRange)
-        return {"residuesRange":ranges}
+        return {"residuesRange": ranges}
+
 
 class ViolationSelectionPanel(Panel):
     """
@@ -146,10 +149,11 @@ class ViolationSelectionPanel(Panel):
         """
         """
         violationState = []
-        for violationType in ['violated','not violated']:
+        for violationType in ['violated', 'not violated']:
             if self.ViolationsVars[violationType].get() == 1:
                 violationState.append(violationType)
         return {"cutOff": self.cutOff.get(), "violationState": violationState}
+
 
 class StructureSelectionPanel(Panel):
     """

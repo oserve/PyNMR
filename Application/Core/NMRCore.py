@@ -35,10 +35,10 @@ lower limit violation, red for upper limit violation for NOEs)
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-#Required modules
+# Required modules
 from os.path import basename
 from sys import stderr, stdout
-#Custom Classes
+# Custom Classes
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
@@ -63,7 +63,6 @@ class NMRCore(object):
 
     def showSticks(self, managerName, pdb, colors, radius):
         self.ManagersList[managerName].setPDB(pdb)
-        theFilter = self.filter
         drawer = ConstraintDrawer()
         selectedConstraints = []
         if len(self.ManagersList[managerName]):
@@ -76,8 +75,8 @@ class NMRCore(object):
                         selectedConstraints.append(constraint)
                 self.displayedConstraints = self.displayedConstraints+selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
-                stdout.write(str(results['DrawnConstraints'])
-                             + " constraints drawn on a total of " +
+                stdout.write(str(results['DrawnConstraints']) +
+                             " constraints drawn on a total of " +
                              str(len(self.ManagersList[managerName])) + "\n")
                 selection = createSelection([self.ManagersList[managerName].pdb] + results['Residueslist'])
                 select('involRes', selection)

@@ -33,6 +33,7 @@
 
 from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
 
+
 class ConstraintDrawer(object):
     """
 
@@ -56,8 +57,8 @@ class ConstraintDrawer(object):
             drawConstraint(aConstraint.points, color, radius,
                            aConstraint.getID())
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
-        return {'Residueslist':involvedResidueslist,
-                'DrawnConstraints':numberOfDrawnConstraints}
+        return {'Residueslist': involvedResidueslist,
+                'DrawnConstraints': numberOfDrawnConstraints}
 
     def constraintsDensity(self, selectedConstraints):
         """Calculate number of constraints per residue for selected constraints

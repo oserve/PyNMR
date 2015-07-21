@@ -28,6 +28,8 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+
+
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
     """
@@ -45,7 +47,7 @@ class ConstraintSetManager(object):
 
     __repr__ = __str__
 
-    #Constraints management methods
+    # Constraints management methods
 
     def setPDB(self, pdb):
         """Sets the name of the structure (usually a PDB File) on which the

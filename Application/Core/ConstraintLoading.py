@@ -29,11 +29,12 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-#DistanceConstraints loading functions
+# DistanceConstraints loading functions
 from sys import stderr, stdout
 import re
 from .Constraints.NOE import NOE
 from ConstraintManager import ConstraintSetManager
+
 
 class ConstraintLoader(object):
     """Classes used to lad constraints from
@@ -48,10 +49,10 @@ class ConstraintLoader(object):
         self.constraintDefinition = constraintDefinition
         self.inFileTab = []
 
-        #Useful RegEx definitions
+        # Useful RegEx definitions
         self.ParReg = re.compile('[()]')  # used in cns constraints loading. Suppression of ()
-        self.SParReg = re.compile("\(.*\)")  #used in cns constraint loading.
-        self.RegResi = re.compile("RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  #match CNS Residue definition
+        self.SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
+        self.RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
         self.SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
 
@@ -106,21 +107,21 @@ class ConstraintLoader(object):
         """
         constraint_number = 1
 
-        for aConstLine in self.validCNSConstraints:  #itemizing constraints
-            #avoid empty lines
-            if re.search('\d', aConstLine):
+        for aConstLine in self.validCNSConstraints:  # itemizing constraints
+            # avoid empty lines
+            if re.search(r'\d', aConstLine):
                 parsingResult = self.parseCNSConstraint(aConstLine)
-                if len(parsingResult) == 3:  #2 residues + distances (matches also H-Bonds)
+                if len(parsingResult) == 3:  # 2 residues + distances (matches also H-Bonds)
                     aConstraint = NOE()
                 else:
-                    #No other constraint type supported ... for now !
+                    # No other constraint type supported ... for now !
                     break
                 aConstraint.id["number"] = constraint_number
                 aConstraint.definition = aConstLine
                 aConstraint.addAtomGroups(parsingResult)
                 aConstraint.setConstraintValues(parsingResult[-1][0],
                                                 parsingResult[-1][1],
-                                                parsingResult[-1][2])  #Values always at the end of the array
+                                                parsingResult[-1][2])  # Values always at the end of the array
 
                 aManager.addConstraint(aConstraint)
                 constraint_number = constraint_number + 1
@@ -141,7 +142,7 @@ class ConstraintLoader(object):
                 else:
                     cons_tab = aConstLine.split()
                     aConstraint = NOE()
-                    try:  #For errors not filtered previously
+                    try:  # For errors not filtered previously
                         parsed = [
                             {'resid': int(cons_tab[0]),
                              'name': self.AtTypeReg.match(
@@ -153,13 +154,13 @@ class ConstraintLoader(object):
                         aConstraint.addAtomGroups(parsed)
                         aConstraint.setConstraintValues(str(1.8 +
                                                             (float(cons_tab[6])
-                                                             -1.8)/2),
+                                                             - 1.8)/2),
                                                         '1.8', cons_tab[6])
                         aManager.addConstraint(aConstraint)
                         counter = counter + 1
                     except:
                         stderr.write("Unknown error while loading constraint "
-                                     +":\n"+ aConstLine + "\n")
+                                     + ":\n" + aConstLine + "\n")
             else:
                 stderr.write("Empty line, skipping.\n")
 

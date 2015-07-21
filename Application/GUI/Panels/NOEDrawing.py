@@ -32,6 +32,7 @@
 from Panel import Panel
 import ttk
 
+
 class NOEDrawingPanel(Panel):
     """
     """
@@ -45,8 +46,8 @@ class NOEDrawingPanel(Panel):
                                        command=self.showDensity)
         self.cleanButton = ttk.Button(self, text="Clean Sticks",
                                      command=self.cleanAll)
-        self.mainApp = ""  #Must be set at run time
-        self.NMRCommands = ""  #Must be set by application at run time
+        self.mainApp = ""  # Must be set at run time
+        self.NMRCommands = ""  # Must be set by application at run time
         self.widgetCreation()
 
     def widgetCreation(self):

@@ -36,7 +36,7 @@ from os import getcwd, chdir
 from sys import stderr
 from os.path import exists
 import Tkinter as Tk
-#Needed to upload custom modules
+# Needed to upload custom modules
 INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
 WORKING_DIR = getcwd()
 chdir(INSTALL_DIR)
@@ -46,10 +46,11 @@ from Application.NMRApplication import NMRApplication
 
 chdir(WORKING_DIR)
 
-#Loading Core Functions
+# Loading Core Functions
 Core = NMRCore()
 
 pyNMR = NMRApplication(Core)
+
 
 def __init__(self):
     """Add the plugin to Pymol main menu
@@ -58,6 +59,7 @@ def __init__(self):
                              'PyNMR',
                              label='PyNMR...',
                              command=lambda s=self: NMRApplication(Core, s))
+
 
 def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
             violationState='all', violCutoff=pyNMR.defaults["cutOff"],

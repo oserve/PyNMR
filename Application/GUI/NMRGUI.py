@@ -34,6 +34,7 @@ from Panels.Preferences import PreferencesPanel
 from Panels.Main import mainPanel
 from Panels.About import About
 
+
 class NMRGUI(Tk.Toplevel):
     """
     """

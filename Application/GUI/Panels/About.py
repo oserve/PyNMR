@@ -31,6 +31,7 @@
 from Panel import Panel
 import ttk
 
+
 class About(Panel):
     """
     """

@@ -96,7 +96,7 @@ class SticksPreferencesPanel(Panel):
         if result[0]:
             self.colors["tooClose"] = self.int2floatColor(result[0])
 
-    #This should be in an different file probably
+    # This should be in an different file probably
     def float2intColor(self, color):
         """
         """
@@ -131,6 +131,7 @@ class DensityPreferencesPanel(Panel):
         """
         """
         return {"gradient": self.gradient.get()}
+
 
 class PreferencesPanel(Panel):
     """
