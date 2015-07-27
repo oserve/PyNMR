@@ -47,7 +47,8 @@ class NMRApplication(object):
                 'tooFar': [1, 0, 0, 1, 0, 0],
                 'tooClose': [0, 0, 1, 0, 0, 1]
                 },
-            'gradient': "blue_white_red", "method": "sum6"
+            'gradient': "blue_white_red", "method": "sum6",
+            'violationID': "_V_", 'notViolationID': '_NV_'
             }
         self.gradientColorList = [
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",
@@ -89,6 +90,8 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection['values'] = self.gradientColorList
         self.NMRInterface.preferencesPanel.densityPanel.gradient.set(self.defaults["gradient"])
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
+        self.NMRInterface.preferencesPanel.sticksPanel.violationID.set(self.defaults["violationID"])
+        self.NMRInterface.preferencesPanel.sticksPanel.notViolationID.set(self.defaults["notViolationID"])
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
         self.NMRInterface.preferencesPanel.selectedMethod.set(self.defaults["method"])

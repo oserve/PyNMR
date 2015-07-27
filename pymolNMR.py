@@ -64,7 +64,9 @@ def __init__(self):
 def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
             violationState='all', violCutoff=pyNMR.defaults["cutOff"],
             method="sum6", radius=pyNMR.defaults["radius"],
-            colors=pyNMR.defaults["colors"]):
+            colors=pyNMR.defaults["colors"],
+            violationID=pyNMR.defaults["violationID"],
+            notViolationID=pyNMR.defaults["notViolationID"]):
     """Command to display NMR restraints as sticks on protein structure with
     different parameters : filtering according to distance, restraints display
     options
@@ -78,7 +80,8 @@ def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
             Core.commandsInterpretation(pdb, managerName, residuesList,
                                         dist_range, violationState, violCutoff,
                                         method)
-            Core.showSticks(managerName, pdb, colors, radius)
+            Core.showSticks(managerName, pdb, colors, radius, violationID,
+                            notViolationID)
         else:
             stderr.write("Please check constraints filename.\n")
 

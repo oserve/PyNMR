@@ -32,12 +32,18 @@
 # ----------------------------------------------------------------------
 
 from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
-
+from ConstraintID import IDConstraint
 
 class ConstraintDrawer(object):
     """
 
     """
+    def __init__(self, violationID="", notViolationID=""):
+        """
+        """
+        self.violationID = violationID
+        self.notViolationID = notViolationID
+
     def drC(self, selectedConstraints, radius, colors):
         """
         Draw an array of constraints according to the filter defined by user,
@@ -55,7 +61,8 @@ class ConstraintDrawer(object):
             elif aConstraint.violated == 'not violated':
                 color = colors['notViolated']
             drawConstraint(aConstraint.points, color, radius,
-                           aConstraint.getID())
+                           IDConstraint(aConstraint, self.violationID,
+                                        self.notViolationID))
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist': involvedResidueslist,
                 'DrawnConstraints': numberOfDrawnConstraints}

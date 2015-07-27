@@ -29,37 +29,15 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from Panel import Panel
-from ConstraintSelection import ConstraintSelectionPanel
-from FileSelection import FileSelectionPanel
-from NOEDrawing import NOEDrawingPanel
 
-
-class mainPanel(Panel):
+def IDConstraint(aConstraint, violationID, notViolationID):
+    """Returns name of constraints :
+    Name_(constraint number)_(pdbName)_(violation_state)
     """
-    """
-    def __init__(self, master):
-        """
-        """
-        Panel.__init__(self, master)
-        self.fileSelection = FileSelectionPanel(self)
-        self.constraintPanel = ConstraintSelectionPanel(self)
-        self.NOEDrawing = NOEDrawingPanel(self)
-        self.panelsList = [self.fileSelection, self.constraintPanel,
-                           self.NOEDrawing]
-        self.widgetCreation()
-
-    def widgetCreation(self):
-        """
-        """
-        self.fileSelection.grid(row=0, column=0)
-        self.constraintPanel.grid(row=1, column=0)
-        self.NOEDrawing.grid(row=2, column=0)
-
-    def getInfo(self):
-        """
-        """
-        infos = {}
-        for panel in self.panelsList:
-            infos.update(panel.getInfo())
-        return infos
+    if aConstraint.violated != '':
+        if aConstraint.violated == 'violated':
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + violationID + aConstraint.pdbName
+        else:
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + notViolationID + aConstraint.pdbName
+    else:
+        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.pdbName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + aConstraint.printCons() + "\n")

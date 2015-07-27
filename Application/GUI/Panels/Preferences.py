@@ -52,6 +52,10 @@ class SticksPreferencesPanel(Panel):
                                        command=self.setTooFarColor)
         self.tooCloseButton = ttk.Button(self, text="Choose color",
                                          command=self.setTooCloseColor)
+        self.violationID = Tk.StringVar(self)
+        self.notViolationID = Tk.StringVar(self)
+        self.violationIDEntry = ttk.Entry(self, textvariable=self.violationID)
+        self.notViolationIDEntry = ttk.Entry(self, textvariable=self.notViolationID)
         self.colors = {}
         self.widgetCreation()
 
@@ -66,11 +70,15 @@ class SticksPreferencesPanel(Panel):
         self.tooFarButton.grid(row=2, column=1)
         ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
         self.tooCloseButton.grid(row=3, column=1)
+        ttk.Label(self, text='Violation Identification :').grid(row=4, column=0)
+        self.violationIDEntry.grid(row=4, column=1)
+        ttk.Label(self, text='Not violation Identification :').grid(row=5, column=0)
+        self.notViolationIDEntry.grid(row=5, column=1)
 
     def getInfo(self):
         """
         """
-        return {"radius": self.radius.get(), "colors": self.colors}
+        return {"radius": self.radius.get(), "colors": self.colors, "violationID": self.violationID, "notViolationID": self.notViolationID}
 
     def setSatisfiedColor(self):
         """

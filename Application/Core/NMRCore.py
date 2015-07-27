@@ -61,9 +61,9 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName, consDef)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
-    def showSticks(self, managerName, pdb, colors, radius):
+    def showSticks(self, managerName, pdb, colors, radius, violationID, notViolationID):
         self.ManagersList[managerName].setPDB(pdb)
-        drawer = ConstraintDrawer()
+        drawer = ConstraintDrawer(violationID, notViolationID)
         selectedConstraints = []
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
