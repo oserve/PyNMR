@@ -50,10 +50,10 @@ class NOE(Constraint):
     def setViolationState(self, cutOff):
         """Set violation state, with optional additional cutoff
         """
-        if (self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff)):
+        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff):
             self.violated = 'violated'
             self.constraintValues['closeness'] = 'tooClose'
-        elif (self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff)):
+        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff):
             self.violated = 'violated'
             self.constraintValues['closeness'] = 'tooFar'
         else:
@@ -63,7 +63,7 @@ class NOE(Constraint):
         """Return the range name, according to the usual NMR specification
         range depends on the number of residus between the atomsets
         """
-        if not (int(self.resis[0]['number']) - int(self.resis[1]['number'])):
+        if not int(self.resis[0]['number']) - int(self.resis[1]['number']):
             return 'intra'
         elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) == 1:
             return 'sequential'
@@ -74,17 +74,17 @@ class NOE(Constraint):
         else:
             stderr.write('How come ?\n')
 
-    def getID(self):
-        """Returns name of constraints :
-        Name_(constraint number)_(pdbName)_(violation_state)
-        """
-        if self.violated != '':
-            if self.violated == 'violated':
-                return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
-            else:
-                return self.id['name'] + str(self.id['number']) + "_NV" + "_" + self.pdbName
-        else:
-            stderr.write("Can not give ID : Violation state not defined for constraint : " + self.pdbName + "_" + self.id['name'] + str(self.id['number']) + "\n" + self.printCons() + "\n")
+    # def getID(self):
+    #     """Returns name of constraints :
+    #     Name_(constraint number)_(pdbName)_(violation_state)
+    #     """
+    #     if self.violated != '':
+    #         if self.violated == 'violated':
+    #             return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
+    #         else:
+    #             return self.id['name'] + str(self.id['number']) + "_NV" + "_" + self.pdbName
+    #     else:
+    #         stderr.write("Can not give ID : Violation state not defined for constraint : " + self.pdbName + "_" + self.id['name'] + str(self.id['number']) + "\n" + self.printCons() + "\n")
 
     def setDistance(self, method):
         """Set actual distance of the constraint in the current pdb file
