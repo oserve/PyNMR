@@ -78,7 +78,7 @@ class SticksPreferencesPanel(Panel):
     def getInfo(self):
         """
         """
-        return {"radius": self.radius.get(), "colors": self.colors, "violationID": self.violationID, "notViolationID": self.notViolationID}
+        return {"radius": self.radius.get(), "colors": self.colors, "violationID": self.violationID.get(), "notViolationID": self.notViolationID.get()}
 
     def setSatisfiedColor(self):
         """
