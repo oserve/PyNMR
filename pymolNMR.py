@@ -32,19 +32,19 @@ contains interface for command line functions
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from os import getcwd, chdir
+# from os import getcwd, chdir
 from sys import stderr
 from os.path import exists
 import Tkinter as Tk
 # Needed to upload custom modules
-INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
-WORKING_DIR = getcwd()
-#chdir(INSTALL_DIR)
+# INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
+# WORKING_DIR = getcwd()
+# chdir(INSTALL_DIR)
 
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
 
-#chdir(WORKING_DIR)
+# chdir(WORKING_DIR)
 
 # Loading Core Functions
 Core = NMRCore()

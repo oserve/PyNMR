@@ -28,8 +28,7 @@ Additional Possibilities :
 Installation :
 ------------
 ###For development version :
-- Copy the files into a single directory anywhere on your disk
-- Edit variable "installDir" in pymolNMR.py using your favorite text editor (Hopefully this should not be needed in the future)
+- Copy all files into a single directory anywhere on your disk
 
 ###For user friendly version :
 - Download "PyNMRPG.py"
