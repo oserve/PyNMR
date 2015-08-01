@@ -43,12 +43,12 @@ class NMRApplication(object):
         self.defaults = {
             "radius": 0.03, "cutOff": 0.3,
             "colors": {
-                'notViolated': [1, 1, 1, 1, 1, 1],
+                'Satisfied': [1, 1, 1, 1, 1, 1],
                 'tooFar': [1, 0, 0, 1, 0, 0],
                 'tooClose': [0, 0, 1, 0, 0, 1]
                 },
             'gradient': "blue_white_red", "method": "sum6",
-            'violationID': "_V_", 'notViolationID': '_NV_'
+            'violationID': "_US_", 'notViolationID': '_S_'
             }
         self.gradientColorList = [
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",

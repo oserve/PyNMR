@@ -70,51 +70,42 @@ class SticksPreferencesPanel(Panel):
         self.tooFarButton.grid(row=2, column=1)
         ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
         self.tooCloseButton.grid(row=3, column=1)
-        ttk.Label(self, text='Violation Identification :').grid(row=4, column=0)
+        ttk.Label(self, text='Unsatisfied Identification :').grid(row=4, column=0)
         self.violationIDEntry.grid(row=4, column=1)
-        ttk.Label(self, text='Not violation Identification :').grid(row=5, column=0)
+        ttk.Label(self, text='Satisfied Identification :').grid(row=5, column=0)
         self.notViolationIDEntry.grid(row=5, column=1)
 
     def getInfo(self):
         """
         """
-        return {"radius": self.radius.get(), "colors": self.colors, "violationID": self.violationID.get(), "notViolationID": self.notViolationID.get()}
+        return {"radius": self.radius.get(),
+                "colors": self.colors,
+                "violationID": self.violationID.get(),
+                "notViolationID": self.notViolationID.get()}
 
     def setSatisfiedColor(self):
         """
         """
-        currentColor = self.float2intColor(self.colors["notViolated"])
+        currentColor = float2intColor(self.colors["Satisfied"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["notViolated"] = self.int2floatColor(result[0])
+            self.colors["Satisfied"] = int2floatColor(result[0])
 
     def setTooFarColor(self):
         """
         """
-        currentColor = self.float2intColor(self.colors["tooFar"])
+        currentColor = float2intColor(self.colors["tooFar"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooFar"] = self.int2floatColor(result[0])
+            self.colors["tooFar"] = int2floatColor(result[0])
 
     def setTooCloseColor(self):
         """
         """
-        currentColor = self.float2intColor(self.colors["tooClose"])
+        currentColor = float2intColor(self.colors["tooClose"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooClose"] = self.int2floatColor(result[0])
-
-    # This should be in an different file probably
-    def float2intColor(self, color):
-        """
-        """
-        return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
-
-    def int2floatColor(self, color):
-        """
-        """
-        return [color[0]/255.0, color[1]/255.0, color[2]/255.0,
-                color[0]/255.0, color[1]/255.0, color[2]/255.0]
+            self.colors["tooClose"] = int2floatColor(result[0])
 
 
 class DensityPreferencesPanel(Panel):
@@ -179,3 +170,16 @@ class PreferencesPanel(Panel):
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
+
+
+def float2intColor(color):
+    """
+    """
+    return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
+
+
+def int2floatColor(color):
+    """
+    """
+    return [color[0]/255.0, color[1]/255.0, color[2]/255.0,
+            color[0]/255.0, color[1]/255.0, color[2]/255.0]

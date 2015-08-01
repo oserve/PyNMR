@@ -56,10 +56,10 @@ class ConstraintDrawer(object):
                 involvedResidueslist.append(aConstraint.resis[0]['number'])
             if not aConstraint.resis[1]['number'] in involvedResidueslist:
                 involvedResidueslist.append(aConstraint.resis[1]['number'])
-            if aConstraint.violated == 'violated':
+            if aConstraint.satisfaction == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
-            elif aConstraint.violated == 'not violated':
-                color = colors['notViolated']
+            elif aConstraint.satisfaction == 'Satisfied':
+                color = colors['Satisfied']
             drawConstraint(aConstraint.points, color, radius,
                            IDConstraint(aConstraint, self.violationID,
                                         self.notViolationID))

@@ -1,7 +1,7 @@
 """load CNS or DYANA distances constraints files
 into molecular viewer, display them on the molecule
-and show violated constraints according to a cutOff
-with different color (White for not violated, blue for
+and show unSatisfied constraints according to a cutOff
+with different color (White for not unSatisfied, blue for
 lower limit violation, red for upper limit violation for NOEs)
 """
 # Copyright Notice
@@ -62,6 +62,9 @@ class NMRCore(object):
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
     def showSticks(self, managerName, pdb, colors, radius, violationID, notViolationID):
+        """
+        """
+        print managerName, pdb, colors, radius, violationID, notViolationID
         self.ManagersList[managerName].setPDB(pdb)
         drawer = ConstraintDrawer(violationID, notViolationID)
         selectedConstraints = []
@@ -113,6 +116,7 @@ class NMRCore(object):
                                dist_range, violationState, violCutoff, method):
         """Setup Filter for constraints
         """
+        print pdb, managerName, residuesList, dist_range, violationState, violCutoff, method
         if residuesList == 'all':
             resList = self.ManagersList[managerName].residuesList
         else:
@@ -135,7 +139,7 @@ class NMRCore(object):
 
         if not isinstance(violationState, list):
             if violationState == 'all':
-                violationState = ['violated', 'not violated']
+                violationState = ['unSatisfied', 'Satisfied']
             else:
                 violationState = [violationState]
         self.filter = ConstraintFilter(pdb, resList, dist_range,

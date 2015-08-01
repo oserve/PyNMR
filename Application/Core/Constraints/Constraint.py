@@ -39,7 +39,7 @@ class Constraint(object):
     atoms, model value, theoretical value,
     constraint number, constraint name
     and methods that allows to get these informations
-    or to determine if the constraints is violated or not (TODO)
+    or to determine if the constraints is unSatisfied or not (TODO)
     """
 
     def __init__(self):
@@ -47,7 +47,7 @@ class Constraint(object):
         """
         self.id = {}
         self.resis = []
-        self.violated = ''
+        self.satisfaction = ''
         self.definition = ''
         self.atoms = []
         self.constraintValues = {}
@@ -76,11 +76,11 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isViolated(self):
+    def isSatifsied(self):
         """
         Returns yes or no according to the violation state
         """
-        return self.violated
+        return self.satisfaction
 
     def associatePDBAtoms(self, pdbName):
         """

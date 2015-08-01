@@ -33,8 +33,9 @@ from math import sqrt
 from MolecularViewerInterface import get_model
 
 def centerOfMass(selection):
-    ## Author: Andreas Henschel 2006
-    ## assumes equal weights
+    """ Author: Andreas Henschel 2006
+    assumes equal weights
+    """
     model = get_model(selection)
     if len(model.atom) > 0:
         x, y, z = 0, 0, 0

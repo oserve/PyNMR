@@ -120,10 +120,10 @@ class ViolationSelectionPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="Violation state Selection")
+        Panel.__init__(self, master, frameText="Constraint state :")
 
         self.ViolationsVars = {}
-        self.ViolatedCB = {}
+        self.UnSatifsiedCB = {}
         self.cutOff = Tk.DoubleVar(self)
         self.widgetCreation()
 
@@ -131,10 +131,10 @@ class ViolationSelectionPanel(Panel):
         """
         """
         rowPosition = 0
-        for violationType in ['violated', 'not violated']:
+        for violationType in ['unSatisfied', 'Satisfied']:
             self.ViolationsVars[violationType] = Tk.IntVar(self)
-            self.ViolatedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
-            self.ViolatedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
+            self.UnSatifsiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
+            self.UnSatifsiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
             self.ViolationsVars[violationType].set(1)
             rowPosition = rowPosition + 1
 
@@ -149,7 +149,7 @@ class ViolationSelectionPanel(Panel):
         """
         """
         violationState = []
-        for violationType in ['violated', 'not violated']:
+        for violationType in ['unSatisfied', 'Satisfied']:
             if self.ViolationsVars[violationType].get() == 1:
                 violationState.append(violationType)
         return {"cutOff": self.cutOff.get(), "violationState": violationState}

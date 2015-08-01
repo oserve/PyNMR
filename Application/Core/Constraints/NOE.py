@@ -31,7 +31,7 @@
 
 from sys import stderr
 from Constraint import Constraint
-from ...Core.Geom import centerOfMass, calcDistance
+from ..Geom import centerOfMass, calcDistance
 
 
 class NOE(Constraint):
@@ -51,13 +51,13 @@ class NOE(Constraint):
         """Set violation state, with optional additional cutoff
         """
         if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff):
-            self.violated = 'violated'
+            self.satisfaction = 'unSatisfied'
             self.constraintValues['closeness'] = 'tooClose'
         elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff):
-            self.violated = 'violated'
+            self.satisfaction = 'unSatisfied'
             self.constraintValues['closeness'] = 'tooFar'
         else:
-            self.violated = 'not violated'
+            self.satisfaction = 'Satisfied'
 
     def getRange(self):
         """Return the range name, according to the usual NMR specification
@@ -73,18 +73,6 @@ class NOE(Constraint):
             return 'long'
         else:
             stderr.write('How come ?\n')
-
-    # def getID(self):
-    #     """Returns name of constraints :
-    #     Name_(constraint number)_(pdbName)_(violation_state)
-    #     """
-    #     if self.violated != '':
-    #         if self.violated == 'violated':
-    #             return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
-    #         else:
-    #             return self.id['name'] + str(self.id['number']) + "_NV" + "_" + self.pdbName
-    #     else:
-    #         stderr.write("Can not give ID : Violation state not defined for constraint : " + self.pdbName + "_" + self.id['name'] + str(self.id['number']) + "\n" + self.printCons() + "\n")
 
     def setDistance(self, method):
         """Set actual distance of the constraint in the current pdb file

@@ -63,7 +63,7 @@ class ConstraintFilter(object):
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
-                        if aConstraint.isViolated() in self.parameters['violationState']:
+                        if aConstraint.isSatifsied() in self.parameters['violationState']:
                             return 1
                         else:
                             return 0

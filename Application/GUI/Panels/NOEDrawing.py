@@ -50,6 +50,7 @@ class NOEDrawingPanel(Panel):
         self.NMRCommands = ""  # Must be set by application at run time
         self.widgetCreation()
 
+
     def widgetCreation(self):
         """
         """
@@ -93,7 +94,7 @@ class NOEDrawingPanel(Panel):
                                             infos["gradient"])
 
     def cleanAll(self):
-        """
+        """Remove all displayed sticks
         """
         infos = self.mainApp.getInfo()
 

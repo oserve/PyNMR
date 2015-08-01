@@ -106,13 +106,13 @@ class Constraint(object):
         atoms, model value, theoretical value,
         constraint number, constraint name
         and methods that allows to get these informations
-        or to determine if the constraints is violated or not (TODO)
+        or to determine if the constraints is unSatisfied or not (TODO)
     """
     
     def __init__(self):
         self.id = {}
         self.resis = []
-        self.violated = ''
+        self.satisfaction = ''
         self.definition = ''
         self.atoms = []
         self.constraintValues = {}
@@ -130,10 +130,10 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isViolated(self):
+    def isUnSatifsied(self):
         """returns yes or no according to the violation state
         """
-        return self.violated
+        return self.satisfaction
 
     def associatePDBAtoms(self):
         """
@@ -159,7 +159,7 @@ class NOE(Constraint):
     NOE inherits from Constraint
     Contains additional methods specific to NOE constraint
     """
-    
+
     def __init__(self):
         super(NOE, self).__init__()
         self.points = {}
@@ -169,13 +169,13 @@ class NOE(Constraint):
         """Set violation state, with optional additional cutoff
         """
         if (self.constraintValues['actual'] <= (self.constraintValues['constraint']-self.constraintValues['min']-cutOff)):
-            self.violated = 'violated'
+            self.satisfaction = 'unSatisfied'
             self.constraintValues['closeness'] = 'tooClose'
         elif (self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff)):
-            self.violated = 'violated'
+            self.satisfaction = 'unSatisfied'
             self.constraintValues['closeness'] = 'tooFar'
         else:
-            self.violated = 'not violated'
+            self.satisfaction = 'not unSatisfied'
 
     def getRange(self):
         if not (int(self.resis[0]['number'])-int(self.resis[1]['number'])):
@@ -192,8 +192,8 @@ class NOE(Constraint):
     def getID(self):
         """Returns name of constraints : Name_(constraint number)_(pdbName)_(violation_state)
         """
-        if self.violated != '':
-            if self.violated == 'violated':
+        if self.satisfaction != '':
+            if self.satisfaction == 'unSatisfied':
                 return self.id['name'] + str(self.id['number']) + "_V" + "_" + self.pdbName
             else:
                 return self.id['name'] + str(self.id['number']) + "_NV" + "_" + self.pdbName
@@ -407,10 +407,10 @@ class ConstraintDrawer(object):
                 involvedResidueslist.append(aConstraint.resis[0]['number'])
             if not aConstraint.resis[1]['number'] in involvedResidueslist:
                 involvedResidueslist.append(aConstraint.resis[1]['number'])
-            if aConstraint.violated == 'violated':
+            if aConstraint.satisfaction == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
-            elif aConstraint.violated == 'not violated':
-                color = colors['notViolated']
+            elif aConstraint.satisfaction == 'Satisfied':
+                color = colors['Satisfied']
             drawConstraint(aConstraint.points, color, radius, aConstraint.getID())
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist':involvedResidueslist, 'DrawnConstraints':numberOfDrawnConstraints}
@@ -473,7 +473,7 @@ class ConstraintFilter(object):
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
-                        if aConstraint.isViolated() in self.parameters['violationState']:
+                        if aConstraint.isSatifsied() in self.parameters['violationState']:
                             return 1
                         else:
                             return 0
@@ -656,7 +656,7 @@ class NMRCore(object):
 
         if type(violationState)!=type([]):
             if violationState=='all':
-                violationState=['violated', 'not violated']
+                violationState=['unSatisfied', 'Satisfied']
             else:
                 violationState=[violationState]
         self.filter=ConstraintFilter(pdb, resList, dist_range, violationState, violCutoff, method)
@@ -864,17 +864,17 @@ class ViolationSelectionPanel(Panel):
         Panel.__init__(self, master, frameText="Violation state Selection")
 
         self.ViolationsVars={}
-        self.ViolatedCB={}
+        self.UnSatifsiedCB={}
         self.cutOff=Tk.DoubleVar(self)
         self.widgetCreation()
 
     def widgetCreation(self):
         rowPosition=0
-        for violationType in ['violated', 'not violated']:
+        for violationType in ['unSatisfied', 'Satisfied']:
             self.ViolationsVars[violationType]=Tk.IntVar(self)
-            self.ViolatedCB[violationType]=Tk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
-            self.ViolatedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
-            self.ViolatedCB[violationType].select()
+            self.UnSatifsiedCB[violationType]=Tk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
+            self.UnSatifsiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
+            self.UnSatifsiedCB[violationType].select()
             rowPosition=rowPosition+1
 
         Tk.Label(self, text='Distance CutOff (A)').grid(row=rowPosition+1, column=0)
@@ -884,7 +884,7 @@ class ViolationSelectionPanel(Panel):
 
     def getInfo(self):
         violationState=[]
-        for violationType in ['violated','not violated']:
+        for violationType in ['unSatisfied','Satisfied']:
             if self.ViolationsVars[violationType].get()==1:
                 violationState.append(violationType)
         return {"cutOff":self.cutOff.get(), "violationState":violationState}
@@ -914,10 +914,10 @@ class SticksPreferencesPanel(Panel):
         return {"radius":self.radius.get(), "colors":self.colors}
 
     def setSatisfiedColor(self):
-        currentColor = self.float2intColor(self.colors["notViolated"])
+        currentColor = self.float2intColor(self.colors["satisfied"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["notViolated"]=self.int2floatColor(result[0])
+            self.colors["satisfied"]=self.int2floatColor(result[0])
 
     def setTooFarColor(self):
         currentColor = self.float2intColor(self.colors["tooFar"])
@@ -1034,7 +1034,7 @@ class NMRApplication(object):
     def __init__(self, Core):
         self.NMRCommands = Core        
         self.log=""
-        self.defaults={"radius":0.03, "cutOff":0.3, "colors":{'notViolated':[1,1,1,1,1,1],'tooFar':[1,0,0,1,0,0],'tooClose':[0,0,1,0,0,1]}, 'gradient':"blue_white_red"}
+        self.defaults={"radius":0.03, "cutOff":0.3, "colors":{'satisfied':[1,1,1,1,1,1],'tooFar':[1,0,0,1,0,0],'tooClose':[0,0,1,0,0,1]}, 'gradient':"blue_white_red"}
 
     def startGUI(self):
         self.NMRInterface = NMRGUI()

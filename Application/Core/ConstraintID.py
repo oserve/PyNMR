@@ -34,8 +34,8 @@ def IDConstraint(aConstraint, violationID, notViolationID):
     """Returns name of constraints :
     Name_(constraint number)_(pdbName)_(violation_state)
     """
-    if aConstraint.violated != '':
-        if aConstraint.violated == 'violated':
+    if aConstraint.satisfaction != '':
+        if aConstraint.satisfaction == 'unSatisfied':
             return aConstraint.id['name'] + str(aConstraint.id['number']) + violationID + aConstraint.pdbName
         else:
             return aConstraint.id['name'] + str(aConstraint.id['number']) + notViolationID + aConstraint.pdbName
