@@ -64,7 +64,6 @@ class NMRCore(object):
     def showSticks(self, managerName, pdb, colors, radius, violationID, notViolationID):
         """
         """
-        print managerName, pdb, colors, radius, violationID, notViolationID
         self.ManagersList[managerName].setPDB(pdb)
         drawer = ConstraintDrawer(violationID, notViolationID)
         selectedConstraints = []
@@ -116,7 +115,6 @@ class NMRCore(object):
                                dist_range, violationState, violCutoff, method):
         """Setup Filter for constraints
         """
-        print pdb, managerName, residuesList, dist_range, violationState, violCutoff, method
         if residuesList == 'all':
             resList = self.ManagersList[managerName].residuesList
         else:

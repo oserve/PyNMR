@@ -111,20 +111,8 @@ class NMRApplication(object):
         results = []
         objectsLists = get_names()
         for name in objectsLists:
-            ShouldBeAdded = False
-            if len(self.NMRCommands.ManagersList):
-                for managerName in self.NMRCommands.ManagersList.keys():
-                    if name.find(managerName) < 0:
-                        print name, managerName
-                        if name not in results:
-                            ShouldBeAdded = True
-                        else:
-                            ShouldBeAdded = False
-                    else:
-                        ShouldBeAdded = False
-                if ShouldBeAdded:
-                    results.append(name)
+            if name.find(self.defaults["violationID"]) >=0 or name.find(self.defaults["notViolationID"]) >= 0:
+                pass
             else:
-                if name not in results:
-                    results.append(name)
+                results.append(name)
         return results
