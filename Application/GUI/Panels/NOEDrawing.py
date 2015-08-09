@@ -73,8 +73,8 @@ class NOEDrawingPanel(Panel):
                                                     infos["method"])
             self.NMRCommands.showSticks(infos["constraintFile"],
                                         infos["pdb"], infos["colors"],
-                                        infos["radius"], infos["violationID"],
-                                        infos["notViolationID"])
+                                        infos["radius"], infos["UnSatisfactionMarker"],
+                                        infos["SatisfactionMarker"])
 
     def showDensity(self):
         """

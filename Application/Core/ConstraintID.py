@@ -30,14 +30,14 @@
 # ----------------------------------------------------------------------
 
 
-def IDConstraint(aConstraint, violationID, notViolationID):
+def IDConstraint(aConstraint, UnSatisfactionMarker, SatisfactionMarker):
     """Returns name of constraints :
     Name_(constraint number)_(pdbName)_(violation_state)
     """
     if aConstraint.satisfaction != '':
         if aConstraint.satisfaction == 'unSatisfied':
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + violationID + aConstraint.pdbName
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + UnSatisfactionMarker + aConstraint.pdbName
         else:
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + notViolationID + aConstraint.pdbName
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + SatisfactionMarker + aConstraint.pdbName
     else:
         stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.pdbName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + aConstraint.printCons() + "\n")

@@ -48,7 +48,7 @@ class NMRApplication(object):
                 'tooClose': [0, 0, 1, 0, 0, 1]
                 },
             'gradient': "blue_white_red", "method": "sum6",
-            'violationID': "_US_", 'notViolationID': '_S_'
+            'UnSatisfactionMarker': "_US_", 'SatisfactionMarker': '_S_'
             }
         self.gradientColorList = [
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",
@@ -90,8 +90,8 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection['values'] = self.gradientColorList
         self.NMRInterface.preferencesPanel.densityPanel.gradient.set(self.defaults["gradient"])
         self.NMRInterface.preferencesPanel.sticksPanel.colors = self.defaults["colors"]
-        self.NMRInterface.preferencesPanel.sticksPanel.violationID.set(self.defaults["violationID"])
-        self.NMRInterface.preferencesPanel.sticksPanel.notViolationID.set(self.defaults["notViolationID"])
+        self.NMRInterface.preferencesPanel.sticksPanel.UnSatisfactionMarker.set(self.defaults["UnSatisfactionMarker"])
+        self.NMRInterface.preferencesPanel.sticksPanel.SatisfactionMarker.set(self.defaults["SatisfactionMarker"])
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
         self.NMRInterface.preferencesPanel.selectedMethod.set(self.defaults["method"])
@@ -111,7 +111,7 @@ class NMRApplication(object):
         results = []
         objectsLists = get_names()
         for name in objectsLists:
-            if name.find(self.defaults["violationID"]) >=0 or name.find(self.defaults["notViolationID"]) >= 0:
+            if name.find(self.defaults["UnSatisfactionMarker"]) >=0 or name.find(self.defaults["SatisfactionMarker"]) >= 0:
                 pass
             else:
                 results.append(name)

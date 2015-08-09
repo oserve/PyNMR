@@ -38,11 +38,11 @@ class ConstraintDrawer(object):
     """
 
     """
-    def __init__(self, violationID="", notViolationID=""):
+    def __init__(self, UnSatisfactionMarker="", SatisfactionMarker=""):
         """
         """
-        self.violationID = violationID
-        self.notViolationID = notViolationID
+        self.UnSatisfactionMarker = UnSatisfactionMarker
+        self.SatisfactionMarker = SatisfactionMarker
 
     def drC(self, selectedConstraints, radius, colors):
         """
@@ -61,8 +61,8 @@ class ConstraintDrawer(object):
             elif aConstraint.satisfaction == 'Satisfied':
                 color = colors['Satisfied']
             drawConstraint(aConstraint.points, color, radius,
-                           IDConstraint(aConstraint, self.violationID,
-                                        self.notViolationID))
+                           IDConstraint(aConstraint, self.UnSatisfactionMarker,
+                                        self.SatisfactionMarker))
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist': involvedResidueslist,
                 'DrawnConstraints': numberOfDrawnConstraints}

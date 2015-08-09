@@ -29,19 +29,19 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from Panel import Panel
+import ttk
 from ConstraintSelection import ConstraintSelectionPanel
 from FileSelection import FileSelectionPanel
 from NOEDrawing import NOEDrawingPanel
 
 
-class mainPanel(Panel):
+class mainPanel(ttk.Frame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master)
+        ttk.Frame.__init__(self, master)
         self.fileSelection = FileSelectionPanel(self)
         self.constraintPanel = ConstraintSelectionPanel(self)
         self.NOEDrawing = NOEDrawingPanel(self)

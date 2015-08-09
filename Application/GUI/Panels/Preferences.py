@@ -52,10 +52,10 @@ class SticksPreferencesPanel(Panel):
                                        command=self.setTooFarColor)
         self.tooCloseButton = ttk.Button(self, text="Choose color",
                                          command=self.setTooCloseColor)
-        self.violationID = Tk.StringVar(self)
-        self.notViolationID = Tk.StringVar(self)
-        self.violationIDEntry = ttk.Entry(self, textvariable=self.violationID)
-        self.notViolationIDEntry = ttk.Entry(self, textvariable=self.notViolationID)
+        self.UnSatisfactionMarker = Tk.StringVar(self)
+        self.SatisfactionMarker = Tk.StringVar(self)
+        self.UnSatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.UnSatisfactionMarker)
+        self.SatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.SatisfactionMarker)
         self.colors = {}
         self.widgetCreation()
 
@@ -70,18 +70,18 @@ class SticksPreferencesPanel(Panel):
         self.tooFarButton.grid(row=2, column=1)
         ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
         self.tooCloseButton.grid(row=3, column=1)
-        ttk.Label(self, text='Unsatisfied Identification :').grid(row=4, column=0)
-        self.violationIDEntry.grid(row=4, column=1)
-        ttk.Label(self, text='Satisfied Identification :').grid(row=5, column=0)
-        self.notViolationIDEntry.grid(row=5, column=1)
+        ttk.Label(self, text='Unsatisfied Marker :').grid(row=4, column=0)
+        self.UnSatisfactionMarkerEntry.grid(row=4, column=1)
+        ttk.Label(self, text='Satisfied Marker :').grid(row=5, column=0)
+        self.SatisfactionMarkerEntry.grid(row=5, column=1)
 
     def getInfo(self):
         """
         """
         return {"radius": self.radius.get(),
                 "colors": self.colors,
-                "violationID": self.violationID.get(),
-                "notViolationID": self.notViolationID.get()}
+                "UnSatisfactionMarker": self.UnSatisfactionMarker.get(),
+                "SatisfactionMarker": self.SatisfactionMarker.get()}
 
     def setSatisfiedColor(self):
         """

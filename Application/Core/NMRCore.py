@@ -61,11 +61,11 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName, consDef)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
-    def showSticks(self, managerName, pdb, colors, radius, violationID, notViolationID):
+    def showSticks(self, managerName, pdb, colors, radius, UnSatisfactionMarker, SatisfactionMarker):
         """
         """
         self.ManagersList[managerName].setPDB(pdb)
-        drawer = ConstraintDrawer(violationID, notViolationID)
+        drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
         selectedConstraints = []
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
@@ -127,8 +127,8 @@ class NMRCore(object):
                 elif len(aRange) == 1:
                     resList = resList + [str(aRange[0])]
                 else:
-                    stderr.write("Residues set definition error : "
-                                 + residuesList + "\n")
+                    stderr.write("Residues set definition error : " +
+                                 residuesList + "\n")
         if not isinstance(dist_range, list):
             if dist_range == 'all':
                 dist_range = ['intra', 'sequential', 'medium', 'long']
