@@ -30,17 +30,18 @@
 # ----------------------------------------------------------------------
 from GUI.NMRGUI import NMRGUI
 from Core.MolecularViewerInterface import get_names
+import pickle
 
 
 class NMRApplication(object):
     """
     """
-    def __init__(self, Core, app="NoGUI"):
+    def __init__(self, Core, app="NoGUI", configFileName=""):
         """
         """
         self.NMRCommands = Core
         self.log = ""
-        self.defaults = {
+        self.StandardPrefDefaults = {
             "radius": 0.03, "cutOff": 0.3,
             "colors": {
                 'Satisfied': [1, 1, 1, 1, 1, 1],
@@ -70,6 +71,15 @@ class NMRApplication(object):
             "yellow_white_green", "yellow_white_magenta", "yellow_white_red",
             "yrmbcg"
             ]
+        if configFileName == "pymolNMR.cfg":
+            configFile = open(configFileName, 'r')
+            self.defaults = pickle.load(configFile)
+            print "Defaults are : "+ str(self.defaults)
+            configFile.close()
+            self.configFileName = configFileName
+        else:
+            self.defaults = self.StandardPrefDefaults
+            self.configFileName = "pymolNMR.cfg"
         if app == "NoGUI":
             print "Starting PyNMR CLI ..."
         else:
@@ -96,6 +106,7 @@ class NMRApplication(object):
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
         self.NMRInterface.preferencesPanel.selectedMethod.set(self.defaults["method"])
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames()
+        self.NMRInterface.preferencesPanel.configFileName = self.configFileName
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 
     def GUIBindings(self):

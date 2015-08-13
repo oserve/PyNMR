@@ -32,6 +32,7 @@
 import Tkinter as Tk
 import ttk
 import tkColorChooser
+import pickle
 
 from Panel import Panel
 
@@ -142,6 +143,14 @@ class PreferencesPanel(Panel):
         self.panelsList = []
         self.methodsList = [("Sum of r^6", "sum6"), ("Average of r^6", "ave6")]
         self.selectedMethod = Tk.StringVar()
+        self.sticksPanel = SticksPreferencesPanel(self)
+        self.panelsList.append(self.sticksPanel)
+        self.densityPanel = DensityPreferencesPanel(self)
+        self.panelsList.append(self.densityPanel)
+        self.savePrefButton = ttk.Button(self, text="Save preferences",
+                                         command = self.savePrefs)
+        self.configFileName = ""
+
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -155,13 +164,16 @@ class PreferencesPanel(Panel):
                            value=method).grid(row=position, column=1)
             position = position + 1
 
-        self.sticksPanel = SticksPreferencesPanel(self)
         self.sticksPanel.grid(row=position, column=0, columnspan=2)
-        self.panelsList.append(self.sticksPanel)
         position = position + 1
-        self.densityPanel = DensityPreferencesPanel(self)
         self.densityPanel.grid(row=position, column=0, columnspan=2)
-        self.panelsList.append(self.densityPanel)
+        position = position + 1
+        self.savePrefButton.grid(row=position, column=0, columnspan=2)
+
+    def savePrefs(self):
+        configFile = open(self.configFileName, 'w')
+        pickle.dump(self.mainApp.getInfo(), configFile)
+        configFile.close()
 
     def getInfo(self):
         """

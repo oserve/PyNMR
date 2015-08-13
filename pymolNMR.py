@@ -36,20 +36,18 @@ contains interface for command line functions
 from sys import stderr
 from os.path import exists
 import Tkinter as Tk
-# Needed to upload custom modules
-# INSTALL_DIR = "/Users/olivier/Pymol_scripts/PyNMR/"
-# WORKING_DIR = getcwd()
-# chdir(INSTALL_DIR)
 
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
 
-# chdir(WORKING_DIR)
+configFileName = "pymolNMR.cfg"
 
-# Loading Core Functions
+if not exists(configFileName):
+    configFileName = ""
+
 Core = NMRCore()
 
-pyNMR = NMRApplication(Core)
+pyNMR = NMRApplication(Core, app="NoGUI", configFileName=configFileName)
 
 
 def __init__(self):
@@ -58,7 +56,7 @@ def __init__(self):
     self.menuBar.addmenuitem('Plugin', 'command',
                              'PyNMR',
                              label='PyNMR...',
-                             command=lambda s=self: NMRApplication(Core, s))
+                             command=lambda s=self: NMRApplication(Core, app="GUI", configFileName=configFileName))
 
 
 def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
