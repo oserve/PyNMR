@@ -1,1 +1,3 @@
-__all__ = ["ConstraintLoading", "ConstraintManager", "ConstraintsDrawing", "Geom", "MolecularViewerInterface", "NMRCore", "Filtering", "Constraints"]
+__all__ = ["ConstraintLoading", "ConstraintManager", "ConstraintsDrawing",
+           "Geom", "MolecularViewerInterface", "NMRCore", "Filtering",
+           "Constraints", "ConstraintID"]

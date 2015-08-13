@@ -1,3 +1,3 @@
 __all__ = ["Panel", "Panels", "FileSelection", "ConstraintSelection",
-           "NOEDrawing", "Preferences", "Constraints", "Main", "About",
+           "NOEDrawing", "Preferences", "Constraints", "MainPanel", "About",
            "ScrolledList"]

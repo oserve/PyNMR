@@ -31,7 +31,7 @@
 import Tkinter as Tk
 import ttk
 from Panels.Preferences import PreferencesPanel
-from Panels.Main import mainPanel
+from Panels.MainPanel import mainPanel
 from Panels.About import About
 
 
@@ -74,6 +74,7 @@ class NMRGUI(Tk.Toplevel):
         """
         """
         self.mainPanel.NOEDrawing.mainApp = self
+        self.preferencesPanel.mainApp = self
 
     def getInfo(self):
         """
