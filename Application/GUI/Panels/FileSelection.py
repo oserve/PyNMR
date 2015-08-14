@@ -52,12 +52,12 @@ class FileSelectionPanel(Panel):
         self.constraintsDefTypes = ["CNS/XPLOR", "CYANA/DYANA"]
         self.constraintsDefType.set(self.constraintsDefTypes[0])
         self.constraintsFileList = Tk.StringVar()
-        self.loadFileButton = ttk.Button(self, text="Load file",
+        self.loadFileButton = ttk.Button(self, text=u"Load file",
                                         command=self.loadFile)
-        self.removeFileButton = ttk.Button(self, text="Remove selected file",
+        self.removeFileButton = ttk.Button(self, text=u"Remove selected file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
-        self.downloadButton = ttk.Button(self, text="Download from PDB",
+        self.downloadButton = ttk.Button(self, text=u"Download from PDB",
                                         command=self.downloadRestraintFileWin)
         self.widgetCreation()
         self.NMRCommands = ""  # Must be set by application at run time
@@ -159,7 +159,8 @@ class FileSelectionPanel(Panel):
             self.updateFilelist()
             os.remove(fileName)
         except:
-            sys.stderr.write("Can not download "+pdbCode+" NMR Restraints file from PDB.\n")
+            sys.stderr.write("Can not download " +
+                             pdbCode + " NMR Restraints file from PDB.\n")
 
     def getInfo(self):
         """

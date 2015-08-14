@@ -43,15 +43,15 @@ class SticksPreferencesPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="NOE Sticks Preferences")
+        Panel.__init__(self, master, frameText=u"NOE Sticks Preferences")
         self.radius = Tk.DoubleVar(self)
         self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius,
                                          from_=0.00, to=0.5, increment=0.01)
-        self.satisfiedColorButton = ttk.Button(self, text="Choose color",
+        self.satisfiedColorButton = ttk.Button(self, text=u"Choose color",
                                                command=self.setSatisfiedColor)
-        self.tooFarButton = ttk.Button(self, text="Choose color",
+        self.tooFarButton = ttk.Button(self, text=u"Choose color",
                                        command=self.setTooFarColor)
-        self.tooCloseButton = ttk.Button(self, text="Choose color",
+        self.tooCloseButton = ttk.Button(self, text=u"Choose color",
                                          command=self.setTooCloseColor)
         self.UnSatisfactionMarker = Tk.StringVar(self)
         self.SatisfactionMarker = Tk.StringVar(self)
@@ -63,17 +63,17 @@ class SticksPreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text='Stick radius (A):').grid(row=0, column=0)
+        ttk.Label(self, text=u'Stick radius (\u212b):').grid(row=0, column=0)
         self.spinBox_Radius.grid(row=0, column=1)
-        ttk.Label(self, text='Satisfied constraint').grid(row=1, column=0)
+        ttk.Label(self, text=u'Satisfied constraint').grid(row=1, column=0)
         self.satisfiedColorButton.grid(row=1, column=1)
-        ttk.Label(self, text="Atoms too far").grid(row=2, column=0)
+        ttk.Label(self, text=u"Atoms too far").grid(row=2, column=0)
         self.tooFarButton.grid(row=2, column=1)
-        ttk.Label(self, text="Atoms too close").grid(row=3, column=0)
+        ttk.Label(self, text=u"Atoms too close").grid(row=3, column=0)
         self.tooCloseButton.grid(row=3, column=1)
-        ttk.Label(self, text='Unsatisfied Marker :').grid(row=4, column=0)
+        ttk.Label(self, text=u'Unsatisfied Marker :').grid(row=4, column=0)
         self.UnSatisfactionMarkerEntry.grid(row=4, column=1)
-        ttk.Label(self, text='Satisfied Marker :').grid(row=5, column=0)
+        ttk.Label(self, text=u'Satisfied Marker :').grid(row=5, column=0)
         self.SatisfactionMarkerEntry.grid(row=5, column=1)
 
     def getInfo(self):
@@ -115,14 +115,14 @@ class DensityPreferencesPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="NOE density Preferences")
+        Panel.__init__(self, master, frameText=u"NOE density Preferences")
         self.gradient = Tk.StringVar()
         self.widgetCreation()
 
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text='Gradient :').grid(row=0, column=0)
+        ttk.Label(self, text=u'Gradient :').grid(row=0, column=0)
         self.gradientSelection = ttk.Combobox(self, state="readonly",
                                               textvariable=self.gradient)
         self.gradientSelection.grid(row=0, column=1)
@@ -139,16 +139,18 @@ class PreferencesPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="NOE Preferences")
+        Panel.__init__(self, master, frameText=u"NOE Preferences")
         self.panelsList = []
-        self.methodsList = [("Sum of r^6", "sum6"), ("Average of r^6", "ave6")]
+        self.methodsList = [(u"\u03a3 r-6", "sum6"), (u"(\u03a3 r-6)/n", "ave6")]
         self.selectedMethod = Tk.StringVar()
         self.sticksPanel = SticksPreferencesPanel(self)
         self.panelsList.append(self.sticksPanel)
         self.densityPanel = DensityPreferencesPanel(self)
         self.panelsList.append(self.densityPanel)
-        self.savePrefButton = ttk.Button(self, text="Save preferences",
-                                         command = self.savePrefs)
+        self.savePrefButton = ttk.Button(self, text=u"Save preferences",
+                                         command=self.savePrefs)
+        self.resetButton = ttk.Button(self, text=u"Defaults",
+                                      command=self.resetPrefs)
         self.configFileName = ""
 
         self.widgetCreation()
@@ -156,7 +158,7 @@ class PreferencesPanel(Panel):
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text='NOE Distance calculation :\n(> 2 atoms)').grid(
+        ttk.Label(self, justify=Tk.CENTER, text=u'NOE Distance calculation :\n(> 2 atoms)').grid(
             row=0, column=0, rowspan=2)
         position = 0
         for methodName, method in self.methodsList:
@@ -168,12 +170,23 @@ class PreferencesPanel(Panel):
         position = position + 1
         self.densityPanel.grid(row=position, column=0, columnspan=2)
         position = position + 1
-        self.savePrefButton.grid(row=position, column=0, columnspan=2)
+        self.savePrefButton.grid(row=position, column=0, columnspan=1)
+        self.resetButton.grid(row=position, column=1)
 
     def savePrefs(self):
         configFile = open(self.configFileName, 'w')
-        pickle.dump(self.mainApp.getInfo(), configFile)
+        pickle.dump(self.mainGUI.getInfo(), configFile)
         configFile.close()
+
+    def resetPrefs(self):
+        defaults = self.mainApp.StandardPrefDefaults
+        self.densityPanel.gradient.set(defaults["gradient"])
+        self.sticksPanel.colors = defaults["colors"]
+        self.sticksPanel.UnSatisfactionMarker.set(defaults["UnSatisfactionMarker"])
+        self.sticksPanel.SatisfactionMarker.set(defaults["SatisfactionMarker"])
+        self.sticksPanel.radius.set(defaults["radius"])
+        self.selectedMethod.set(defaults["method"])
+
 
     def getInfo(self):
         """

@@ -64,7 +64,7 @@ def calcDistance(selection_init, selection_final, method):
 def averageDistance_6(selection_init, selection_final):
     """
     Calculate distance according to :
-    ((sum of all distances^6)/number of distances)^6
+    ((sum of all distances^-6)/number of distances)^-1/6
     """
     model_init = get_model(selection_init)
     model_final = get_model(selection_final)
@@ -92,7 +92,7 @@ def averageDistance_6(selection_init, selection_final):
 
 def sumDistance_6(selection_init, selection_final):
     """
-    Calculate distance according to : (sum of all distances^6)^-1/6
+    Calculate distance according to : (sum of all distances^-6)^-1/6
     """
     model_init = get_model(selection_init)
     model_final = get_model(selection_final)

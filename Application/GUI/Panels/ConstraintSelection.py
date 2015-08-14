@@ -38,7 +38,7 @@ class ConstraintSelectionPanel(Panel):
     """
     """
     def __init__(self, master):
-        Panel.__init__(self, master, frameText="Constraints Selection")
+        Panel.__init__(self, master, frameText=u"Constraints Selection")
         self.consRangeFrame = RangeSelectionPanel(self)
         self.violationsFrame = ViolationSelectionPanel(self)
         self.structureManagement = StructureSelectionPanel(self)
@@ -68,7 +68,7 @@ class RangeSelectionPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="Range Selection")
+        Panel.__init__(self, master, frameText=u"Range Selection")
 
         self.RangesVars = {}
         self.RangesCB = {}
@@ -120,7 +120,7 @@ class ViolationSelectionPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="Constraint state :")
+        Panel.__init__(self, master, frameText=u"Constraint state :")
 
         self.ViolationsVars = {}
         self.UnSatifsiedCB = {}
@@ -138,7 +138,7 @@ class ViolationSelectionPanel(Panel):
             self.ViolationsVars[violationType].set(1)
             rowPosition = rowPosition + 1
 
-        ttk.Label(self, text='Distance CutOff (A)').grid(row=rowPosition + 1,
+        ttk.Label(self, text=u'Distance CutOff (\u212b)').grid(row=rowPosition + 1,
                                                         column=0)
 
         self.spinBox_cutOff = Tk.Spinbox(self, textvariable=self.cutOff,
@@ -161,7 +161,7 @@ class StructureSelectionPanel(Panel):
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="Structure")
+        Panel.__init__(self, master, frameText=u"Structure")
         self.residueRanges = Tk.StringVar()
         self.structureList = Tk.StringVar()
         self.widgetCreation()
@@ -169,13 +169,13 @@ class StructureSelectionPanel(Panel):
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text="Structure :").grid(row=0, column=0)
+        ttk.Label(self, text=u"Structure :").grid(row=0, column=0)
         self.comboPDB = ttk.Combobox(self, state='readonly',
                                      textvariable=self.structureList)
         self.comboPDB.grid(row=0, column=1)
         self.comboPDB.bind('<Enter>', self.updatePdbList)
 
-        ttk.Label(self, text='Residues ranges :').grid(row=2, column=0, sticky=Tk.W)
+        ttk.Label(self, text=u'Residues ranges :').grid(row=2, column=0, sticky=Tk.W)
         self.entry_res = ttk.Entry(self, textvariable=self.residueRanges)
         self.entry_res.grid(row=2, column=1)
         self.residueRanges.set('all')
