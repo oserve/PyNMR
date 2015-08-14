@@ -73,8 +73,8 @@ class NMRGUI(Tk.Toplevel):
     def setDelegations(self):
         """
         """
-        self.mainPanel.NOEDrawing.mainApp = self
-        self.preferencesPanel.mainApp = self
+        self.mainPanel.NOEDrawing.mainGUI = self
+        self.preferencesPanel.mainGUI = self
 
     def getInfo(self):
         """

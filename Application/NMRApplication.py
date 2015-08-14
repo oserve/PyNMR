@@ -74,7 +74,6 @@ class NMRApplication(object):
         if configFileName == "pymolNMR.cfg":
             configFile = open(configFileName, 'r')
             self.defaults = pickle.load(configFile)
-            print "Defaults are : "+ str(self.defaults)
             configFile.close()
             self.configFileName = configFileName
         else:
@@ -115,6 +114,7 @@ class NMRApplication(object):
         self.NMRInterface.mainPanel.fileSelection.NMRCommands = self.NMRCommands
         self.NMRInterface.mainPanel.NOEDrawing.NMRCommands = self.NMRCommands
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.mainApp = self
+        self.NMRInterface.preferencesPanel.mainApp = self
 
     def getModelsNames(self):
         """

@@ -772,13 +772,13 @@ class StructureSelectionPanel(Panel):
         return {"pdb":self.comboPDB.component("entryfield").getvalue(), "ranges":self.residueRanges.get()}
     
     def updatePdbList(self, event):
-        self.comboPDB.setlist(self.mainApp.getModelsNames())
+        self.comboPDB.setlist(self.mainGUI.getModelsNames())
 
 class NOEDrawingPanel(Panel):
     def __init__(self, master):
         Panel.__init__(self, master, frameText="NOE Representation")
         self.widgetCreation()
-        self.mainApp=""#Must be set at run time
+        self.mainGUI=""#Must be set at run time
         self.NMRCommands=""#Must be set by application at run time
 
     def widgetCreation(self):
@@ -790,7 +790,7 @@ class NOEDrawingPanel(Panel):
         self.drawingNOEButtonBox.setdefault('Sticks')
 
     def showSticks(self):
-        infos= self.mainApp.getInfo()
+        infos= self.mainGUI.getInfo()
         infoCheck=1
 
         if self.infoCheck(infos):
@@ -798,14 +798,14 @@ class NOEDrawingPanel(Panel):
             self.NMRCommands.showSticks(infos["constraintFile"], infos["pdb"], infos["colors"], infos["radius"])
 
     def showDensity(self):
-        infos= self.mainApp.getInfo()
+        infos= self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["pdb"], infos["constraintFile"], infos["ranges"], infos["residuesRange"], infos["violationState"], infos["cutOff"], infos["method"])
             self.NMRCommands.showNOEDensity(infos["constraintFile"], infos["pdb"], infos["gradient"])
 
     def cleanAll(self):
-        infos= self.mainApp.getInfo()
+        infos= self.mainGUI.getInfo()
         
         if self.infoCheck(infos):
             self.NMRCommands.cleanScreen(infos["constraintFile"])
@@ -1020,7 +1020,7 @@ class NMRGUI(Tk.Tk):
         self.setDelegation()
 
     def setDelegation(self):
-        self.NOEDrawingManagement.mainApp=self
+        self.NOEDrawingManagement.mainGUI=self
         
     def getInfo(self):
         infos={}
@@ -1054,7 +1054,7 @@ class NMRApplication(object):
     def GUIBindings(self):
         self.NMRInterface.constraintFilesManagement.NMRCommands=self.NMRCommands
         self.NMRInterface.NOEDrawingManagement.NMRCommands=self.NMRCommands
-        self.NMRInterface.constraintSelectionManagement.structureManagement.mainApp=self
+        self.NMRInterface.constraintSelectionManagement.structureManagement.mainGUI=self
     
     def getModelsNames(self):
         results=[]

@@ -46,7 +46,7 @@ class NOEDrawingPanel(Panel):
                                        command=self.showDensity)
         self.cleanButton = ttk.Button(self, text="Clean Sticks",
                                      command=self.cleanAll)
-        self.mainApp = ""  # Must be set at run time
+        self.mainGUI = ""  # Must be set at run time
         self.NMRCommands = ""  # Must be set by application at run time
         self.widgetCreation()
 
@@ -61,7 +61,7 @@ class NOEDrawingPanel(Panel):
     def showSticks(self):
         """
         """
-        infos = self.mainApp.getInfo()
+        infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["pdb"],
@@ -79,7 +79,7 @@ class NOEDrawingPanel(Panel):
     def showDensity(self):
         """
         """
-        infos = self.mainApp.getInfo()
+        infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["pdb"],
@@ -96,7 +96,7 @@ class NOEDrawingPanel(Panel):
     def cleanAll(self):
         """Remove all displayed sticks
         """
-        infos = self.mainApp.getInfo()
+        infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
             self.NMRCommands.cleanScreen(infos["constraintFile"])
