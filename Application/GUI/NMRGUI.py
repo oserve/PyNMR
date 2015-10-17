@@ -62,7 +62,7 @@ class NMRGUI(Tk.Toplevel):
         self.panelsList.append(self.preferencesPanel)
         self.noteBook.add(self.preferencesPanel, text="Preferences")
 
-        self.noteBook.add(self.About, text="About")
+        self.noteBook.add(self.About, text="Help")
 
     def startGUI(self):
         """
