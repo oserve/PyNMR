@@ -28,16 +28,19 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Panel import Panel
+
 import ttk
 import Tkinter as Tk
 
 
-class About(Panel):
+class About(ttk.Frame):
     """
     """
     def __init__(self, master=None):
         """
         """
-        Panel.__init__(self, master, frameText="")
-        ttk.Label(self, justify=Tk.CENTER, text=u"This Pymol plugin has been written \n because I thought it would be useful \n to check my NOEs during my \npostdocship. I hope it'll help you as well.\n Feel free to send any comments to :\n olivier.serve@gmail.com\nThis plugin is free and maybe copied \nas long as you respect the copyright").grid(row=0, column=0)
+        ttk.Frame.__init__(self, master)
+        ttk.Label(self, justify=Tk.CENTER, text=u"This Pymol plugin has been written \nbecause I " +
+                  "thought it would be useful to check \nmy NOEs during my postdocship. I hope it'll" +
+                  " \nhelp you as well. Feel free to send \nany comments to : olivier.serve@gmail.com\n" +
+                  "This plugin is free and may be copied as \nlong as you respect the copyright.").grid(row=0, column=0)

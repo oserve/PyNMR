@@ -53,12 +53,12 @@ class NMRCore(object):
         self.filter = ""
         self.displayedConstraints = []
 
-    def loadNOE(self, filename, consDef):
+    def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
         """
         managerName = basename(filename)
-        loader = ConstraintLoader(filename, managerName, consDef)
+        loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
     def showSticks(self, managerName, pdb, colors, radius, UnSatisfactionMarker, SatisfactionMarker):
@@ -75,7 +75,7 @@ class NMRCore(object):
                 for constraint in filteredConstraints:
                     if constraint not in self.displayedConstraints:
                         selectedConstraints.append(constraint)
-                self.displayedConstraints = self.displayedConstraints+selectedConstraints
+                self.displayedConstraints = self.displayedConstraints + selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 stdout.write(str(results['DrawnConstraints']) +
                              " constraints drawn on a total of " +
@@ -99,7 +99,7 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = theFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
-                self.displayedConstraints = self.displayedConstraints+selectedConstraints
+                self.displayedConstraints = self.displayedConstraints + selectedConstraints
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].pdb,
                                          gradient)

@@ -41,12 +41,11 @@ class ConstraintLoader(object):
     files and returns a constraintSetManager filled
     with constraints
     """
-    def __init__(self, fileName, managerName, constraintDefinition):
+    def __init__(self, fileName, managerName):
         """
         """
         self.fileName = fileName
         self.managerName = managerName
-        self.constraintDefinition = constraintDefinition
         self.inFileTab = []
 
         # Useful RegEx definitions
@@ -55,11 +54,12 @@ class ConstraintLoader(object):
         self.RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
         self.SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
+        self.XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
 
     def loadConstraintsFromFile(self):
         """
         """
-        self.loadFile()
+        self.constraintDefinition = self.loadFile()
         return self.loadConstraints()
 
     def loadConstraints(self):
@@ -73,7 +73,7 @@ class ConstraintLoader(object):
         elif self.constraintDefinition in ['DYANA', 'CYANA']:
             self.CYANAConstraintLoading(aManager)
         else:
-            stderr.write("incorrect or unsupported constraint type.\n")
+            stderr.write("Incorrect or unsupported constraint type.\n")
         self.inFileTab = []
 
         return aManager
@@ -81,14 +81,21 @@ class ConstraintLoader(object):
     def loadFile(self):
         """
         """
+        typeDefinition = ""
         fin = open(self.fileName, 'r')
         for txt in fin:
             txt = txt.lstrip()
             if txt.find('!') < 0:
                 self.inFileTab.append(txt.upper().rstrip())
+                if typeDefinition == "":
+                    if txt.upper().find("ASSI") > -1:
+                        typeDefinition = 'CNS'
+                    elif self.XEASYReg.search(txt):
+                        typeDefinition = 'CYANA'
             else:
                 stderr.write(txt + " skipped. Commented out.\n")
         fin.close()
+        return typeDefinition
 
     def synthesizeCNSFile(self):
         """
@@ -111,20 +118,21 @@ class ConstraintLoader(object):
             # avoid empty lines
             if re.search(r'\d', aConstLine):
                 parsingResult = self.parseCNSConstraint(aConstLine)
-                if len(parsingResult) == 3:  # 2 residues + distances (matches also H-Bonds)
-                    aConstraint = NOE()
-                else:
-                    # No other constraint type supported ... for now !
-                    break
-                aConstraint.id["number"] = constraint_number
-                aConstraint.definition = aConstLine
-                aConstraint.addAtomGroups(parsingResult)
-                aConstraint.setConstraintValues(parsingResult[-1][0],
-                                                parsingResult[-1][1],
-                                                parsingResult[-1][2])  # Values always at the end of the array
+                if parsingResult is not None:
+                    if len(parsingResult) == 3:  # 2 residues + distances (matches also H-Bonds)
+                        aConstraint = NOE()
+                    else:
+                        # No other constraint type supported ... for now !
+                        break
+                    aConstraint.id["number"] = constraint_number
+                    aConstraint.definition = aConstLine
+                    aConstraint.addAtomGroups(parsingResult)
+                    aConstraint.setConstraintValues(parsingResult[-1][0],
+                                                    parsingResult[-1][1],
+                                                    parsingResult[-1][2])  # Values always at the end of the array
 
-                aManager.addConstraint(aConstraint)
-                constraint_number = constraint_number + 1
+                    aManager.addConstraint(aConstraint)
+                    constraint_number = constraint_number + 1
             else:
                 stderr.write("This line : " + aConstLine + " is not a valid constraint.\n")
                 continue
@@ -172,19 +180,22 @@ class ConstraintLoader(object):
         the constraint. It should be independant from the type of constraint
         (dihedral, distance, ...)
         """
-        residuesList = self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
-        constraintValuesList = self.SParReg.sub("", aCNSConstraint).split()
-        constraintParsingResult = []
-        for aResidue in residuesList:
-            residueParsingResult = {}
-            for aDefinition in self.SharpReg.sub('*', aResidue).split("AND"):
-                definitionArray = aDefinition.split()
-                residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
-            constraintParsingResult.append(residueParsingResult)
-        numericValues = []
-        for aValue in constraintValuesList:
-            numericValues.append(float(aValue))
-        constraintParsingResult.append(numericValues)
+        try:
+            residuesList = self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
+            constraintValuesList = self.SParReg.sub("", aCNSConstraint).split()
+            constraintParsingResult = []
+            for aResidue in residuesList:
+                residueParsingResult = {}
+                for aDefinition in self.SharpReg.sub('*', aResidue).split("AND"):
+                    definitionArray = aDefinition.split()
+                    residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
+                constraintParsingResult.append(residueParsingResult)
+            numericValues = []
+            for aValue in constraintValuesList:
+                numericValues.append(float(aValue))
+            constraintParsingResult.append(numericValues)
+        except:
+            constraintParsingResult = None
         return constraintParsingResult
 
     def convertTypeDyana(self, atType):

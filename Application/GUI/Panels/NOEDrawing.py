@@ -29,17 +29,17 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from Panel import Panel
+
 import ttk
 
 
-class NOEDrawingPanel(Panel):
+class NOEDrawingPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText="NOE Representation")
+        ttk.LabelFrame.__init__(self, master, text="NOE Representation")
         self.sticksButton = ttk.Button(self, text="Sticks",
                                       command=self.showSticks)
         self.densityButton = ttk.Button(self, text="Density",

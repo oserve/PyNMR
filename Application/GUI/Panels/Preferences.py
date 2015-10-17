@@ -34,19 +34,18 @@ import ttk
 import tkColorChooser
 import pickle
 
-from Panel import Panel
 
-
-class SticksPreferencesPanel(Panel):
+class SticksPreferencesPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"NOE Sticks Preferences")
+        ttk.LabelFrame.__init__(self, master, text=u"NOE Sticks Preferences")
         self.radius = Tk.DoubleVar(self)
         self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius,
-                                         from_=0.00, to=0.5, increment=0.01)
+                                         from_=0.00, to=0.5, increment=0.01,
+                                         format='%1.2f', width=4)
         self.satisfiedColorButton = ttk.Button(self, text=u"Choose color",
                                                command=self.setSatisfiedColor)
         self.tooFarButton = ttk.Button(self, text=u"Choose color",
@@ -55,8 +54,8 @@ class SticksPreferencesPanel(Panel):
                                          command=self.setTooCloseColor)
         self.UnSatisfactionMarker = Tk.StringVar(self)
         self.SatisfactionMarker = Tk.StringVar(self)
-        self.UnSatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.UnSatisfactionMarker)
-        self.SatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.SatisfactionMarker)
+        self.UnSatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.UnSatisfactionMarker, width=6)
+        self.SatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.SatisfactionMarker, width=6)
         self.colors = {}
         self.widgetCreation()
 
@@ -109,13 +108,13 @@ class SticksPreferencesPanel(Panel):
             self.colors["tooClose"] = int2floatColor(result[0])
 
 
-class DensityPreferencesPanel(Panel):
+class DensityPreferencesPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"NOE density Preferences")
+        ttk.LabelFrame.__init__(self, master, text=u"NOE density Preferences")
         self.gradient = Tk.StringVar()
         self.widgetCreation()
 
@@ -133,13 +132,13 @@ class DensityPreferencesPanel(Panel):
         return {"gradient": self.gradient.get()}
 
 
-class PreferencesPanel(Panel):
+class PreferencesPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"NOE Preferences")
+        ttk.LabelFrame.__init__(self, master, text=u"NOE Preferences")
         self.panelsList = []
         self.methodsList = [(u"\u03a3 r-6", "sum6"), (u"(\u03a3 r-6)/n", "ave6")]
         self.selectedMethod = Tk.StringVar()

@@ -31,14 +31,14 @@
 
 import Tkinter as Tk
 import ttk
-from Panel import Panel
+ 
 
 
-class ConstraintSelectionPanel(Panel):
+class ConstraintSelectionPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
-        Panel.__init__(self, master, frameText=u"Constraints Selection")
+        ttk.LabelFrame.__init__(self, master, text=u"Constraints Selection")
         self.consRangeFrame = RangeSelectionPanel(self)
         self.violationsFrame = ViolationSelectionPanel(self)
         self.structureManagement = StructureSelectionPanel(self)
@@ -62,13 +62,13 @@ class ConstraintSelectionPanel(Panel):
         return infos
 
 
-class RangeSelectionPanel(Panel):
+class RangeSelectionPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"Range Selection")
+        ttk.LabelFrame.__init__(self, master, text=u"Range Selection")
 
         self.RangesVars = {}
         self.RangesCB = {}
@@ -114,16 +114,16 @@ class RangeSelectionPanel(Panel):
         return {"residuesRange": ranges}
 
 
-class ViolationSelectionPanel(Panel):
+class ViolationSelectionPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"Constraint state :")
+        ttk.LabelFrame.__init__(self, master, text=u"Constraint state :")
 
         self.ViolationsVars = {}
-        self.UnSatifsiedCB = {}
+        self.UnSatisfiedCB = {}
         self.cutOff = Tk.DoubleVar(self)
         self.widgetCreation()
 
@@ -133,17 +133,19 @@ class ViolationSelectionPanel(Panel):
         rowPosition = 0
         for violationType in ['unSatisfied', 'Satisfied']:
             self.ViolationsVars[violationType] = Tk.IntVar(self)
-            self.UnSatifsiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
-            self.UnSatifsiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W)
+            self.UnSatisfiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
+            self.UnSatisfiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W, columnspan=2)
             self.ViolationsVars[violationType].set(1)
             rowPosition = rowPosition + 1
 
-        ttk.Label(self, text=u'Distance CutOff (\u212b)').grid(row=rowPosition + 1,
-                                                        column=0)
+        ttk.Label(self, text=u'Distance CutOff :').grid(row=rowPosition + 1,
+                                                        column=0, columnspan=2)
 
         self.spinBox_cutOff = Tk.Spinbox(self, textvariable=self.cutOff,
-                                         from_=0.0, to=10.0, increment=0.1)
-        self.spinBox_cutOff.grid(row=rowPosition+2, column=0)
+                                         from_=0.0, to=10.0, increment=0.1,
+                                         format='%2.1f', width=6)
+        self.spinBox_cutOff.grid(row=rowPosition + 2, column=0)
+        ttk.Label(self, text=u'\u212b').grid(row=rowPosition + 2, column=1)
 
     def getInfo(self):
         """
@@ -155,13 +157,13 @@ class ViolationSelectionPanel(Panel):
         return {"cutOff": self.cutOff.get(), "violationState": violationState}
 
 
-class StructureSelectionPanel(Panel):
+class StructureSelectionPanel(ttk.LabelFrame):
     """
     """
     def __init__(self, master):
         """
         """
-        Panel.__init__(self, master, frameText=u"Structure")
+        ttk.LabelFrame.__init__(self, master, text=u"Structure")
         self.residueRanges = Tk.StringVar()
         self.structureList = Tk.StringVar()
         self.widgetCreation()

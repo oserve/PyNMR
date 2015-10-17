@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 import tkSimpleDialog
 import tkFileDialog
-from Panel import Panel
+ 
 import Tkinter as Tk
 import ttk
 from ScrolledList import ScrolledList
@@ -41,23 +41,20 @@ import os
 import sys
 
 
-class FileSelectionPanel(Panel):
+class FileSelectionPanel(ttk.LabelFrame):
     """This panel allows to import constraint file
     into the Core. Also it allows the selection of the file
     for the following calculations.
     """
     def __init__(self, master):
-        Panel.__init__(self, master, frameText="Constraints Files")
-        self.constraintsDefType = Tk.StringVar()
-        self.constraintsDefTypes = ["CNS/XPLOR", "CYANA/DYANA"]
-        self.constraintsDefType.set(self.constraintsDefTypes[0])
+        ttk.LabelFrame.__init__(self, master, text="Constraints Files")
         self.constraintsFileList = Tk.StringVar()
         self.loadFileButton = ttk.Button(self, text=u"Load file",
                                         command=self.loadFile)
-        self.removeFileButton = ttk.Button(self, text=u"Remove selected file",
+        self.removeFileButton = ttk.Button(self, text=u"Remove file",
                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
-        self.downloadButton = ttk.Button(self, text=u"Download from PDB",
+        self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
                                         command=self.downloadRestraintFileWin)
         self.widgetCreation()
         self.NMRCommands = ""  # Must be set by application at run time
@@ -66,16 +63,10 @@ class FileSelectionPanel(Panel):
         """
         """
         self.constraintsList.listbox.exportselection = 0
-        self.constraintsList.grid(row=0, column=1, rowspan=2)
-        position = 0
-        for constraintType in self.constraintsDefTypes:
-            ttk.Radiobutton(self, text=constraintType,
-                           variable=self.constraintsDefType,
-                           value=constraintType).grid(row=position, column=0)
-            position = position + 1
-        self.loadFileButton.grid(row=2, column=0)
-        self.removeFileButton.grid(row=2, column=1)
-        self.downloadButton.grid(row=3, column=0, columnspan=2)
+        self.constraintsList.grid(row=0, column=1, rowspan=3)
+        self.loadFileButton.grid(row=0, column=0)
+        self.removeFileButton.grid(row=1, column=0)
+        self.downloadButton.grid(row=2, column=0)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -83,14 +74,9 @@ class FileSelectionPanel(Panel):
         Use the filename to load the constraint file in the Core.
         """
         filename = tkFileDialog.askopenfilename(
-            title="Open a constraint " + self.constraintsDefType.get() + " file")
-        constraintType = ""
-        if self.constraintsDefType.get() == "CNS/XPLOR":
-            constraintDefinition = "CNS"
-        else:
-            constraintDefinition = "CYANA"
-        if filename:
-            self.NMRCommands.loadNOE(filename, constraintDefinition)
+            title="Open a constraint file")
+        if filename is not None:
+            self.NMRCommands.loadNOE(filename)
             self.updateFilelist()
 
     def updateFilelist(self):
@@ -147,15 +133,10 @@ class FileSelectionPanel(Panel):
             restraintFile.write(decodedFile)
             zippedFile.close()
             os.remove(zippedFileName)
-            constraintDefinition = "CYANA"
             restraintFile.close()
             restraintFile = open(fileName, 'r')
-            for line in restraintFile:
-                if line.upper().find('ASSI') > -1:
-                    constraintDefinition = "CNS"
-                    break
             restraintFile.close()
-            self.NMRCommands.loadNOE(fileName, constraintDefinition)
+            self.NMRCommands.loadNOE(fileName)
             self.updateFilelist()
             os.remove(fileName)
         except:
