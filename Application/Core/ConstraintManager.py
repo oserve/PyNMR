@@ -38,6 +38,7 @@ class ConstraintSetManager(object):
         self.residuesList = []
         self.pdb = ''
         self.name = managerName
+        self.format = ""
 
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
@@ -91,3 +92,4 @@ class ConstraintSetManager(object):
         """
         if int(aConstraintNumber) <= len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
+

@@ -113,7 +113,7 @@ class ConstraintLoader(object):
         Return a ConstraintSetManager loaded with cns/xplor constraints
         """
         constraint_number = 1
-
+        aManager.format = "CNS"
         for aConstLine in self.validCNSConstraints:  # itemizing constraints
             # avoid empty lines
             if re.search(r'\d', aConstLine):
@@ -143,6 +143,7 @@ class ConstraintLoader(object):
         Return a ConstraintSetManager loaded with CYANA/DYANA constraints
         """
         counter = 1
+        aManager.format = "XEASY"
         for aConstLine in self.inFileTab:
             if len(aConstLine) > 1:
                 if aConstLine.find('#') == 0:

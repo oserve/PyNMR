@@ -143,7 +143,9 @@ class FileSelectionPanel(ttk.LabelFrame):
         w = evt.widget
         index = int(w.curselection()[0])
         self.selectedFile = w.get(index)
-        self.infoLabelString.set("")
+        self.infoLabelString.set("Contains " +
+                                 str(len(self.NMRCommands.ManagersList[self.selectedFile])) +
+                                 " Constraints ("+ self.NMRCommands.ManagersList[self.selectedFile].format + ")")
 
     def getInfo(self):
         """
