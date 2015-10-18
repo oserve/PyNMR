@@ -64,7 +64,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
-            self.NMRCommands.commandsInterpretation(infos["pdb"],
+            self.NMRCommands.commandsInterpretation(infos["structure"],
                                                     infos["constraintFile"],
                                                     infos["ranges"],
                                                     infos["residuesRange"],
@@ -72,7 +72,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"])
             self.NMRCommands.showSticks(infos["constraintFile"],
-                                        infos["pdb"], infos["colors"],
+                                        infos["structure"], infos["colors"],
                                         infos["radius"], infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
@@ -82,7 +82,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
-            self.NMRCommands.commandsInterpretation(infos["pdb"],
+            self.NMRCommands.commandsInterpretation(infos["structure"],
                                                     infos["constraintFile"],
                                                     infos["ranges"],
                                                     infos["residuesRange"],
@@ -90,7 +90,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"])
             self.NMRCommands.showNOEDensity(infos["constraintFile"],
-                                            infos["pdb"],
+                                            infos["structure"],
                                             infos["gradient"])
 
     def cleanAll(self):

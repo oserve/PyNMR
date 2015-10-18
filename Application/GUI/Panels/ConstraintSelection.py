@@ -185,7 +185,7 @@ class StructureSelectionPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        return {"pdb": self.structureList.get(),
+        return {"structure": self.structureList.get(),
                 "ranges": self.residueRanges.get()}
 
     def updatePdbList(self, event):
