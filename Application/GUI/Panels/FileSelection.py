@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 import tkSimpleDialog
 import tkFileDialog
- 
+
 import Tkinter as Tk
 import ttk
 from ScrolledList import ScrolledList
@@ -49,6 +49,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def __init__(self, master):
         ttk.LabelFrame.__init__(self, master, text="Constraints Files")
         self.constraintsFileList = Tk.StringVar()
+        self.infoLabelString = Tk.StringVar()
         self.loadFileButton = ttk.Button(self, text=u"Load file",
                                         command=self.loadFile)
         self.removeFileButton = ttk.Button(self, text=u"Remove file",
@@ -56,6 +57,8 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
                                         command=self.downloadRestraintFileWin)
+        self.infoLabel = ttk.Label(self, textvariable=self.infoLabelString)
+        self.selectedFile = ""
         self.widgetCreation()
         self.NMRCommands = ""  # Must be set by application at run time
 
@@ -67,6 +70,8 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.loadFileButton.grid(row=0, column=0)
         self.removeFileButton.grid(row=1, column=0)
         self.downloadButton.grid(row=2, column=0)
+        self.infoLabel.grid(row=3, column=0, columnspan=2)
+        self.constraintsList.listbox.bind('<<ListboxSelect>>', self.onStructureSelect)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -95,17 +100,6 @@ class FileSelectionPanel(ttk.LabelFrame):
             del self.NMRCommands.ManagersList[toRemove]
         self.updateFilelist()
 
-    def fileList(self):
-        """
-        """
-        return self.constraintsFileList.get().rstrip(')').lstrip('(').replace("'", "").split(',')
-
-    def selectedFile(self):
-        """
-        """
-        if len(self.constraintsList.listbox.curselection()):
-            return self.fileList()[self.constraintsList.listbox.curselection()[0]]
-
     def downloadRestraintFileWin(self):
         """
         """
@@ -114,7 +108,6 @@ class FileSelectionPanel(ttk.LabelFrame):
                                        parent=self)
         if pdbCode:
             self.downloadFileFromPDB(pdbCode)
-
 
     def downloadFileFromPDB(self, pdbCode):
         """
@@ -143,10 +136,19 @@ class FileSelectionPanel(ttk.LabelFrame):
             sys.stderr.write("Can not download " +
                              pdbCode + " NMR Restraints file from PDB.\n")
 
+    def onStructureSelect(self, evt):
+        """
+        """
+        # Note here that Tkinter passes an event object
+        w = evt.widget
+        index = int(w.curselection()[0])
+        self.selectedFile = w.get(index)
+        self.infoLabelString.set("")
+
     def getInfo(self):
         """
         """
-        if len(self.fileList()):
-            return {"constraintFile": self.selectedFile()}
+        if len(self.selectedFile):
+            return {"constraintFile": self.selectedFile}
         else:
             return {"constraintFile": ""}
