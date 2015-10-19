@@ -151,6 +151,8 @@ class PreferencesPanel(ttk.LabelFrame):
         self.resetButton = ttk.Button(self, text=u"Defaults",
                                       command=self.resetPrefs)
         self.configFileName = ""
+        self.rangeCutOff = Tk.IntVar(self)
+        self.rangeCutOffEntry = ttk.Entry(self, textvariable=self.rangeCutOff, width=2)
 
         self.widgetCreation()
 
@@ -165,6 +167,10 @@ class PreferencesPanel(ttk.LabelFrame):
                            value=method).grid(row=position, column=1)
             position = position + 1
 
+        ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
+
+        self.rangeCutOffEntry.grid(row=position, column=1)
+        position = position + 1
         self.sticksPanel.grid(row=position, column=0, columnspan=2)
         position = position + 1
         self.densityPanel.grid(row=position, column=0, columnspan=2)
@@ -190,7 +196,8 @@ class PreferencesPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        infos = {"method": self.selectedMethod.get()}
+        infos = {"method": self.selectedMethod.get(),
+                 "rangeCutOff": self.rangeCutOff.get()}
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos

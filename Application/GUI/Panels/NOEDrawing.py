@@ -70,10 +70,12 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["residuesRange"],
                                                     infos["violationState"],
                                                     infos["cutOff"],
-                                                    infos["method"])
+                                                    infos["method"],
+                                                    infos["rangeCutOff"])
             self.NMRCommands.showSticks(infos["constraintFile"],
                                         infos["structure"], infos["colors"],
-                                        infos["radius"], infos["UnSatisfactionMarker"],
+                                        infos["radius"],
+                                        infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
     def showDensity(self):

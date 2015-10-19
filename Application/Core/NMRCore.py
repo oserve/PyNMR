@@ -42,11 +42,12 @@ from sys import stderr, stdout
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
-from MolecularViewerInterface import select, zoom, delete, createSelection
+import MolecularViewerInterface as MVI
 
 
 class NMRCore(object):
-    """
+    """Low Level Interface Class
+    for loading and displaying constraints
     """
     def __init__(self):
         self.ManagersList = {}
@@ -80,9 +81,9 @@ class NMRCore(object):
                 stdout.write(str(results['DrawnConstraints']) +
                              " constraints drawn on a total of " +
                              str(len(self.ManagersList[managerName])) + "\n")
-                selection = createSelection([self.ManagersList[managerName].pdb] + results['Residueslist'])
-                select('involRes', selection)
-                zoom(selection)
+                selection = MVI.createSelection([self.ManagersList[managerName].pdb] + results['Residueslist'])
+                MVI.select('involRes', selection)
+                MVI.zoom(selection)
 
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
@@ -107,12 +108,12 @@ class NMRCore(object):
                 if len(densityList):
                     stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
                     stdout.write(str(len(densityList)) + " residues involved.\n")
-                    zoomSelection = createSelection([self.ManagersList[managerName].pdb] + densityList.keys())
-                zoom(zoomSelection)
-                select('involRes', zoomSelection)
+                    zoomSelection = MVI.createSelection([self.ManagersList[managerName].pdb] + densityList.keys())
+                MVI.zoom(zoomSelection)
+                MVI.select('involRes', zoomSelection)
 
-    def commandsInterpretation(self, pdb, managerName, residuesList,
-                               dist_range, violationState, violCutoff, method):
+    def commandsInterpretation(self, pdb, managerName, residuesList, dist_range,
+                               violationState, violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
         if residuesList == 'all':
@@ -141,10 +142,11 @@ class NMRCore(object):
             else:
                 violationState = [violationState]
         self.filter = ConstraintFilter(pdb, resList, dist_range,
-                                       violationState, violCutoff, method)
+                                       violationState, violCutoff,
+                                       method, rangeCutOff)
 
     def cleanScreen(self, managerName):
         """
         """
         self.displayedConstraints = []
-        delete(managerName + "*")
+        MVI.delete(managerName + "*")

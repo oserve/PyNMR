@@ -95,7 +95,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def removeFile(self):
         """
         """
-        toRemove = self.selectedFile()
+        toRemove = self.selectedFile
         if toRemove:
             del self.NMRCommands.ManagersList[toRemove]
         self.updateFilelist()

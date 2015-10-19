@@ -89,7 +89,10 @@ class Constraint(object):
         for atomsSetNumber in range(self.numberOfAtomsSets):
             self.atoms.append(AtomSet(pdbName,
                                       self.resis[atomsSetNumber]['number'],
-                                      self.resis[atomsSetNumber]['atoms'] + self.resis[atomsSetNumber]['atoms_number']))
+                                      self.resis[atomsSetNumber]['atoms'] +
+                                      self.resis[atomsSetNumber]['atoms_number']
+                                      )
+                              )
 
         return self.isValid()
 

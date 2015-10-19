@@ -37,7 +37,7 @@ class ConstraintFilter(object):
     """
 
     def __init__(self, pdb, residuesList, dist_range, violationState,
-                 violCutoff, method):
+                 violCutoff, method, RangeCutOff):
         """Defines parameters for filtering the constraints
         """
         self.parameters = {}
@@ -47,12 +47,13 @@ class ConstraintFilter(object):
         self.parameters['cutOff'] = violCutoff
         self.parameters['pdb'] = pdb
         self.parameters['method'] = method
+        self.parameters['rangeCutOff'] = RangeCutOff
 
     def filter(self, aConstraint):
         """Filter the constraints to be drawn (there should be a better
         way to implement it)
         """
-        if aConstraint.getRange() in self.parameters['range']:
+        if aConstraint.getRange(self.parameters['rangeCutOff']) in self.parameters['range']:
             inList = 0
             for aNumber in aConstraint.getResisNumber():
                 if aNumber in self.parameters['residuesList']:

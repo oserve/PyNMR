@@ -46,6 +46,7 @@ class NOE(Constraint):
         super(NOE, self).__init__()
         self.points = {}
         self.numberOfAtomsSets = 2
+        self.type = "NOE"
 
     def setViolationState(self, cutOff):
         """Set violation state, with optional additional cutoff
@@ -59,17 +60,18 @@ class NOE(Constraint):
         else:
             self.satisfaction = 'Satisfied'
 
-    def getRange(self):
+    def getRange(self, RangeCutOff):
         """Return the range name, according to the usual NMR specification
         range depends on the number of residus between the atomsets
         """
+        print "Range CutOff is ", RangeCutOff
         if not int(self.resis[0]['number']) - int(self.resis[1]['number']):
             return 'intra'
         elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) == 1:
             return 'sequential'
-        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > 1 and abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) <= 5:
+        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > 1 and abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) <= RangeCutOff:
             return 'medium'
-        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > 5:
+        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > RangeCutOff:
             return 'long'
         else:
             stderr.write('How come ?\n')

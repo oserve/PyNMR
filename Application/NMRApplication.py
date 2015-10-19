@@ -49,8 +49,8 @@ class NMRApplication(object):
                 'tooClose': [0, 0, 1, 0, 0, 1]
                 },
             'gradient': "blue_white_red", "method": "sum6",
-            'UnSatisfactionMarker': "_US_", 'SatisfactionMarker': '_S_'
-            }
+            'UnSatisfactionMarker': "_US_", 'SatisfactionMarker': '_S_',
+            'rangeCutOff': 5}
         self.gradientColorList = [
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",
             "blue_white_magenta", "blue_white_red", "blue_white_yellow",
@@ -104,6 +104,7 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.sticksPanel.radius.set(self.defaults["radius"])
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(self.defaults["cutOff"])
         self.NMRInterface.preferencesPanel.selectedMethod.set(self.defaults["method"])
+        self.NMRInterface.preferencesPanel.rangeCutOff.set(self.defaults["rangeCutOff"])
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames()
         self.NMRInterface.preferencesPanel.configFileName = self.configFileName
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
