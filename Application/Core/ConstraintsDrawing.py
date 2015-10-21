@@ -31,7 +31,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from MolecularViewerInterface import setBfactor, drawConstraint, paintDensity, zeroBFactors
+import MolecularViewerInterface as MVI
 from ConstraintID import IDConstraint
 
 class ConstraintDrawer(object):
@@ -60,7 +60,7 @@ class ConstraintDrawer(object):
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction == 'Satisfied':
                 color = colors['Satisfied']
-            drawConstraint(aConstraint.points, color, radius,
+            MVI.drawConstraint(aConstraint.points, color, radius,
                            IDConstraint(aConstraint, self.UnSatisfactionMarker,
                                         self.SatisfactionMarker))
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
@@ -89,9 +89,9 @@ class ConstraintDrawer(object):
         """Uses b-factors to simulate constraint density on structure
         """
         densityList = self.constraintsDensity(selectedConstraints)
-        zeroBFactors(pdb)
+        MVI.zeroBFactors(pdb)
         if len(densityList) > 0:
             for residu in densityList.keys():
-                setBfactor(pdb + " & i. " + residu, densityList[residu])
-        paintDensity(color_gradient, pdb)
+                MVI.setBfactor(pdb + " & i. " + residu, densityList[residu])
+        MVI.paintDensity(color_gradient, pdb)
         return densityList

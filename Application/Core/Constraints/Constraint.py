@@ -53,7 +53,7 @@ class Constraint(object):
         self.constraintValues = {}
         self.numberOfAtomsSets = 0
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
-        self.pdbname = ""
+        self.structureName = ""
 
     def __str__(self):
         """
@@ -82,12 +82,12 @@ class Constraint(object):
         """
         return self.satisfaction
 
-    def associatePDBAtoms(self, pdbName):
+    def associatePDBAtoms(self, structureName):
         """
         Sets atoms sets, checks for inconsistency with pdb file
         """
         for atomsSetNumber in range(self.numberOfAtomsSets):
-            self.atoms.append(AtomSet(pdbName,
+            self.atoms.append(AtomSet(structureName,
                                       self.resis[atomsSetNumber]['number'],
                                       self.resis[atomsSetNumber]['atoms'] +
                                       self.resis[atomsSetNumber]['atoms_number']

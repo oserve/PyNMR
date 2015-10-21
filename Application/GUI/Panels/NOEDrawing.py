@@ -90,7 +90,8 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["residuesRange"],
                                                     infos["violationState"],
                                                     infos["cutOff"],
-                                                    infos["method"])
+                                                    infos["method"],
+                                                    infos["rangeCutOff"])
             self.NMRCommands.showNOEDensity(infos["constraintFile"],
                                             infos["structure"],
                                             infos["gradient"])

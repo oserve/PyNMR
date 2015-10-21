@@ -31,18 +31,19 @@
 
 import re
 from ..MolecularViewerInterface import select
-lastDigit = re.compile(r'\d(\b|\Z)')  #look for last digit of atom type (used in AtomSet)
+lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
+
 
 class AtomSet(object):
     """Base Class contains residu number
         and the atom type of the atom
     """
 
-    def __init__(self, pdbName, resi_number, resi_type):
+    def __init__(self, structureName, resi_number, resi_type):
         """Initialisation sets the residu number
             and the atom type
         """
-        self.pdb = pdbName
+        self.structure = structureName
         self.number = resi_number
         self.atType = resi_type
 
@@ -60,7 +61,7 @@ class AtomSet(object):
             by Pymol functions. Form : pdb & i. Number & n. atomType
             should be more independent from pymol, maybe should not be here at all ...
         """
-        selection = self.pdb + " & i. " + str(self.number) + " & n. " + str(self.atType)
+        selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
         if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
             if self.atType == 'HN':
                 self.atType = 'H'
@@ -70,7 +71,7 @@ class AtomSet(object):
                 digit = lastDigit.search(self.atType).group()[0]
                 self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning
             self.atType = '*' + self.atType
-            selection = self.pdb + " & i. " + str(self.number) + " & n. " + str(self.atType)
+            selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
             if not select("", selection):
                 selection = "noID"
         return selection

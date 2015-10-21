@@ -64,7 +64,6 @@ class NOE(Constraint):
         """Return the range name, according to the usual NMR specification
         range depends on the number of residus between the atomsets
         """
-        print "Range CutOff is ", RangeCutOff
         if not int(self.resis[0]['number']) - int(self.resis[1]['number']):
             return 'intra'
         elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) == 1:
