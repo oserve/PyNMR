@@ -36,7 +36,7 @@ class ConstraintFilter(object):
 
     """
 
-    def __init__(self, pdb, residuesList, dist_range, violationState,
+    def __init__(self, structure, residuesList, dist_range, violationState,
                  violCutoff, method, RangeCutOff):
         """Defines parameters for filtering the constraints
         """
@@ -45,7 +45,7 @@ class ConstraintFilter(object):
         self.parameters['range'] = dist_range
         self.parameters['violationState'] = violationState
         self.parameters['cutOff'] = violCutoff
-        self.parameters['pdb'] = pdb
+        self.parameters['structure'] = structure
         self.parameters['method'] = method
         self.parameters['rangeCutOff'] = RangeCutOff
 
@@ -60,7 +60,7 @@ class ConstraintFilter(object):
                     inList = 1
                     break
             if inList:
-                aConstraint.pdbName = self.parameters['pdb']
+                aConstraint.structureName = self.parameters['structure']
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])

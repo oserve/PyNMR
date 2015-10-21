@@ -76,7 +76,7 @@ class NOE(Constraint):
             stderr.write('How come ?\n')
 
     def setDistance(self, method):
-        """Set actual distance of the constraint in the current pdb file
+        """Set actual distance of the constraint in the current structure file
         """
         self.points[0] = centerOfMass(self.atoms[0].getID())
         self.points[1] = centerOfMass(self.atoms[1].getID())

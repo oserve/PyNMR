@@ -85,13 +85,13 @@ class ConstraintDrawer(object):
             constraintsUsed = constraintsUsed + 1
         return constraintList
 
-    def paD(self, selectedConstraints, pdb, color_gradient):
+    def paD(self, selectedConstraints, structure, color_gradient):
         """Uses b-factors to simulate constraint density on structure
         """
         densityList = self.constraintsDensity(selectedConstraints)
-        MVI.zeroBFactors(pdb)
+        MVI.zeroBFactors(structure)
         if len(densityList) > 0:
             for residu in densityList.keys():
-                MVI.setBfactor(pdb + " & i. " + residu, densityList[residu])
-        MVI.paintDensity(color_gradient, pdb)
+                MVI.setBfactor(structure + " & i. " + residu, densityList[residu])
+        MVI.paintDensity(color_gradient, structure)
         return densityList

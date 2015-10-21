@@ -62,10 +62,10 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
-    def showSticks(self, managerName, pdb, colors, radius, UnSatisfactionMarker, SatisfactionMarker):
+    def showSticks(self, managerName, structure, colors, radius, UnSatisfactionMarker, SatisfactionMarker):
         """
         """
-        self.ManagersList[managerName].setPDB(pdb)
+        self.ManagersList[managerName].setPDB(structure)
         drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
         selectedConstraints = []
         if len(self.ManagersList[managerName]):
@@ -81,19 +81,19 @@ class NMRCore(object):
                 stdout.write(str(results['DrawnConstraints']) +
                              " constraints drawn on a total of " +
                              str(len(self.ManagersList[managerName])) + "\n")
-                selection = MVI.createSelection([self.ManagersList[managerName].pdb] + results['Residueslist'])
+                selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
                 MVI.select('involRes', selection)
                 MVI.zoom(selection)
 
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
 
-    def showNOEDensity(self, managerName, pdb, gradient):
+    def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
         each residue which has a matching constraint. That simulates a density
         which is then paint on the model according to a color gradient
         """
-        self.ManagersList[managerName].setPDB(pdb)
+        self.ManagersList[managerName].setPDB(structure)
         theFilter = self.filter
         drawer = ConstraintDrawer()
         if len(self.ManagersList[managerName]):
@@ -102,17 +102,17 @@ class NMRCore(object):
                     self.ManagersList[managerName].constraints)
                 self.displayedConstraints = self.displayedConstraints + selectedConstraints
                 densityList = drawer.paD(selectedConstraints,
-                                         self.ManagersList[managerName].pdb,
+                                         self.ManagersList[managerName].structure,
                                          gradient)
-                zoomSelection = self.ManagersList[managerName].pdb + " &"
+                zoomSelection = self.ManagersList[managerName].structure + " &"
                 if len(densityList):
                     stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
                     stdout.write(str(len(densityList)) + " residues involved.\n")
-                    zoomSelection = MVI.createSelection([self.ManagersList[managerName].pdb] + densityList.keys())
+                    zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
                 MVI.zoom(zoomSelection)
                 MVI.select('involRes', zoomSelection)
 
-    def commandsInterpretation(self, pdb, managerName, residuesList, dist_range,
+    def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
@@ -141,7 +141,7 @@ class NMRCore(object):
                 violationState = ['unSatisfied', 'Satisfied']
             else:
                 violationState = [violationState]
-        self.filter = ConstraintFilter(pdb, resList, dist_range,
+        self.filter = ConstraintFilter(structure, resList, dist_range,
                                        violationState, violCutoff,
                                        method, rangeCutOff)
 

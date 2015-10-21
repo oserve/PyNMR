@@ -58,7 +58,7 @@ class AtomSet(object):
 
     def getID(self):
         """return ID of the atom for selection
-            by Pymol functions. Form : pdb & i. Number & n. atomType
+            by Pymol functions. Form : structure & i. Number & n. atomType
             should be more independent from pymol, maybe should not be here at all ...
         """
         selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)

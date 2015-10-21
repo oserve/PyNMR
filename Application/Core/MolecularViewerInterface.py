@@ -42,11 +42,11 @@ try:
     def get_model(model):
         return PymolCmd.get_model(model)
 
-    def alterBFactors(pdb,bFactor):
-        PymolCmd.alter(pdb, "b=" + str(bFactor))
+    def alterBFactors(structure,bFactor):
+        PymolCmd.alter(structure, "b=" + str(bFactor))
 
-    def spectrum(color_gradient, pdb):
-        PymolCmd.spectrum("b", color_gradient, pdb)
+    def spectrum(color_gradient, structure):
+        PymolCmd.spectrum("b", color_gradient, structure)
 
     def zoom(selection):
         PymolCmd.zoom(selection)
@@ -79,10 +79,10 @@ except ImportError:
     def get_model(model):
         return []
 
-    def alterBFactors(pdb,bFactor):
+    def alterBFactors(structure,bFactor):
         pass
 
-    def spectrum(color_gradient, pdb):
+    def spectrum(color_gradient, structure):
         pass
 
     def drawConstraint(points, color, aRadius, ID):
@@ -104,11 +104,11 @@ except ImportError:
     def get_names():
         return []
 
-def zeroBFactors(pdb):
-        alterBFactors(pdb, 0)
+def zeroBFactors(structure):
+        alterBFactors(structure, 0)
 
 def setBfactor(selection, bFactor):
         alterBFactors(selection, bFactor)
 
-def paintDensity(color_gradient, pdb):
-        spectrum(color_gradient, pdb)
+def paintDensity(color_gradient, structure):
+        spectrum(color_gradient, structure)

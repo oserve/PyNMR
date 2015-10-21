@@ -84,7 +84,7 @@ class Constraint(object):
 
     def associatePDBAtoms(self, structureName):
         """
-        Sets atoms sets, checks for inconsistency with pdb file
+        Sets atoms sets, checks for inconsistency with structure file
         """
         for atomsSetNumber in range(self.numberOfAtomsSets):
             self.atoms.append(AtomSet(structureName,

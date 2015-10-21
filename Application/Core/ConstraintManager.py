@@ -36,7 +36,7 @@ class ConstraintSetManager(object):
     def __init__(self, managerName):
         self.constraints = []
         self.residuesList = []
-        self.pdb = ''
+        self.structure = ''
         self.name = managerName
         self.format = ""
 
@@ -50,23 +50,23 @@ class ConstraintSetManager(object):
 
     # Constraints management methods
 
-    def setPDB(self, pdb):
+    def setPDB(self, structure):
         """Sets the name of the structure (usually a PDB File) on which the
         distance should be calculated
         """
-        self.pdb = pdb
+        self.structure = structure
         if len(self.constraints):
             for constraint in self.constraints:
-                constraint.pdbName = self.pdb
+                constraint.structureName = self.structure
 
     def associateToPDB(self):
         """Invokes associatePDBAtoms function on all constraints
         """
         result = 0
-        if self.pdb != '':
+        if self.structure != '':
             if len(self.constraints):
                 for constraint in self.constraints:
-                    constraint.associatePDBAtoms(self.pdb)
+                    constraint.associatePDBAtoms(self.structure)
                     result = 1
         return result
 

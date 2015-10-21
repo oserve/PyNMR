@@ -28,16 +28,17 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+from sys import stderr
 
 
 def IDConstraint(aConstraint, UnSatisfactionMarker, SatisfactionMarker):
     """Returns name of constraints :
-    Name_(constraint number)_(pdbName)_(violation_state)
+    Name_(constraint number)_(structureName)_(violation_state)
     """
     if aConstraint.satisfaction != '':
         if aConstraint.satisfaction == 'unSatisfied':
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + UnSatisfactionMarker + aConstraint.pdbName
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + UnSatisfactionMarker + aConstraint.structureName
         else:
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + SatisfactionMarker + aConstraint.pdbName
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + SatisfactionMarker + aConstraint.structureName
     else:
-        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.pdbName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + aConstraint.printCons() + "\n")
+        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.structureName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + aConstraint.printCons() + "\n")

@@ -59,10 +59,10 @@ def __init__(self):
                              command=lambda s=self: NMRApplication(Core, app="GUI", configFileName=configFileName))
 
 
-def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
+def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
             violationState='all', violCutoff=pyNMR.defaults["cutOff"],
             method="sum6", radius=pyNMR.defaults["radius"],
-            colors=pyNMR.defaults["colors"],
+            colors=pyNMR.defaults["colors"], rangeCutOff=pyNMR.defaults["rangeCutOff"],
             UnSatisfactionMarker=pyNMR.defaults["UnSatisfactionMarker"],
             SatisfactionMarker=pyNMR.defaults["SatisfactionMarker"]):
     """Command to display NMR restraints as sticks on protein structure with
@@ -75,27 +75,28 @@ def showNOE(pdb='', managerName="", residuesList='all', dist_range='all',
         if managerName == '':
             managerName = Core.ManagersList.keys()[0]
         if managerName in Core.ManagersList:
-            Core.commandsInterpretation(pdb, managerName, residuesList,
+            Core.commandsInterpretation(structure, managerName, residuesList,
                                         dist_range, violationState, violCutoff,
-                                        method)
-            Core.showSticks(managerName, pdb, colors, radius, UnSatisfactionMarker,
-                            SatisfactionMarker)
+                                        method, rangeCutOff)
+            Core.showSticks(managerName, structure, colors, radius,
+                            UnSatisfactionMarker, SatisfactionMarker)
         else:
             stderr.write("Please check constraints filename.\n")
 
 
-def loadNOE(filename="", consDef=""):
+def loadNOE(filename=""):
     """load NMR distance constraints, call for the correct file format
     (CNS/CYANA),
     """
     if exists(filename):
-        Core.loadNOE(filename, consDef.upper())
+        Core.loadNOE(filename)
     else:
         stderr.write("File : " + filename + " has not been found.\n")
 
 
-def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all',
+def showNOEDensity(structure='', managerName="", residuesList='all', dist_range='all',
                    violationState='all', violCutoff=pyNMR.defaults["cutOff"],
+                   rangeCutOff=pyNMR.defaults["rangeCutOff"],
                    method='sum6', colors=pyNMR.defaults["gradient"]):
     """Command to display NMR restraints as color map on protein structure with
     different parameters : filtering according to distance, restraints display
@@ -107,22 +108,23 @@ def showNOEDensity(pdb='', managerName="", residuesList='all', dist_range='all',
         if managerName == '':
             managerName = Core.ManagersList.keys()[0]
         if managerName in Core.ManagersList:
-            Core.commandsInterpretation(pdb, managerName, residuesList,
+            Core.commandsInterpretation(structure, managerName, residuesList,
                                         dist_range, violationState, violCutoff,
-                                        method)
-            Core.showNOEDensity(managerName, pdb, colors)
+                                        method, rangeCutOff)
+            Core.showNOEDensity(managerName, structure, colors)
         else:
             stderr.write("Please check constraints filename.\n")
 
 
-def loadAndShow(filename, consDef, pdb='', residuesList='all', dist_range='all',
+def loadAndShow(filename, consDef, structure='', residuesList='all', dist_range='all',
                 violationState='all', violCutoff=pyNMR.defaults["cutOff"],
-                method="sum6", radius=pyNMR.defaults["radius"],
+                method="sum6", rangeCutOff=pyNMR.defaults["rangeCutOff"],
+                radius=pyNMR.defaults["radius"],
                 colors=pyNMR.defaults["colors"]):
     """Combine two previous defined functions : load and display"""
-    loadNOE(filename, consDef)
-    showNOE(pdb, filename, residuesList, dist_range, violationState, violCutoff,
-            method, radius, colors)
+    loadNOE(filename)
+    showNOE(structure, filename, residuesList, dist_range, violationState,
+            violCutoff, method, radius, colors, rangeCutOff)
 
 
 def cleanScreen(filename):
