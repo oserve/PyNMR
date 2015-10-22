@@ -57,6 +57,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
                                         command=self.downloadRestraintFileWin)
+        self.saveButton = ttk.Button(self,text=u'Save File', command=self.saveFile)
         self.infoLabel = ttk.Label(self, textvariable=self.infoLabelString)
         self.selectedFile = ""
         self.widgetCreation()
@@ -66,11 +67,12 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         """
         self.constraintsList.listbox.exportselection = 0
-        self.constraintsList.grid(row=0, column=1, rowspan=3)
+        self.constraintsList.grid(row=0, column=1, rowspan=4)
         self.loadFileButton.grid(row=0, column=0)
         self.removeFileButton.grid(row=1, column=0)
         self.downloadButton.grid(row=2, column=0)
-        self.infoLabel.grid(row=3, column=0, columnspan=2)
+        self.saveButton.grid(row=3, column=0)
+        self.infoLabel.grid(row=4, column=0, columnspan=2)
         self.constraintsList.listbox.bind('<<ListboxSelect>>', self.onStructureSelect)
 
     def loadFile(self):
@@ -99,6 +101,16 @@ class FileSelectionPanel(ttk.LabelFrame):
         if toRemove:
             del self.NMRCommands.ManagersList[toRemove]
         self.updateFilelist()
+
+    def saveFile(self):
+        """
+        """
+        toSave = self.selectedFile
+        if toSave:
+            filename = tkFileDialog.asksaveasfilename(
+                title="Save constraint file as", initialfile=toSave)
+            if filename is not None:
+                self.NMRCommands.saveConstraintsFile(toSave, filename)
 
     def downloadRestraintFileWin(self):
         """

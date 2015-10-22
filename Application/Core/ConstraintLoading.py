@@ -46,6 +46,7 @@ class ConstraintLoader(object):
         """
         self.fileName = fileName
         self.managerName = managerName
+        self.fileText = ""
         self.inFileTab = []
 
         # Useful RegEx definitions
@@ -75,6 +76,7 @@ class ConstraintLoader(object):
         else:
             stderr.write("Incorrect or unsupported constraint type.\n")
         self.inFileTab = []
+        aManager.fileText = self.fileText
 
         return aManager
 
@@ -84,6 +86,7 @@ class ConstraintLoader(object):
         typeDefinition = ""
         fin = open(self.fileName, 'r')
         for txt in fin:
+            self.fileText = self.fileText + txt
             txt = txt.lstrip()
             if txt.find('!') < 0:
                 self.inFileTab.append(txt.upper().rstrip())

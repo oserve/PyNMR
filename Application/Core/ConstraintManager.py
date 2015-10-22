@@ -39,6 +39,7 @@ class ConstraintSetManager(object):
         self.structure = ''
         self.name = managerName
         self.format = ""
+        self.fileText = ""
 
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"

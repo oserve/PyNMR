@@ -150,3 +150,10 @@ class NMRCore(object):
         """
         self.displayedConstraints = []
         MVI.delete(managerName + "*")
+
+    def saveConstraintsFile(self, aManagerName, fileName):
+        """
+        """
+        fout = open(fileName, 'w')
+        fout.write(self.ManagersList[aManagerName].fileText)
+        fout.close()
