@@ -43,6 +43,12 @@ from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
+import urllib2
+import shutil
+import gzip
+import os
+import sys
+import tempfile
 
 
 class NMRCore(object):
@@ -157,3 +163,32 @@ class NMRCore(object):
         fout = open(fileName, 'w')
         fout.write(self.ManagersList[aManagerName].fileText)
         fout.close()
+
+    def downloadFromPDB(self, pdbCode):
+        """
+        """
+        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
+        fileName = pdbCode.lower()+".mr"
+        zippedFileName = fileName+".gz"
+        try:
+            workdir = os.getcwd()
+            tempDownloadDir = tempfile.mkdtemp()
+            os.chdir(tempDownloadDir)
+            restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
+            with open(zippedFileName, 'wb') as f:
+                shutil.copyfileobj(restraintFileRequest, f)
+            restraintFileRequest.close()
+            zippedFile = gzip.open(zippedFileName, 'rb')
+            decodedFile = zippedFile.read()
+            restraintFile = open(fileName, 'w')
+            restraintFile.write(decodedFile)
+            zippedFile.close()
+            os.remove(zippedFileName)
+            restraintFile.close()
+            self.loadNOE(fileName)
+            os.remove(fileName)
+            os.chdir(workdir)
+            os.removedirs(tempDownloadDir)
+        except:
+            sys.stderr.write("Can not download " +
+                             pdbCode + " NMR Restraints file from PDB.\n")

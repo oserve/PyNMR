@@ -34,11 +34,6 @@ import tkFileDialog
 import Tkinter as Tk
 import ttk
 from ScrolledList import ScrolledList
-import urllib2
-import shutil
-import gzip
-import os
-import sys
 
 
 class FileSelectionPanel(ttk.LabelFrame):
@@ -57,7 +52,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
                                         command=self.downloadRestraintFileWin)
-        self.saveButton = ttk.Button(self,text=u'Save File', command=self.saveFile)
+        self.saveButton = ttk.Button(self, text=u'Save File', command=self.saveFile)
         self.infoLabel = ttk.Label(self, textvariable=self.infoLabelString)
         self.selectedFile = ""
         self.widgetCreation()
@@ -119,34 +114,11 @@ class FileSelectionPanel(ttk.LabelFrame):
                                        'Please enter a 4-digit pdb code:',
                                        parent=self)
         if pdbCode:
-            self.downloadFileFromPDB(pdbCode)
-
-    def downloadFileFromPDB(self, pdbCode):
-        """
-        """
-        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
-        fileName = pdbCode.lower()+".mr"
-        zippedFileName = fileName+".gz"
-        try:
-            restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
-            with open(zippedFileName, 'wb') as f:
-                shutil.copyfileobj(restraintFileRequest, f)
-            restraintFileRequest.close()
-            zippedFile = gzip.open(zippedFileName, 'rb')
-            decodedFile = zippedFile.read()
-            restraintFile = open(fileName, 'w')
-            restraintFile.write(decodedFile)
-            zippedFile.close()
-            os.remove(zippedFileName)
-            restraintFile.close()
-            restraintFile = open(fileName, 'r')
-            restraintFile.close()
-            self.NMRCommands.loadNOE(fileName)
+            waitWindow = ttk.Progressbar(self, mode='indeterminate')
+            waitWindow.start()
+            self.NMRCommands.downloadFromPDB(pdbCode)
+            waitWindow.stop()
             self.updateFilelist()
-            os.remove(fileName)
-        except:
-            sys.stderr.write("Can not download " +
-                             pdbCode + " NMR Restraints file from PDB.\n")
 
     def onStructureSelect(self, evt):
         """
