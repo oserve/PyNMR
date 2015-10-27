@@ -84,6 +84,7 @@ class NMRCore(object):
                         selectedConstraints.append(constraint)
                 self.displayedConstraints = self.displayedConstraints + selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
+                numberOfConstraints = results['DrawnConstraints']
                 stdout.write(str(results['DrawnConstraints']) +
                              " constraints drawn on a total of " +
                              str(len(self.ManagersList[managerName])) + "\n")
@@ -93,6 +94,7 @@ class NMRCore(object):
 
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
+        return numberOfConstraints
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -102,6 +104,7 @@ class NMRCore(object):
         self.ManagersList[managerName].setPDB(structure)
         theFilter = self.filter
         drawer = ConstraintDrawer()
+        numberOfConstraints = 0
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = theFilter.filterConstraints(
@@ -113,10 +116,12 @@ class NMRCore(object):
                 zoomSelection = self.ManagersList[managerName].structure + " &"
                 if len(densityList):
                     stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
+                    numberOfConstraints = len(selectedConstraints)
                     stdout.write(str(len(densityList)) + " residues involved.\n")
                     zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
                 MVI.zoom(zoomSelection)
                 MVI.select('involRes', zoomSelection)
+            return numberOfConstraints
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):
@@ -167,7 +172,6 @@ class NMRCore(object):
     def downloadFromPDB(self, pdbCode, url):
         """
         """
-        #url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
         fileName = pdbCode.lower()+".mr"
         zippedFileName = fileName+".gz"
         try:
