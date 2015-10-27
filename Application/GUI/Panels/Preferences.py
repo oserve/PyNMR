@@ -116,14 +116,14 @@ class DensityPreferencesPanel(ttk.LabelFrame):
         """
         ttk.LabelFrame.__init__(self, master, text=u"NOE density Preferences")
         self.gradient = Tk.StringVar()
+        self.gradientSelection = ttk.Combobox(self, state="readonly",
+                                              textvariable=self.gradient)
         self.widgetCreation()
 
     def widgetCreation(self):
         """
         """
         ttk.Label(self, text=u'Gradient :').grid(row=0, column=0)
-        self.gradientSelection = ttk.Combobox(self, state="readonly",
-                                              textvariable=self.gradient)
         self.gradientSelection.grid(row=0, column=1)
 
     def getInfo(self):
@@ -153,7 +153,8 @@ class PreferencesPanel(ttk.LabelFrame):
         self.configFileName = ""
         self.rangeCutOff = Tk.IntVar(self)
         self.rangeCutOffEntry = ttk.Entry(self, textvariable=self.rangeCutOff, width=2)
-
+        self.url = Tk.StringVar(self)
+        self.urlTextField = ttk.Entry(self, textvariable=self.url)
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -175,7 +176,11 @@ class PreferencesPanel(ttk.LabelFrame):
         position = position + 1
         self.densityPanel.grid(row=position, column=0, columnspan=2)
         position = position + 1
-        self.savePrefButton.grid(row=position, column=0, columnspan=1)
+        ttk.Label(self, text=u'PDB.org URL for download').grid(row=position, column=0, columnspan=2)
+        position = position + 1
+        self.urlTextField.grid(row=position, column=0, columnspan=2)
+        position = position + 1
+        self.savePrefButton.grid(row=position, column=0)
         self.resetButton.grid(row=position, column=1)
 
     def savePrefs(self):
@@ -191,13 +196,14 @@ class PreferencesPanel(ttk.LabelFrame):
         self.sticksPanel.SatisfactionMarker.set(defaults["SatisfactionMarker"])
         self.sticksPanel.radius.set(defaults["radius"])
         self.selectedMethod.set(defaults["method"])
-
+        self.url.set(defaults["urlPDB"])
 
     def getInfo(self):
         """
         """
         infos = {"method": self.selectedMethod.get(),
-                 "rangeCutOff": self.rangeCutOff.get()}
+                 "rangeCutOff": self.rangeCutOff.get(),
+                 "urlPDB": self.url.get()}
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos

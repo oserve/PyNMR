@@ -164,10 +164,10 @@ class NMRCore(object):
         fout.write(self.ManagersList[aManagerName].fileText)
         fout.close()
 
-    def downloadFromPDB(self, pdbCode):
+    def downloadFromPDB(self, pdbCode, url):
         """
         """
-        url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
+        #url = "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"
         fileName = pdbCode.lower()+".mr"
         zippedFileName = fileName+".gz"
         try:

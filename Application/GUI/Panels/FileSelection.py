@@ -57,6 +57,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.selectedFile = ""
         self.widgetCreation()
         self.NMRCommands = ""  # Must be set by application at run time
+        self.mainGUI = ""  # Must be set at run time
 
     def widgetCreation(self):
         """
@@ -114,9 +115,10 @@ class FileSelectionPanel(ttk.LabelFrame):
                                        'Please enter a 4-digit pdb code:',
                                        parent=self)
         if pdbCode:
+            infos = self.mainGUI.getInfo()
             waitWindow = ttk.Progressbar(self, mode='indeterminate')
             waitWindow.start()
-            self.NMRCommands.downloadFromPDB(pdbCode)
+            self.NMRCommands.downloadFromPDB(pdbCode, infos["urlPDB"])
             waitWindow.stop()
             self.updateFilelist()
 

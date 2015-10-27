@@ -75,6 +75,7 @@ class NMRGUI(Tk.Toplevel):
         """
         self.mainPanel.NOEDrawing.mainGUI = self
         self.preferencesPanel.mainGUI = self
+        self.mainPanel.fileSelection.mainGUI = self
 
     def getInfo(self):
         """
