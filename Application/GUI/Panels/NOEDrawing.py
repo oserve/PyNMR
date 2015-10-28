@@ -66,7 +66,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         """
         """
         infos = self.mainGUI.getInfo()
-        numberOfConstraints = 0
+
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["structure"],
                                                     infos["constraintFile"],
@@ -76,15 +76,17 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            numberOfConstraints = self.NMRCommands.showSticks(
+            results = self.NMRCommands.showSticks(
                                         infos["constraintFile"],
                                         infos["structure"], infos["colors"],
                                         infos["radius"],
                                         infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
-        self.constraintSelectionText.set(str(numberOfConstraints) + " constraints used." )
-
+            self.constraintSelectionText.set(str(results['numberOfConstraints']) +
+                                             " constraints used, involving " +
+                                             str(results["numberOfResidues"]) +
+                                             " residues")
 
     def showDensity(self):
         """
@@ -100,12 +102,15 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            numberOfConstraints = self.NMRCommands.showNOEDensity(
+            results = self.NMRCommands.showNOEDensity(
                                             infos["constraintFile"],
                                             infos["structure"],
                                             infos["gradient"])
 
-        self.constraintSelectionText.set(str(numberOfConstraints) + " constraints used." )
+            self.constraintSelectionText.set(str(results['numberOfConstraints']) +
+                                             " constraints used, involving " +
+                                             str(results["numberOfResidues"]) +
+                                             " residues")
 
     def cleanAll(self):
         """Remove all displayed sticks

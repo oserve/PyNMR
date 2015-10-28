@@ -37,7 +37,7 @@ lower limit violation, red for upper limit violation for NOEs)
 
 # Required modules
 from os.path import basename
-from sys import stderr, stdout
+from sys import stderr
 # Custom Classes
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
@@ -85,16 +85,14 @@ class NMRCore(object):
                 self.displayedConstraints = self.displayedConstraints + selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 numberOfConstraints = results['DrawnConstraints']
-                stdout.write(str(results['DrawnConstraints']) +
-                             " constraints drawn on a total of " +
-                             str(len(self.ManagersList[managerName])) + "\n")
                 selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
                 MVI.select('involRes', selection)
                 MVI.zoom(selection)
 
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
-        return numberOfConstraints
+        return {"numberOfConstraints": numberOfConstraints,
+                "numberOfResidues": len(results['Residueslist'])}
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -104,7 +102,6 @@ class NMRCore(object):
         self.ManagersList[managerName].setPDB(structure)
         theFilter = self.filter
         drawer = ConstraintDrawer()
-        numberOfConstraints = 0
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = theFilter.filterConstraints(
@@ -115,13 +112,11 @@ class NMRCore(object):
                                          gradient)
                 zoomSelection = self.ManagersList[managerName].structure + " &"
                 if len(densityList):
-                    stdout.write(str(len(selectedConstraints)) + " constraints used.\n")
-                    numberOfConstraints = len(selectedConstraints)
-                    stdout.write(str(len(densityList)) + " residues involved.\n")
                     zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
                 MVI.zoom(zoomSelection)
                 MVI.select('involRes', zoomSelection)
-            return numberOfConstraints
+        return {"numberOfConstraints": len(selectedConstraints),
+                "numberOfResidues": len(densityList)}
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):

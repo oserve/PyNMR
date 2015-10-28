@@ -33,7 +33,7 @@ contains interface for command line functions
 # ----------------------------------------------------------------------
 
 # from os import getcwd, chdir
-from sys import stderr
+from sys import stderr, stdout
 from os.path import exists
 import Tkinter as Tk
 
@@ -78,8 +78,12 @@ def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
             Core.commandsInterpretation(structure, managerName, residuesList,
                                         dist_range, violationState, violCutoff,
                                         method, rangeCutOff)
-            Core.showSticks(managerName, structure, colors, radius,
+            results = Core.showSticks(managerName, structure, colors, radius,
                             UnSatisfactionMarker, SatisfactionMarker)
+            stdout.write(str(results['numberOfConstraints']) +
+                             " constraints drawn on a total of " +
+                             str(len(Core.ManagersList[managerName])) + "\n")
+
         else:
             stderr.write("Please check constraints filename.\n")
 
@@ -111,7 +115,11 @@ def showNOEDensity(structure='', managerName="", residuesList='all', dist_range=
             Core.commandsInterpretation(structure, managerName, residuesList,
                                         dist_range, violationState, violCutoff,
                                         method, rangeCutOff)
-            Core.showNOEDensity(managerName, structure, colors)
+            results = Core.showNOEDensity(managerName, structure, colors)
+            stdout.write(str(results["numberOfConstraints"]) +
+                         " constraints used.\n")
+            stdout.write(str(results["numberOfResidues"]) +
+                         " residues involved.\n")
         else:
             stderr.write("Please check constraints filename.\n")
 
@@ -126,6 +134,11 @@ def loadAndShow(filename, consDef, structure='', residuesList='all', dist_range=
     showNOE(structure, filename, residuesList, dist_range, violationState,
             violCutoff, method, radius, colors, rangeCutOff)
 
+
+def downloadNMR(pdbCode, url = pyNMR.defaults["urlPDB"]):
+    """
+    """
+    Core.downloadFromPDB(pdbCode, url)
 
 def cleanScreen(filename):
     """Call the command to clear the screen from all NMR
@@ -145,6 +158,7 @@ try:
     extend("showNOE", showNOE)
     extend("showNOEDensity", showNOEDensity)
     extend("loadAndShow", loadAndShow)
+    extend("downloadNMR", downloadNMR)
 
 except ImportError:
     stderr.write("Demo mode.\n")
