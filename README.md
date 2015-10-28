@@ -44,7 +44,7 @@ Usage :
 -----
 The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
 
-![Interface](pictures/mainWindow.tiff)
+![Interface](pictures/mainWindow.tiff) ![Preferences](pictures/preferences.tiff)
 
 Possible future features :
 ------------------------
