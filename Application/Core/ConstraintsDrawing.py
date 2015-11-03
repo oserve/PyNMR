@@ -34,6 +34,7 @@
 import MolecularViewerInterface as MVI
 from ConstraintID import IDConstraint
 
+
 class ConstraintDrawer(object):
     """
 
@@ -61,8 +62,9 @@ class ConstraintDrawer(object):
             elif aConstraint.satisfaction == 'Satisfied':
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius,
-                           IDConstraint(aConstraint, self.UnSatisfactionMarker,
-                                        self.SatisfactionMarker))
+                               IDConstraint(aConstraint,
+                                            self.UnSatisfactionMarker,
+                                            self.SatisfactionMarker))
             numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist': involvedResidueslist,
                 'DrawnConstraints': numberOfDrawnConstraints}

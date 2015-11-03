@@ -112,8 +112,8 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         """
         pdbCode = tkSimpleDialog.askstring('PDB NMR Restraints',
-                                       'Please enter a 4-digit pdb code:',
-                                       parent=self)
+                                           'Please enter a 4-digit pdb code:',
+                                           parent=self)
         if pdbCode:
             infos = self.mainGUI.getInfo()
             waitWindow = ttk.Progressbar(self, mode='indeterminate')
@@ -131,7 +131,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.selectedFile = w.get(index)
         self.infoLabelString.set("Contains " +
                                  str(len(self.NMRCommands.ManagersList[self.selectedFile])) +
-                                 " Constraints ("+ self.NMRCommands.ManagersList[self.selectedFile].format + ")")
+                                 " Constraints (" + self.NMRCommands.ManagersList[self.selectedFile].format + ")")
 
     def getInfo(self):
         """

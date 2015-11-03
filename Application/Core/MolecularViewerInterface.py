@@ -42,7 +42,7 @@ try:
     def get_model(model):
         return PymolCmd.get_model(model)
 
-    def alterBFactors(structure,bFactor):
+    def alterBFactors(structure, bFactor):
         PymolCmd.alter(structure, "b=" + str(bFactor))
 
     def spectrum(color_gradient, structure):
@@ -79,7 +79,7 @@ except ImportError:
     def get_model(model):
         return []
 
-    def alterBFactors(structure,bFactor):
+    def alterBFactors(structure, bFactor):
         pass
 
     def spectrum(color_gradient, structure):
@@ -104,11 +104,14 @@ except ImportError:
     def get_names():
         return []
 
+
 def zeroBFactors(structure):
-        alterBFactors(structure, 0)
+    alterBFactors(structure, 0)
+
 
 def setBfactor(selection, bFactor):
-        alterBFactors(selection, bFactor)
+    alterBFactors(selection, bFactor)
+
 
 def paintDensity(color_gradient, structure):
-        spectrum(color_gradient, structure)
+    spectrum(color_gradient, structure)

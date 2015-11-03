@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 
 import re
-from ..MolecularViewerInterface import select
+import ..MolecularViewerInterface as MVI
 lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
 
 
@@ -62,7 +62,7 @@ class AtomSet(object):
             should be more independent from pymol, maybe should not be here at all ...
         """
         selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
-        if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
+        if not MVI.select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
             if self.atType == 'HN':
                 self.atType = 'H'
             elif self.atType == 'H':
@@ -72,6 +72,6 @@ class AtomSet(object):
                 self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning
             self.atType = '*' + self.atType
             selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
-            if not select("", selection):
+            if not MVI.select("", selection):
                 selection = "noID"
         return selection

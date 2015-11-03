@@ -69,12 +69,12 @@ class ConstraintFilter(object):
                         else:
                             return 0
                     else:
-                        stderr.write("Distance issue with constraint :\n"
-                                     + aConstraint.definition + "\n")
+                        stderr.write("Distance issue with constraint :\n" +
+                                     aConstraint.definition + "\n")
                         return 0
                 else:
-                    stderr.write("Selection issue with constraint :\n"
-                                 + aConstraint.definition + "\n")
+                    stderr.write("Selection issue with constraint :\n" +
+                                 aConstraint.definition + "\n")
                     return 0
             else:
                 return 0

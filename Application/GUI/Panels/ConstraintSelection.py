@@ -31,7 +31,6 @@
 
 import Tkinter as Tk
 import ttk
- 
 
 
 class ConstraintSelectionPanel(ttk.LabelFrame):

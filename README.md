@@ -31,7 +31,7 @@ Installation :
 - Copy all files into a single directory anywhere on your disk
 
 ###For user friendly version :
-- Download "PyNMRPG.py"
+- Download "PyNMRPU.py"
 
 For both versions, use the Pymol standard plugin install in the main menu
 

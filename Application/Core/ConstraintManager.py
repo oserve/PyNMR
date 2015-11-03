@@ -93,4 +93,3 @@ class ConstraintSetManager(object):
         """
         if int(aConstraintNumber) <= len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
-

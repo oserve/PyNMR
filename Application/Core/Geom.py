@@ -30,13 +30,14 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 from math import sqrt
-from MolecularViewerInterface import get_model
+import MolecularViewerInterface as MVI
+
 
 def centerOfMass(selection):
     """ Author: Andreas Henschel 2006
     assumes equal weights
     """
-    model = get_model(selection)
+    model = MVI.get_model(selection)
     if len(model.atom) > 0:
         x, y, z = 0, 0, 0
         for AtomA in model.atom:
@@ -48,7 +49,9 @@ def centerOfMass(selection):
         stderr.write("selection is empty :"+ str(selection)+"\n")
         return 0, 0, 0
 
-#Methods for distance constraints
+# Methods for distance constraints
+
+
 def calcDistance(selection_init, selection_final, method):
     """
     Choose which method to calculate distances
@@ -61,13 +64,14 @@ def calcDistance(selection_init, selection_final, method):
         stderr.write("This method of calculation is not defined : "
                      + str(method) + "\n")
 
+
 def averageDistance_6(selection_init, selection_final):
     """
     Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
     """
-    model_init = get_model(selection_init)
-    model_final = get_model(selection_final)
+    model_init = MVI.get_model(selection_init)
+    model_final = MVI.get_model(selection_final)
     if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []
         for AtomA in model_init.atom:
@@ -94,8 +98,8 @@ def sumDistance_6(selection_init, selection_final):
     """
     Calculate distance according to : (sum of all distances^-6)^-1/6
     """
-    model_init = get_model(selection_init)
-    model_final = get_model(selection_final)
+    model_init = MVI.get_model(selection_init)
+    model_final = MVI.get_model(selection_final)
 
     if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []

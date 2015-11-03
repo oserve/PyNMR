@@ -35,20 +35,21 @@ lower limit violation, red for upper limit violation for NOEs)
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-# Required modules
+# Standard modules
 from os.path import basename
 from sys import stderr
-# Custom Classes
-from ConstraintLoading import ConstraintLoader
-from Filtering import ConstraintFilter
-from ConstraintsDrawing import ConstraintDrawer
-import MolecularViewerInterface as MVI
 import urllib2
 import shutil
 import gzip
 import os
 import sys
 import tempfile
+
+# Custom Classes
+from ConstraintLoading import ConstraintLoader
+from Filtering import ConstraintFilter
+from ConstraintsDrawing import ConstraintDrawer
+import MolecularViewerInterface as MVI
 
 
 class NMRCore(object):

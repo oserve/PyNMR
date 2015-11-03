@@ -41,11 +41,11 @@ class NOEDrawingPanel(ttk.LabelFrame):
         """
         ttk.LabelFrame.__init__(self, master, text="NOE Representation")
         self.sticksButton = ttk.Button(self, text="Sticks",
-                                      command=self.showSticks)
+                                       command=self.showSticks)
         self.densityButton = ttk.Button(self, text="Density",
-                                       command=self.showDensity)
+                                        command=self.showDensity)
         self.cleanButton = ttk.Button(self, text="Clean Sticks",
-                                     command=self.cleanAll)
+                                      command=self.cleanAll)
         self.constraintSelectionText = Tk.StringVar()
         self.labelConstraints = ttk.Label(self, textvariable=self.constraintSelectionText)
         self.mainGUI = ""  # Must be set at run time
@@ -76,12 +76,12 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showSticks(
-                                        infos["constraintFile"],
-                                        infos["structure"], infos["colors"],
-                                        infos["radius"],
-                                        infos["UnSatisfactionMarker"],
-                                        infos["SatisfactionMarker"])
+            results = self.NMRCommands.showSticks(infos["constraintFile"],
+                                                  infos["structure"],
+                                                  infos["colors"],
+                                                  infos["radius"],
+                                                  infos["UnSatisfactionMarker"],
+                                                  infos["SatisfactionMarker"])
 
             self.constraintSelectionText.set(str(results['numberOfConstraints']) +
                                              " constraints used, involving " +
@@ -102,10 +102,9 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showNOEDensity(
-                                            infos["constraintFile"],
-                                            infos["structure"],
-                                            infos["gradient"])
+            results = self.NMRCommands.showNOEDensity(infos["constraintFile"],
+                                                      infos["structure"],
+                                                      infos["gradient"])
 
             self.constraintSelectionText.set(str(results['numberOfConstraints']) +
                                              " constraints used, involving " +

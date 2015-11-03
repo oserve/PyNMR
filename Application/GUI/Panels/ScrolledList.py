@@ -38,7 +38,8 @@ class ScrolledList(ttk.Frame):
     """
 
     def __init__(self, master=None, width=DEFAULT_WIDTH,
-        height=DEFAULT_HEIGHT, vscroll=1, hscroll=0, callback=None, listvariable=None):
+                 height=DEFAULT_HEIGHT, vscroll=1, hscroll=0, callback=None,
+                 listvariable=None):
         """Constructor for ScrolledList.
         """
         # -- 1 --
@@ -77,8 +78,8 @@ class ScrolledList(ttk.Frame):
         # [ self  :=  self with a Listbox widget added
         #   self.listbox  :=  that widget ]
         self.listbox = Tk.Listbox(self, relief=Tk.SUNKEN,
-            width=self.width, height=self.height,
-            borderwidth=2, listvariable=alistvariable)
+                                  width=self.width, height=self.height,
+                                  borderwidth=2, listvariable=alistvariable)
         self.listbox.grid(row=0, column=0)
         self.listbox.configure(exportselection=False)
         # -- 4 --

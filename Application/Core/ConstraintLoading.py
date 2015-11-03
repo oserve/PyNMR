@@ -171,8 +171,8 @@ class ConstraintLoader(object):
                         aManager.addConstraint(aConstraint)
                         counter = counter + 1
                     except:
-                        stderr.write("Unknown error while loading constraint "
-                                     + ":\n" + aConstLine + "\n")
+                        stderr.write("Unknown error while loading constraint " +
+                                     ":\n" + aConstLine + "\n")
             else:
                 stderr.write("Empty line, skipping.\n")
 

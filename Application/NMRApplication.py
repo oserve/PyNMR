@@ -51,7 +51,7 @@ class NMRApplication(object):
             'gradient': "blue_white_red", "method": "sum6",
             'UnSatisfactionMarker': "_US_", 'SatisfactionMarker': '_S_',
             'rangeCutOff': 5,
-            'urlPDB':"ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"}
+            'urlPDB': "ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/"}
         self.gradientColorList = [
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",
             "blue_white_magenta", "blue_white_red", "blue_white_yellow",
@@ -125,7 +125,7 @@ class NMRApplication(object):
         results = []
         objectsLists = get_names()
         for name in objectsLists:
-            if name.find(self.defaults["UnSatisfactionMarker"]) >=0 or name.find(self.defaults["SatisfactionMarker"]) >= 0:
+            if name.find(self.defaults["UnSatisfactionMarker"]) >= 0 or name.find(self.defaults["SatisfactionMarker"]) >= 0:
                 pass
             else:
                 results.append(name)
