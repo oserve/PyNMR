@@ -29,9 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-import re
-import ..MolecularViewerInterface as MVI
-lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
+from .. import MolecularViewerInterface as MVI
 
 
 class AtomSet(object):
@@ -57,21 +55,4 @@ class AtomSet(object):
         return not self.__eq__(other)
 
     def getID(self):
-        """return ID of the atom for selection
-            by Pymol functions. Form : structure & i. Number & n. atomType
-            should be more independent from pymol, maybe should not be here at all ...
-        """
-        selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
-        if not MVI.select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
-            if self.atType == 'HN':
-                self.atType = 'H'
-            elif self.atType == 'H':
-                self.atType = 'HN'
-            elif lastDigit.search(self.atType):
-                digit = lastDigit.search(self.atType).group()[0]
-                self.atType = digit + lastDigit.sub('', self.atType)  # put final digit at the beginning
-            self.atType = '*' + self.atType
-            selection = self.structure + " & i. " + str(self.number) + " & n. " + str(self.atType)
-            if not MVI.select("", selection):
-                selection = "noID"
-        return selection
+        return MVI.getID(self)

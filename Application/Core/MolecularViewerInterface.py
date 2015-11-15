@@ -28,6 +28,9 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+import re
+
+lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
 
 try:
     from pymol import cmd as PymolCmd
@@ -72,6 +75,28 @@ try:
     def get_names():
         return PymolCmd.get_names()
 
+    def getID(atomSet):
+        """return ID of the atom for selection
+            by Pymol functions. Form : structure & i. Number & n. atomType
+            should be more independent from pymol,
+            maybe should not be here at all ...
+        """
+        selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
+        if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
+            if atomSet.atType == 'HN':
+                atomSet.atType = 'H'
+            elif atomSet.atType == 'H':
+                atomSet.atType = 'HN'
+            elif lastDigit.search(atomSet.atType):
+                digit = lastDigit.search(atomSet.atType).group()[0]
+                atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
+            atomSet.atType = '*' + atomSet.atType
+            selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
+            if not select("", selection):
+                selection = "noID"
+        return selection
+
+
 except ImportError:
     def select(selectionName, selection):
         return []
@@ -103,6 +128,9 @@ except ImportError:
 
     def get_names():
         return []
+
+    def getID(atomSet):
+        return ""
 
 
 def zeroBFactors(structure):

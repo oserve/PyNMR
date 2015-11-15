@@ -56,6 +56,8 @@ Possible future features :
     * Real-time edit / display
 * Increase speed
 
+Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competences I do not have.
+
 Known difficulties :
 ------------------
 * When displaying a large number of constraints as sticks, Pymol performances decrease rapidly :

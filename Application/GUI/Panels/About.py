@@ -41,11 +41,22 @@ class About(ttk.Frame):
         """
         ttk.Frame.__init__(self, master)
         self.aboutFrame = ttk.LabelFrame(self, text=u'About')
-        self.aboutFrame.grid(row=0, column=0)
-        ttk.Label(self.aboutFrame, justify=Tk.CENTER, text=u"This Pymol plugin has been written \nbecause I " +
-                  "thought it would be useful to check \nmy NOEs during my postdocship. I hope it'll" +
-                  " \nhelp you as well. Feel free to send \nany comments to : github.com/oserve/PyNMR\n" +
-                  "This plugin is free and may be copied as \nlong as you respect the copyright.").grid(row=0, column=0)
-        self.helpFrame = ttk.LabelFrame(self, text=u'Help')
-        self.helpFrame.grid(row=1, column=0)
-        ttk.Label(self.helpFrame, text=u'Some useful hints').grid(row=0, column=0)
+        self.aboutFrame.grid(row=1, column=0)
+        ttk.Label(self.aboutFrame, justify=Tk.CENTER, text=u"This Pymol plugin" +
+                  " has been written \nbecause I thought it would be useful to" +
+                  "check \nmy NOEs during my postdocship. I hope it'll" +
+                  " \nhelp you as well. Feel free to send \nany comments to " +
+                  ": github.com/oserve/PyNMR\nThis plugin is free and may be " +
+                  "copied as \nlong as you respect the copyright."
+                  ).grid(row=0, column=0)
+        self.helpFrame = ttk.LabelFrame(self, text=u'Quick Help')
+        self.helpFrame.grid(row=0, column=0)
+        ttk.Label(self.helpFrame, text=u'- First open a file or' +
+                  'download one frome the PDB\n  using a structure PDB code\n' +
+                  '- Then select which type of constraint you want\n' +
+                  '- You can select residue numbers (X, Y, Z)\n  or a range ' +
+                  '(X-Z) or both (default is all)\n - After that, select the' +
+                  'structure you want\n to' +
+                  ' display the constraints on.\n - Finally, click on the' +
+                  ' display you want\n (sticks or colormap)'
+                  ).grid(row=0, column=0)
