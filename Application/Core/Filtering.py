@@ -69,13 +69,9 @@ class ConstraintFilter(object):
                         else:
                             return 0
                     else:
-                        stderr.write("Distance issue with constraint :\n" +
-                                     aConstraint.definition + "\n")
-                        return 0
+                        return "Distance issue with constraint :\n" + aConstraint.definition + "\n"
                 else:
-                    stderr.write("Selection issue with constraint :\n" +
-                                 aConstraint.definition + "\n")
-                    return 0
+                    return "Selection issue with constraint :\n" + aConstraint.definition + "\n"
             else:
                 return 0
         else:
@@ -84,8 +80,13 @@ class ConstraintFilter(object):
     def filterConstraints(self, constraintList):
         """
         """
+        errorMessages = ""
         selectedConstraint = []
         for aConstraint in constraintList:
-            if self.filter(aConstraint):
+            result = self.filter(aConstraint)
+            if result == 1:
                 selectedConstraint.append(aConstraint)
+            elif result != 0:
+                errorMessages = errorMessages + result
+        stderr.write(errorMessages)
         return selectedConstraint
