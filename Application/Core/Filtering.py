@@ -51,34 +51,27 @@ class ConstraintFilter(object):
         self.errors = ""
 
     def filterAConstraint(self, aConstraint):
-        """Filter the constraints to be drawn (there should be a better
-        way to implement it)
+        """Filter the constraints to be drawn
         """
+        isSelected = False
         if aConstraint.getRange(self.parameters['rangeCutOff']) in self.parameters['range']:
-            if len(filter(lambda aResiNumber: aResiNumber in self.parameters['residuesList'], aConstraint.getResisNumber())) > 0:
+            if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.parameters['residuesList']]) > 0:
                 aConstraint.structureName = self.parameters['structure']
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
                         if aConstraint.isSatisfied() in self.parameters['violationState']:
-                            return True
-                        else:
-                            return False
+                            isSelected = True
                     else:
                         self.errors += "Distance issue with constraint :\n" + aConstraint.definition + "\n"
-                        return False
                 else:
                     self.errors += "Selection issue with constraint :\n" + aConstraint.definition + "\n"
-                    return False
-            else:
-                return False
-        else:
-            return False
+        return isSelected
 
     def filterConstraints(self, constraintList):
         """
         """
-        selectedConstraints = filter(self.filterAConstraint, constraintList)
+        selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
         stderr.write(self.errors)
         self.errors = ""
         return selectedConstraints
