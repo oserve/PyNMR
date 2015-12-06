@@ -48,45 +48,37 @@ class ConstraintFilter(object):
         self.parameters['structure'] = structure
         self.parameters['method'] = method
         self.parameters['rangeCutOff'] = RangeCutOff
+        self.errors = ""
 
-    def filter(self, aConstraint):
+    def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn (there should be a better
         way to implement it)
         """
         if aConstraint.getRange(self.parameters['rangeCutOff']) in self.parameters['range']:
-            inList = 0
-            for aNumber in aConstraint.getResisNumber():
-                if aNumber in self.parameters['residuesList']:
-                    inList = 1
-                    break
-            if inList:
+            if len(filter(lambda aResiNumber: aResiNumber in self.parameters['residuesList'], aConstraint.getResisNumber())) > 0:
                 aConstraint.structureName = self.parameters['structure']
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
-                        if aConstraint.isSatifsied() in self.parameters['violationState']:
-                            return 1
+                        if aConstraint.isSatisfied() in self.parameters['violationState']:
+                            return True
                         else:
-                            return 0
+                            return False
                     else:
-                        return "Distance issue with constraint :\n" + aConstraint.definition + "\n"
+                        self.errors += "Distance issue with constraint :\n" + aConstraint.definition + "\n"
+                        return False
                 else:
-                    return "Selection issue with constraint :\n" + aConstraint.definition + "\n"
+                    self.errors += "Selection issue with constraint :\n" + aConstraint.definition + "\n"
+                    return False
             else:
-                return 0
+                return False
         else:
-            return 0
+            return False
 
     def filterConstraints(self, constraintList):
         """
         """
-        errorMessages = ""
-        selectedConstraint = []
-        for aConstraint in constraintList:
-            result = self.filter(aConstraint)
-            if result == 1:
-                selectedConstraint.append(aConstraint)
-            elif result != 0:
-                errorMessages = errorMessages + result
-        stderr.write(errorMessages)
-        return selectedConstraint
+        selectedConstraints = filter(self.filterAConstraint, constraintList)
+        stderr.write(self.errors)
+        self.errors = ""
+        return selectedConstraints

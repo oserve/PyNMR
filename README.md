@@ -1,8 +1,8 @@
 PyNMR
 =====
-Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) abilities to molecular viewer [Pymol](http://pymol.org).
+Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) spectroscopy abilities to molecular viewer [Pymol](http://pymol.org).
 
-NMR can provide useful information to create molecular models, such as distance between atoms (usually protons in biomolecuar biology).
+NMR spectroscopy can provide useful information to create molecular models, such as distance between atoms (usually protons in biomolecular biology).
 This plugin allows to display those informations, called "distance contraints" directly onto the molecular skeleton of proteins.
 It can do so in two different ways :
 
@@ -55,6 +55,7 @@ Possible future features :
     * Link to 3D display
     * Real-time edit / display
 * Increase speed
+* Import other formats
 
 Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competences I do not have.
 

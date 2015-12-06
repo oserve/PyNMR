@@ -58,7 +58,7 @@ class NMRCore(object):
     """
     def __init__(self):
         self.ManagersList = {}
-        self.filter = ""
+        self.constraintFilter = ""
         self.displayedConstraints = []
 
     def loadNOE(self, filename):
@@ -77,7 +77,7 @@ class NMRCore(object):
         selectedConstraints = []
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
-                filteredConstraints = self.filter.filterConstraints(
+                filteredConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
                 selectedConstraints = []
                 for constraint in filteredConstraints:
@@ -101,7 +101,7 @@ class NMRCore(object):
         which is then paint on the model according to a color gradient
         """
         self.ManagersList[managerName].setPDB(structure)
-        theFilter = self.filter
+        theFilter = self.constraintFilter
         drawer = ConstraintDrawer()
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
@@ -148,7 +148,7 @@ class NMRCore(object):
                 violationState = ['unSatisfied', 'Satisfied']
             else:
                 violationState = [violationState]
-        self.filter = ConstraintFilter(structure, resList, dist_range,
+        self.constraintFilter = ConstraintFilter(structure, resList, dist_range,
                                        violationState, violCutoff,
                                        method, rangeCutOff)
 

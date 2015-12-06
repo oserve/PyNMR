@@ -76,7 +76,7 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isSatifsied(self):
+    def isSatisfied(self):
         """
         Returns yes or no according to the violation state
         """
@@ -99,10 +99,10 @@ class Constraint(object):
     def isValid(self):
         """Return yes or no if one of the atomset is not valid
         """
-        validity = 1
+        validity = True
         for atomsSetNumber in range(self.numberOfAtomsSets):
             if "noID" in self.atoms[atomsSetNumber].getID():
-                validity = 0
+                validity = False
                 break
         return validity
 

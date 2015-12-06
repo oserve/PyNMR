@@ -82,9 +82,9 @@ class NOE(Constraint):
         self.points[1] = centerOfMass(self.atoms[1].getID())
         self.constraintValues['actual'] = calcDistance(self.atoms[0].getID(), self.atoms[1].getID(), method)
         if self.constraintValues['actual'] <= 0:
-            return 0
+            return False
         else:
-            return 1
+            return True
 
     def getResisNumber(self):
         """Utility method
