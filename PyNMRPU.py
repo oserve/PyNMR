@@ -14,8 +14,10 @@ import ttk
 import tkSimpleDialog
 import tkFileDialog
 import tkColorChooser
-# from os import getcwd, chdir
 from os.path import exists
+from pymol.cmd import extend
+from pymol import cmd as PymolCmd
+from pymol.cgo import CYLINDER
 
 
 class NMRApplication(object):
@@ -474,7 +476,7 @@ class ConstraintFilter(object):
                 if aConstraint.isValid():
                     if aConstraint.setDistance(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
-                        if aConstraint.isSatifsied() in self.parameters['violationState']:
+                        if aConstraint.isSatisfied() in self.parameters['violationState']:
                             return 1
                         else:
                             return 0
@@ -588,80 +590,45 @@ def sumDistance_6(selection_init, selection_final):
                      + selection_final + "\n")
         return 0.0
 
-try:
-    from pymol import cmd as PymolCmd
-    from pymol.cgo import CYLINDER
 
-    def select(selectionName, selection):
-        if selectionName == "":
-            return PymolCmd.select(selection)
-        else:
-            return PymolCmd.select(selectionName, selection)
+def select(selectionName, selection):
+    if selectionName == "":
+        return PymolCmd.select(selection)
+    else:
+        return PymolCmd.select(selectionName, selection)
 
-    def get_model(model):
-        return PymolCmd.get_model(model)
+def get_model(model):
+    return PymolCmd.get_model(model)
 
-    def alterBFactors(structure,bFactor):
-        PymolCmd.alter(structure, "b=" + str(bFactor))
+def alterBFactors(structure,bFactor):
+    PymolCmd.alter(structure, "b=" + str(bFactor))
 
-    def spectrum(color_gradient, structure):
-        PymolCmd.spectrum("b", color_gradient, structure)
+def spectrum(color_gradient, structure):
+    PymolCmd.spectrum("b", color_gradient, structure)
 
-    def zoom(selection):
-        PymolCmd.zoom(selection)
+def zoom(selection):
+    PymolCmd.zoom(selection)
 
-    def drawConstraint(points, color, aRadius, ID):
-        """used to draw a NOE constraint between two sets of atoms
-                using cgo from Pymol
-        """
-        cons = [CYLINDER] + list(points[0]) + list(points[1]) + [aRadius] + color
-        PymolCmd.load_cgo(cons, ID)
+def drawConstraint(points, color, aRadius, ID):
+    """used to draw a NOE constraint between two sets of atoms
+            using cgo from Pymol
+    """
+    cons = [CYLINDER] + list(points[0]) + list(points[1]) + [aRadius] + color
+    PymolCmd.load_cgo(cons, ID)
 
-    def delete(selectionName):
-        PymolCmd.delete(selectionName)
+def delete(selectionName):
+    PymolCmd.delete(selectionName)
 
-    def createSelection(Items):
-        selection = ""
-        if len(Items) > 2:
-            selection = Items.pop(0) + " &"
-            for residue in Items:
-                selection = selection + " resi " + residue + " +"
-        return selection.rstrip("+")
+def createSelection(Items):
+    selection = ""
+    if len(Items) > 2:
+        selection = Items.pop(0) + " &"
+        for residue in Items:
+            selection = selection + " resi " + residue + " +"
+    return selection.rstrip("+")
 
-    def get_names():
-        return PymolCmd.get_names()
-
-except ImportError:
-    def select(selectionName, selection):
-        return []
-
-    def get_model(model):
-        return []
-
-    def alterBFactors(structure,bFactor):
-        pass
-
-    def spectrum(color_gradient, structure):
-        pass
-
-    def drawConstraint(points, color, aRadius, ID):
-        pass
-
-    def zoom(selection):
-        pass
-
-    def delete(selectionName):
-        pass
-
-    def createSelection(Items):
-        if len(Items) > 2:
-            selection = Items.pop(0) + " &"
-            for residue in Items:
-                selection = selection + " resi " + residue + " +"
-        return selection.rstrip("+")
-
-    def get_names():
-        return []
+def get_names():
+    return PymolCmd.get_names()
 
 def zeroBFactors(structure):
     alterBFactors(structure, 0)
@@ -912,7 +879,7 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isSatifsied(self):
+    def isSatisfied(self):
         """
         Returns yes or no according to the violation state
         """
@@ -1972,18 +1939,8 @@ def cleanScreen(filename):
     if filename in Core.ManagersList:
         Core.cleanScreen(filename)
 
-if __name__ == "__main__":
-    MainWin = Tk.Tk()
-    pyNMR.startGUI()
-    MainWin.mainloop()
-
-try:
-    from pymol.cmd import extend
-    extend("loadNOE", loadNOE)
-    extend("showNOE", showNOE)
-    extend("showNOEDensity", showNOEDensity)
-    extend("loadAndShow", loadAndShow)
-    extend("downloadNMR", downloadNMR)
-
-except ImportError:
-    stderr.write("Demo mode.\n")
+extend("loadNOE", loadNOE)
+extend("showNOE", showNOE)
+extend("showNOEDensity", showNOEDensity)
+extend("loadAndShow", loadAndShow)
+extend("downloadNMR", downloadNMR)

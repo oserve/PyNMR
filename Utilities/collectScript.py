@@ -22,26 +22,34 @@ for directory in directoriesList:
         if len(fileComponents) == 2:
             if fileComponents[1] == 'py':
                 if fileComponents[0] != '__init__':
-                    stderr.write('Parsing file : '+aFile+'\n')
+                    stderr.write('Parsing file : ' + aFile + '\n')
                     fin = open(aFile, 'r')
+                    importException = False
                     for line in fin:
+                        if line.find('try') > -1:
+                            importException = True
+                        if line.find('except') > -1:
+                            importException = False
                         if line.find("import") == -1:
                             if line.find('#') != 0:
-                                collection = collection + line
+                                collection += line
                         else:
-                            if line.find('"""') == -1:
-                                if importCollection.find(line) == -1:
-                                    importCollection = importCollection + line
+                            if not importException:
+                                if line.find('"""') == -1:
+                                    if importCollection.find(line) == -1:
+                                        importCollection += line
+                                else:
+                                    collection += line
                             else:
-                                collection = collection + line
+                                collection += line
                     fin.close()
 
 fin = open(mainDirectory + "/pymolNMR.py", 'r')
 for line in fin:
     if line.find("import") == -1:
-        collection = collection + line
+        collection += line
     else:
-        importCollection = importCollection + line
+        importCollection += line
 fin.close()
 
 stdout.write(importCollection)
