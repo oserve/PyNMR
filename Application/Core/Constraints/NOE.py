@@ -75,6 +75,11 @@ class NOE(Constraint):
         else:
             stderr.write('How come ?\n')
 
+    def setValueFromStructure(self, method):
+        """
+        """
+        return self.setDistance(method)
+
     def setDistance(self, method):
         """Set actual distance of the constraint in the current structure file
         """

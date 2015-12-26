@@ -58,7 +58,7 @@ class ConstraintFilter(object):
             if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.parameters['residuesList']]) > 0:
                 aConstraint.structureName = self.parameters['structure']
                 if aConstraint.isValid():
-                    if aConstraint.setDistance(self.parameters['method']):
+                    if aConstraint.setValueFromStructure(self.parameters['method']):
                         aConstraint.setViolationState(self.parameters['cutOff'])
                         if aConstraint.isSatisfied() in self.parameters['violationState']:
                             isSelected = True

@@ -121,3 +121,8 @@ class Constraint(object):
             if "segid" in parsingResult[position].keys():
                 currentResidue["segid"] = parsingResult[position]["segid"]
             self.resis.append(currentResidue)
+
+    def setValueFromStructure(self):
+        """
+        """
+        return False
