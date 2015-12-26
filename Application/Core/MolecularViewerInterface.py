@@ -69,7 +69,7 @@ try:
         if len(Items) > 2:
             selection = Items.pop(0) + " &"
             for residue in Items:
-                selection = selection + " resi " + residue + " +"
+                selection += " resi " + residue + " +"
         return selection.rstrip("+")
 
     def get_names():
@@ -123,7 +123,7 @@ except ImportError:
         if len(Items) > 2:
             selection = Items.pop(0) + " &"
             for residue in Items:
-                selection = selection + " resi " + residue + " +"
+                selection += " resi " + residue + " +"
         return selection.rstrip("+")
 
     def get_names():

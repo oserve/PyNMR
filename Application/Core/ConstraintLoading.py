@@ -84,20 +84,20 @@ class ConstraintLoader(object):
         """
         """
         typeDefinition = ""
-        fin = open(self.fileName, 'r')
-        for txt in fin:
-            self.fileText = self.fileText + txt
-            txt = txt.lstrip()
-            if txt.find('!') < 0:
-                self.inFileTab.append(txt.upper().rstrip())
-                if typeDefinition == "":
-                    if txt.upper().find("ASSI") > -1:
-                        typeDefinition = 'CNS'
-                    elif self.XEASYReg.search(txt):
-                        typeDefinition = 'CYANA'
-            else:
-                stderr.write(txt + " skipped. Commented out.\n")
-        fin.close()
+        with open(self.fileName, 'r') as fin:
+            for txt in fin:
+                self.fileText = self.fileText + txt
+                txt = txt.lstrip()
+                if txt.find('!') < 0:
+                    self.inFileTab.append(txt.upper().rstrip())
+                    if typeDefinition == "":
+                        if txt.upper().find("ASSI") > -1:
+                            typeDefinition = 'CNS'
+                        elif self.XEASYReg.search(txt):
+                            typeDefinition = 'CYANA'
+                else:
+                    stderr.write(txt + " skipped. Commented out.\n")
+        #fin.close()
         return typeDefinition
 
     def synthesizeCNSFile(self):

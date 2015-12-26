@@ -52,7 +52,8 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
                                         command=self.downloadRestraintFileWin)
-        self.saveButton = ttk.Button(self, text=u'Save File', command=self.saveFile)
+        self.saveButton = ttk.Button(self, text=u'Save File',
+                                     command=self.saveFile)
         self.infoLabel = ttk.Label(self, textvariable=self.infoLabelString)
         self.selectedFile = ""
         self.widgetCreation()
@@ -69,7 +70,8 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.downloadButton.grid(row=2, column=0)
         self.saveButton.grid(row=3, column=0)
         self.infoLabel.grid(row=4, column=0, columnspan=2)
-        self.constraintsList.listbox.bind('<<ListboxSelect>>', self.onStructureSelect)
+        self.constraintsList.listbox.bind('<<ListboxSelect>>',
+                                          self.onStructureSelect)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -116,10 +118,7 @@ class FileSelectionPanel(ttk.LabelFrame):
                                            parent=self)
         if pdbCode:
             infos = self.mainGUI.getInfo()
-            waitWindow = ttk.Progressbar(self, mode='indeterminate')
-            waitWindow.start()
             self.NMRCommands.downloadFromPDB(pdbCode, infos["urlPDB"])
-            waitWindow.stop()
             self.updateFilelist()
 
     def onStructureSelect(self, evt):

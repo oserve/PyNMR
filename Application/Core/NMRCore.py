@@ -69,7 +69,8 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
-    def showSticks(self, managerName, structure, colors, radius, UnSatisfactionMarker, SatisfactionMarker):
+    def showSticks(self, managerName, structure, colors, radius,
+                   UnSatisfactionMarker, SatisfactionMarker):
         """
         """
         self.ManagersList[managerName].setPDB(structure)
@@ -79,11 +80,8 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 filteredConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
-                selectedConstraints = []
-                for constraint in filteredConstraints:
-                    if constraint not in self.displayedConstraints:
-                        selectedConstraints.append(constraint)
-                self.displayedConstraints = self.displayedConstraints + selectedConstraints
+                selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
+                self.displayedConstraints += selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 numberOfConstraints = results['DrawnConstraints']
                 selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
@@ -107,7 +105,7 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = theFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
-                self.displayedConstraints = self.displayedConstraints + selectedConstraints
+                self.displayedConstraints += selectedConstraints
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)
@@ -133,7 +131,7 @@ class NMRCore(object):
                     for residueNumber in range(int(aRange[0]), int(aRange[1]) + 1):
                         resList = resList + [str(residueNumber)]
                 elif len(aRange) == 1:
-                    resList = resList + [str(aRange[0])]
+                    resList += [str(aRange[0])]
                 else:
                     stderr.write("Residues set definition error : " +
                                  residuesList + "\n")
@@ -177,18 +175,18 @@ class NMRCore(object):
             restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
             with open(zippedFileName, 'wb') as f:
                 shutil.copyfileobj(restraintFileRequest, f)
-            restraintFileRequest.close()
-            zippedFile = gzip.open(zippedFileName, 'rb')
-            decodedFile = zippedFile.read()
-            restraintFile = open(fileName, 'w')
-            restraintFile.write(decodedFile)
-            zippedFile.close()
-            os.remove(zippedFileName)
-            restraintFile.close()
-            self.loadNOE(fileName)
-            os.remove(fileName)
-            os.chdir(workdir)
-            os.removedirs(tempDownloadDir)
+                restraintFileRequest.close()
+                zippedFile = gzip.open(zippedFileName, 'rb')
+                decodedFile = zippedFile.read()
+                restraintFile = open(fileName, 'w')
+                restraintFile.write(decodedFile)
+                zippedFile.close()
+                os.remove(zippedFileName)
+                restraintFile.close()
+                self.loadNOE(fileName)
+                os.remove(fileName)
+                os.chdir(workdir)
+                os.removedirs(tempDownloadDir)
         except:
             sys.stderr.write("Can not download " +
                              pdbCode + " NMR Restraints file from PDB.\n")
