@@ -1,29 +1,29 @@
 PyNMR
 =====
-Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) spectroscopy abilities to molecular viewer [Pymol](http://pymol.org).
+Attempt to add [NMR](http://en.wikipedia.org/wiki/Nuclear_magnetic_resonance) spectroscopy abilities to the wonderful molecular viewer [Pymol](http://pymol.org).
 
-NMR spectroscopy can provide useful information to create molecular models, such as distance between atoms (usually protons in biomolecular biology).
-This plugin allows to display those informations, called "distance contraints" directly onto the molecular skeleton of proteins.
+NMR spectroscopy can provide useful information to create molecular models, such as distance between atoms (usually protons / hydrogen atoms in biomolecular biology).
+This plugin allows to display distance information (so-called "distance contraints" or [NOEs](https://en.wikipedia.org/wiki/Nuclear_Overhauser_effect)) directly onto the molecular skeleton of proteins. 
 It can do so in two different ways :
 
-- Display distance constraints as sticks between atoms / group of atoms with color code
+- As sticks between atoms / group of atoms with color code to indicate if the structure is in agreement with NMR data
 
 ![NOESticks](pictures/sticks.tiff)
 
-- Display distance constraint density as a color gradient on the molecular skeleton
+- As density with color map on the molecular skeleton
 
 ![NOEDensity](pictures/density.tiff)
 
 I believe this could help a lot in the tedious process of determining whether the 
 constraints extracted from the nmr spectrum make sens or not.
 
-Additional Possibilities :
+Features :
 ---
-- Import popular data format [CNS](http://cns-online.org) or [CYANA](http://www.cyana.org)
-- Command line and GUI
-- Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do)
+- Import popular data formats [CNS / X-PLOR](http://cns-online.org) or [CYANA / XEASY](http://www.cyana.org)
+- Command line and graphical user interfaces available
+- Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do) directly from this plugin
 - Choose method of distance calculation between atoms (in case of ambiguous restraints)
-- Colors and size of NOE representations
+- Choice for colors and size of NOE representations
 
 Installation :
 ------------
@@ -55,12 +55,12 @@ Possible future features :
     * Link to 3D display
     * Real-time edit / display
 * Increase speed
-* Import other formats
+* Import other formats (CCPNMR, ...)
 
 Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competences I do not have.
 
 Known difficulties :
 ------------------
-* When displaying a large number of constraints as sticks, Pymol performances decrease rapidly :
+* When displaying a large number of constraints as sticks, Pymol performances decrease rapidly (Depends strongly on the performance of your computer):
     * Avoid to draw all constraints if not necessary
     * Remove them before any other action if you can
