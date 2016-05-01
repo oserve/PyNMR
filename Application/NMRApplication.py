@@ -29,7 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from GUI.NMRGUI import NMRGUI
-from Core.MolecularViewerInterface import get_names
+import Core.MolecularViewerInterface as MVI
 import pickle
 
 
@@ -123,7 +123,7 @@ class NMRApplication(object):
         """
         """
         results = []
-        objectsLists = get_names()
+        objectsLists = MVI.get_names()
         for name in objectsLists:
             if name.find(self.defaults["UnSatisfactionMarker"]) >= 0 or name.find(self.defaults["SatisfactionMarker"]) >= 0:
                 pass

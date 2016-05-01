@@ -40,38 +40,38 @@ class ConstraintFilter(object):
                  violCutoff, method, RangeCutOff):
         """Defines parameters for filtering the constraints
         """
-        self.parameters = {}
-        self.parameters['residuesList'] = residuesList
-        self.parameters['range'] = dist_range
-        self.parameters['violationState'] = violationState
-        self.parameters['cutOff'] = violCutoff
-        self.parameters['structure'] = structure
-        self.parameters['method'] = method
-        self.parameters['rangeCutOff'] = RangeCutOff
-        self.errors = ""
+        self.residuesList = residuesList
+        self.range = dist_range
+        self.violationState = violationState
+        self.cutOff = violCutoff
+        self.structure = structure
+        self.method = method
+        self.rangeCutOff = RangeCutOff
+        self.errors = []
 
     def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn
         """
         isSelected = False
-        if aConstraint.getRange(self.parameters['rangeCutOff']) in self.parameters['range']:
-            if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.parameters['residuesList']]) > 0:
-                aConstraint.structureName = self.parameters['structure']
+        if aConstraint.getRange(self.rangeCutOff) in self.range:
+            if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]) > 0:
+                aConstraint.structureName = self.structure
                 if aConstraint.isValid():
-                    if aConstraint.setValueFromStructure(self.parameters['method']):
-                        aConstraint.setViolationState(self.parameters['cutOff'])
-                        if aConstraint.isSatisfied() in self.parameters['violationState']:
+                    if aConstraint.setValueFromStructure(self.method):
+                        aConstraint.setViolationState(self.cutOff)
+                        if aConstraint.isSatisfied() in self.violationState:
                             isSelected = True
                     else:
-                        self.errors += "Distance issue with constraint :\n" + aConstraint.definition + "\n"
+                        self.errors.append("Distance issue with constraint :\n" + aConstraint.definition)
                 else:
-                    self.errors += "Selection issue with constraint :\n" + aConstraint.definition + "\n"
+                    self.errors.append("Selection issue with constraint :\n" + aConstraint.definition)
         return isSelected
 
     def filterConstraints(self, constraintList):
         """
         """
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
-        stderr.write(self.errors)
+        stderr.write("\n".join(self.errors))
+        stderr.write(str(len(self.errors))+" errors detected.\n")
         self.errors = ""
         return selectedConstraints

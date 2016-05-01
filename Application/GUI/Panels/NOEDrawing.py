@@ -52,7 +52,6 @@ class NOEDrawingPanel(ttk.LabelFrame):
         self.NMRCommands = ""  # Must be set by application at run time
         self.widgetCreation()
 
-
     def widgetCreation(self):
         """
         """

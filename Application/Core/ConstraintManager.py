@@ -56,9 +56,8 @@ class ConstraintSetManager(object):
         distance should be calculated
         """
         self.structure = structure
-        if len(self.constraints):
-            for constraint in self.constraints:
-                constraint.structureName = self.structure
+        for constraint in self.constraints:
+            constraint.structureName = self.structure
 
     def associateToPDB(self):
         """Invokes associatePDBAtoms function on all constraints

@@ -1,5 +1,10 @@
 """Main module declaring the module for pymol
-contains interface for command line functions
+contains interface for command line functions :
+load CNS or DYANA distances constraints files
+into molecular viewer, display them on the molecule
+and show unSatisfied constraints according to a cutOff
+with different color (White for not unSatisfied, blue for
+lower limit violation, red for upper limit violation for NOEs)
 """
 # Copyright Notice
 # ================
@@ -32,7 +37,6 @@ contains interface for command line functions
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-# from os import getcwd, chdir
 from sys import stderr, stdout
 from os.path import exists
 import Tkinter as Tk
@@ -62,7 +66,8 @@ def __init__(self):
 def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
             violationState='all', violCutoff=pyNMR.defaults["cutOff"],
             method="sum6", radius=pyNMR.defaults["radius"],
-            colors=pyNMR.defaults["colors"], rangeCutOff=pyNMR.defaults["rangeCutOff"],
+            colors=pyNMR.defaults["colors"],
+            rangeCutOff=pyNMR.defaults["rangeCutOff"],
             UnSatisfactionMarker=pyNMR.defaults["UnSatisfactionMarker"],
             SatisfactionMarker=pyNMR.defaults["SatisfactionMarker"]):
     """Command to display NMR restraints as sticks on protein structure with

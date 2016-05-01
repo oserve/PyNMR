@@ -92,8 +92,7 @@ class ConstraintDrawer(object):
         """
         densityList = self.constraintsDensity(selectedConstraints)
         MVI.zeroBFactors(structure)
-        if len(densityList) > 0:
-            for residu in densityList.keys():
-                MVI.setBfactor(structure + " & i. " + residu, densityList[residu])
+        for residu in densityList.keys():
+            MVI.setBfactor(structure + " & i. " + residu, densityList[residu])
         MVI.paintDensity(color_gradient, structure)
         return densityList

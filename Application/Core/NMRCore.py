@@ -1,9 +1,4 @@
-"""load CNS or DYANA distances constraints files
-into molecular viewer, display them on the molecule
-and show unSatisfied constraints according to a cutOff
-with different color (White for not unSatisfied, blue for
-lower limit violation, red for upper limit violation for NOEs)
-"""
+
 # Copyright Notice
 # ================
 #
@@ -71,7 +66,8 @@ class NMRCore(object):
 
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
-        """
+        """Seeks for constraints that fit criteria, increases a counter for
+        each residue which has a matching constraint.
         """
         self.ManagersList[managerName].setPDB(structure)
         drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
@@ -147,27 +143,29 @@ class NMRCore(object):
             else:
                 violationState = [violationState]
         self.constraintFilter = ConstraintFilter(structure, resList, dist_range,
-                                       violationState, violCutoff,
-                                       method, rangeCutOff)
+                                                 violationState, violCutoff,
+                                                 method, rangeCutOff)
 
     def cleanScreen(self, managerName):
-        """
+        """Remove all sticks from pymol
         """
         self.displayedConstraints = []
         MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):
-        """
+        """Save the selected constraint file under the format
+        it has been loaded.
         """
         fout = open(fileName, 'w')
         fout.write(self.ManagersList[aManagerName].fileText)
         fout.close()
 
     def downloadFromPDB(self, pdbCode, url):
+        """Download constraint file from wwwPDB
+        if available.
         """
-        """
-        fileName = pdbCode.lower()+".mr"
-        zippedFileName = fileName+".gz"
+        PDBfileName = pdbCode.lower() + ".mr"
+        zippedFileName = PDBfileName + ".gz"
         try:
             workdir = os.getcwd()
             tempDownloadDir = tempfile.mkdtemp()
@@ -178,13 +176,13 @@ class NMRCore(object):
                 restraintFileRequest.close()
                 zippedFile = gzip.open(zippedFileName, 'rb')
                 decodedFile = zippedFile.read()
-                restraintFile = open(fileName, 'w')
+                restraintFile = open(PDBfileName, 'w')
                 restraintFile.write(decodedFile)
                 zippedFile.close()
                 os.remove(zippedFileName)
                 restraintFile.close()
-                self.loadNOE(fileName)
-                os.remove(fileName)
+                self.loadNOE(PDBfileName)
+                os.remove(PDBfileName)
                 os.chdir(workdir)
                 os.removedirs(tempDownloadDir)
         except:
