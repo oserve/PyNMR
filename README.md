@@ -8,11 +8,11 @@ It can do so in two different ways :
 
 - As sticks between atoms / group of atoms with color code to indicate if the structure is in agreement with NMR data
 
-![NOESticks](pictures/sticks.tiff)
+![NOESticks](pictures/sticks.png)
 
 - As density with color map on the molecular skeleton
 
-![NOEDensity](pictures/density.tiff)
+![NOEDensity](pictures/density.png)
 
 I believe this could help a lot in the tedious process of determining whether the 
 constraints extracted from the nmr spectrum make sens or not.
@@ -44,7 +44,7 @@ Usage :
 -----
 The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
 
-![Interface](pictures/mainWindow.tiff) ![Preferences](pictures/preferences.tiff)
+![Interface](pictures/mainWindow.png) ![Preferences](pictures/preferences.png)
 
 Possible future features :
 ------------------------

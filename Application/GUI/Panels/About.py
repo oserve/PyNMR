@@ -51,11 +51,11 @@ class About(ttk.Frame):
                   ).grid(row=0, column=0)
         self.helpFrame = ttk.LabelFrame(self, text=u'Quick Help')
         self.helpFrame.grid(row=0, column=0)
-        ttk.Label(self.helpFrame, text=u'- First open a file or' +
+        ttk.Label(self.helpFrame, text=u'- First open a file or ' +
                   'download one frome the PDB\n  using a structure PDB code\n' +
                   '- Then select which type of constraint you want\n' +
                   '- You can select residue numbers (X, Y, Z)\n  or a range ' +
-                  '(X-Z) or both (default is all)\n - After that, select the' +
+                  '(X-Z) or both (default is all)\n - After that, select the ' +
                   'structure you want\n to' +
                   ' display the constraints on.\n - Finally, click on the' +
                   ' display you want\n (sticks or colormap)'

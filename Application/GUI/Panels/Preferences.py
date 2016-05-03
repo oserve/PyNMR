@@ -152,7 +152,8 @@ class PreferencesPanel(ttk.LabelFrame):
                                       command=self.resetPrefs)
         self.configFileName = ""
         self.rangeCutOff = Tk.IntVar(self)
-        self.rangeCutOffEntry = ttk.Entry(self, textvariable=self.rangeCutOff, width=2)
+        self.rangeCutOffEntry = Tk.Spinbox(self, textvariable=self.rangeCutOff,
+                                           from_=1, to=20, increment=1, width=2)
         self.url = Tk.StringVar(self)
         self.urlTextField = ttk.Entry(self, textvariable=self.url)
         self.widgetCreation()
@@ -165,7 +166,7 @@ class PreferencesPanel(ttk.LabelFrame):
         position = 0
         for methodName, method in self.methodsList:
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
-                           value=method).grid(row=position, column=1)
+                            value=method).grid(row=position, column=1)
             position = position + 1
 
         ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
@@ -184,11 +185,15 @@ class PreferencesPanel(ttk.LabelFrame):
         self.resetButton.grid(row=position, column=1)
 
     def savePrefs(self):
+        """
+        """
         configFile = open(self.configFileName, 'w')
         pickle.dump(self.mainGUI.getInfo(), configFile)
         configFile.close()
 
     def resetPrefs(self):
+        """
+        """
         defaults = self.mainApp.StandardPrefDefaults
         self.densityPanel.gradient.set(defaults["gradient"])
         self.sticksPanel.colors = defaults["colors"]
