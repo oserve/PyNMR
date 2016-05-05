@@ -32,7 +32,7 @@
 import Tkinter as Tk
 import ttk
 import tkColorChooser
-import pickle
+import appDefaults
 
 
 class SticksPreferencesPanel(ttk.LabelFrame):
@@ -150,7 +150,6 @@ class PreferencesPanel(ttk.LabelFrame):
                                          command=self.savePrefs)
         self.resetButton = ttk.Button(self, text=u"Defaults",
                                       command=self.resetPrefs)
-        self.configFileName = ""
         self.rangeCutOff = Tk.IntVar(self)
         self.rangeCutOffEntry = Tk.Spinbox(self, textvariable=self.rangeCutOff,
                                            from_=1, to=20, increment=1, width=2)
@@ -187,14 +186,13 @@ class PreferencesPanel(ttk.LabelFrame):
     def savePrefs(self):
         """
         """
-        configFile = open(self.configFileName, 'w')
-        pickle.dump(self.mainGUI.getInfo(), configFile)
-        configFile.close()
+        appDefaults.registerDefaults(self.mainGUI.getInfo())
+        appDefaults.saveDefaults()
 
     def resetPrefs(self):
         """
         """
-        defaults = self.mainApp.StandardPrefDefaults
+        appDefaults.setToStandardDefaults()
         self.densityPanel.gradient.set(defaults["gradient"])
         self.sticksPanel.colors = defaults["colors"]
         self.sticksPanel.UnSatisfactionMarker.set(defaults["UnSatisfactionMarker"])

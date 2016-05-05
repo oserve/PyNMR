@@ -44,14 +44,13 @@ import Tkinter as Tk
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
 
-configFileName = "pymolNMR.cfg"
+import Application.GUI.Panels.appDefaults as appDefaults
 
-if not exists(configFileName):
-    configFileName = ""
+appDefaults.loadDefaults()
 
 Core = NMRCore()
 
-pyNMR = NMRApplication(Core, app="NoGUI", configFileName=configFileName)
+pyNMR = NMRApplication(Core, app="NoGUI")
 
 
 def __init__(self):
@@ -60,16 +59,18 @@ def __init__(self):
     self.menuBar.addmenuitem('Plugin', 'command',
                              'PyNMR',
                              label='PyNMR...',
-                             command=lambda s=self: NMRApplication(Core, app="GUI", configFileName=configFileName))
+                             command=lambda s=self: NMRApplication(Core, app="GUI"))
 
 
 def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
-            violationState='all', violCutoff=pyNMR.defaults["cutOff"],
-            method="sum6", radius=pyNMR.defaults["radius"],
-            colors=pyNMR.defaults["colors"],
-            rangeCutOff=pyNMR.defaults["rangeCutOff"],
-            UnSatisfactionMarker=pyNMR.defaults["UnSatisfactionMarker"],
-            SatisfactionMarker=pyNMR.defaults["SatisfactionMarker"]):
+            violationState='all',
+            violCutoff=appDefaults.defaultForParameter("cutOff"),
+            method=appDefaults.defaultForParameter('method'),
+            radius=appDefaults.defaultForParameter("radius"),
+            colors=appDefaults.defaultForParameter("colors"),
+            rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
+            UnSatisfactionMarker=appDefaults.defaultForParameter("UnSatisfactionMarker"),
+            SatisfactionMarker=appDefaults.defaultForParameter("SatisfactionMarker")):
     """Command to display NMR restraints as sticks on protein structure with
     different parameters : filtering according to distance, restraints display
     options
@@ -103,10 +104,12 @@ def loadNOE(filename=""):
         stderr.write("File : " + filename + " has not been found.\n")
 
 
-def showNOEDensity(structure='', managerName="", residuesList='all', dist_range='all',
-                   violationState='all', violCutoff=pyNMR.defaults["cutOff"],
-                   rangeCutOff=pyNMR.defaults["rangeCutOff"],
-                   method='sum6', colors=pyNMR.defaults["gradient"]):
+def showNOEDensity(structure='', managerName="", residuesList='all',
+                   dist_range='all', violationState='all',
+                   violCutoff=appDefaults.defaultForParameter("cutOff"),
+                   rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
+                   method=appDefaults.defaultForParameter('method'),
+                   colors=appDefaults.defaultForParameter("gradient")):
     """Command to display NMR restraints as color map on protein structure with
     different parameters : filtering according to distance, restraints display
     options
@@ -129,18 +132,20 @@ def showNOEDensity(structure='', managerName="", residuesList='all', dist_range=
             stderr.write("Please check constraints filename.\n")
 
 
-def loadAndShow(filename, consDef, structure='', residuesList='all', dist_range='all',
-                violationState='all', violCutoff=pyNMR.defaults["cutOff"],
-                method="sum6", rangeCutOff=pyNMR.defaults["rangeCutOff"],
-                radius=pyNMR.defaults["radius"],
-                colors=pyNMR.defaults["colors"]):
+def loadAndShow(filename, consDef, structure='', residuesList='all',
+                dist_range='all', violationState='all',
+                violCutoff=appDefaults.defaultForParameter("cutOff"),
+                method=appDefaults.defaultForParameter('method'),
+                rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
+                radius=appDefaults.defaultForParameter("radius"),
+                colors=appDefaults.defaultForParameter("colors")):
     """Combine two previous defined functions : load and display"""
     loadNOE(filename)
     showNOE(structure, filename, residuesList, dist_range, violationState,
             violCutoff, method, radius, colors, rangeCutOff)
 
 
-def downloadNMR(pdbCode, url = pyNMR.defaults["urlPDB"]):
+def downloadNMR(pdbCode, url = appDefaults.defaultForParameter("urlPDB")):
     """
     """
     Core.downloadFromPDB(pdbCode, url)
