@@ -71,7 +71,7 @@ class ConstraintFilter(object):
         """
         """
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
-        stderr.write("\n".join(self.errors))
-        stderr.write(str(len(self.errors))+" errors detected.\n")
+        stderr.write("\n".join(self.errors) + '\n')
+        stderr.write(str(len(self.errors)) + " errors detected.\n")
         self.errors = ""
         return selectedConstraints

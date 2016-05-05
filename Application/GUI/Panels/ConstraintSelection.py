@@ -190,4 +190,5 @@ class StructureSelectionPanel(ttk.LabelFrame):
     def updatePdbList(self, event):
         """
         """
-        self.comboPDB['values'] = self.mainApp.getModelsNames()
+        infos = self.mainApp.NMRInterface.getInfo()
+        self.comboPDB['values'] = self.mainApp.getModelsNames(infos['SatisfactionMarker'], infos['UnSatisfactionMarker'])

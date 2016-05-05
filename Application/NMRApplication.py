@@ -59,16 +59,9 @@ class NMRApplication(object):
         """
         """
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection['values'] = defaultForParameter('gradientColorList')
-        self.NMRInterface.preferencesPanel.densityPanel.gradient.set(defaultForParameter("gradient"))
-        self.NMRInterface.preferencesPanel.sticksPanel.colors = defaultForParameter("colors")
-        self.NMRInterface.preferencesPanel.sticksPanel.UnSatisfactionMarker.set(defaultForParameter("UnSatisfactionMarker"))
-        self.NMRInterface.preferencesPanel.sticksPanel.SatisfactionMarker.set(defaultForParameter("SatisfactionMarker"))
-        self.NMRInterface.preferencesPanel.sticksPanel.radius.set(defaultForParameter("radius"))
+        self.NMRInterface.preferencesPanel.setDefaults()
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(defaultForParameter("cutOff"))
-        self.NMRInterface.preferencesPanel.selectedMethod.set(defaultForParameter("method"))
-        self.NMRInterface.preferencesPanel.rangeCutOff.set(defaultForParameter("rangeCutOff"))
-        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames()
-        self.NMRInterface.preferencesPanel.url.set(defaultForParameter("urlPDB"))
+        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames(defaultForParameter('SatisfactionMarker'), defaultForParameter('UnSatisfactionMarker'))
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 
     def GUIBindings(self):
@@ -79,14 +72,8 @@ class NMRApplication(object):
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.mainApp = self
         self.NMRInterface.preferencesPanel.mainApp = self
 
-    def getModelsNames(self):
+    def getModelsNames(self, satisfactionMarker="", unSatisfactionMarker=""):
         """
         """
-        results = []
         objectsLists = MVI.get_names()
-        for name in objectsLists:
-            if name.find(defaultForParameter("UnSatisfactionMarker")) >= 0 or name.find(defaultForParameter("SatisfactionMarker")) >= 0:
-                pass
-            else:
-                results.append(name)
-        return results
+        return [name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0)]

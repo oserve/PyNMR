@@ -193,13 +193,19 @@ class PreferencesPanel(ttk.LabelFrame):
         """
         """
         appDefaults.setToStandardDefaults()
-        self.densityPanel.gradient.set(defaults["gradient"])
-        self.sticksPanel.colors = defaults["colors"]
-        self.sticksPanel.UnSatisfactionMarker.set(defaults["UnSatisfactionMarker"])
-        self.sticksPanel.SatisfactionMarker.set(defaults["SatisfactionMarker"])
-        self.sticksPanel.radius.set(defaults["radius"])
-        self.selectedMethod.set(defaults["method"])
-        self.url.set(defaults["urlPDB"])
+        self.setDefaults()
+
+    def setDefaults(self):
+        """
+        """
+        self.densityPanel.gradient.set(appDefaults.defaultForParameter("gradient"))
+        self.sticksPanel.colors = appDefaults.defaultForParameter("colors")
+        self.sticksPanel.UnSatisfactionMarker.set(appDefaults.defaultForParameter("UnSatisfactionMarker"))
+        self.sticksPanel.SatisfactionMarker.set(appDefaults.defaultForParameter("SatisfactionMarker"))
+        self.sticksPanel.radius.set(appDefaults.defaultForParameter("radius"))
+        self.selectedMethod.set(appDefaults.defaultForParameter("method"))
+        self.url.set(appDefaults.defaultForParameter("urlPDB"))
+        self.rangeCutOff.set(appDefaults.defaultForParameter("rangeCutOff"))
 
     def getInfo(self):
         """
