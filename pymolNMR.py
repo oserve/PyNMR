@@ -169,6 +169,7 @@ try:
     extend("showNOEDensity", showNOEDensity)
     extend("loadAndShow", loadAndShow)
     extend("downloadNMR", downloadNMR)
+    extend("cleanScreen", cleanScreen)
 
 except ImportError:
     stderr.write("Demo mode.\n")

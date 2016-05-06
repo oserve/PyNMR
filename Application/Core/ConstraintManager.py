@@ -67,7 +67,7 @@ class ConstraintSetManager(object):
             if len(self.constraints):
                 for constraint in self.constraints:
                     constraint.associatePDBAtoms(self.structure)
-                    result = 1
+                result = 1
         return result
 
     def removeAllConstraints(self):

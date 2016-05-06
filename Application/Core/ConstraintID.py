@@ -37,8 +37,9 @@ def IDConstraint(aConstraint, UnSatisfactionMarker, SatisfactionMarker):
     """
     if aConstraint.satisfaction != '':
         if aConstraint.satisfaction == 'unSatisfied':
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + UnSatisfactionMarker + aConstraint.structureName
+            marker = UnSatisfactionMarker
         else:
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + SatisfactionMarker + aConstraint.structureName
+            marker = SatisfactionMarker
+        return aConstraint.id['name'] + str(aConstraint.id['number']) + marker + aConstraint.structureName
     else:
-        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.structureName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + aConstraint.printCons() + "\n")
+        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.structureName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + str(aConstraint) + "\n")

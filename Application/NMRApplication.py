@@ -28,6 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+from sys import stdout
 from GUI.NMRGUI import NMRGUI
 import Core.MolecularViewerInterface as MVI
 from GUI.Panels.appDefaults import defaultForParameter
@@ -42,9 +43,9 @@ class NMRApplication(object):
         self.NMRCommands = Core
         self.log = ""
         if app == "NoGUI":
-            print "Starting PyNMR CLI ..."
+            stdout.write("Starting PyNMR CLI ...\n")
         else:
-            print "Starting PyNMR GUI ..."
+            stdout.write("Starting PyNMR GUI ...\n")
             self.startGUI()
 
     def startGUI(self):

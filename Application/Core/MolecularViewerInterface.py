@@ -78,8 +78,6 @@ try:
     def getID(atomSet):
         """return ID of the atom for selection
             by Pymol functions. Form : structure & i. Number & n. atomType
-            should be more independent from pymol,
-            maybe should not be here at all ...
         """
         selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
         if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
