@@ -85,19 +85,21 @@ class ConstraintLoader(object):
         """
 
         file_in = open(self.fileName, 'r')
-        fin = file_in.read()
+        fin = file_in.read().upper()
         file_in.close()
         self.fileText = fin
 
-        if fin.upper().find("ASSI") > -1:
+        if fin.find("ASSI") > -1:
             typeDefinition = 'CNS'
         elif self.XEASYReg.search(fin):
             typeDefinition = 'CYANA'
+        else:
+            typeDefinition = None
 
         for txt in fin.split('\n'):
-            txt = txt.lstrip()
+            txt = txt.strip()
             if txt.find('!') < 0:
-                self.inFileTab.append(txt.upper().rstrip())
+                self.inFileTab.append(txt)
             else:
                 stderr.write(txt + " skipped. Commented out.\n")
         return typeDefinition
@@ -196,9 +198,7 @@ class ConstraintLoader(object):
                     definitionArray = aDefinition.split()
                     residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                 constraintParsingResult.append(residueParsingResult)
-            numericValues = []
-            for aValue in constraintValuesList:
-                numericValues.append(float(aValue))
+            numericValues = [float(aValue) for aValue in constraintValuesList]
             constraintParsingResult.append(numericValues)
         except:
             constraintParsingResult = None
