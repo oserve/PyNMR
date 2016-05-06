@@ -30,14 +30,12 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 from math import sqrt
-import MolecularViewerInterface as MVI
 
 
-def centerOfMass(selection):
+def centerOfMass(model):
     """ Author: Andreas Henschel 2006
     assumes equal weights
     """
-    model = MVI.get_model(selection)
     if len(model.atom) > 0:
         x, y, z = 0, 0, 0
         for AtomA in model.atom:
@@ -46,32 +44,30 @@ def centerOfMass(selection):
             z += AtomA.coord[2]
         return (x/len(model.atom), y/len(model.atom), z/len(model.atom))
     else:
-        stderr.write("selection is empty :"+ str(selection)+"\n")
+        #stderr.write("selection is empty :"+ str(selection)+"\n")
         return 0, 0, 0
 
 # Methods for distance constraints
 
 
-def calcDistance(selection_init, selection_final, method):
+def calcDistance(model_init, model_final, method):
     """
     Choose which method to calculate distances
     """
     if method == 'ave6':
-        return averageDistance_6(selection_init, selection_final)
+        return averageDistance_6(model_init, model_final)
     elif method == 'sum6':
-        return sumDistance_6(selection_init, selection_final)
+        return sumDistance_6(model_init, model_final)
     else:
         stderr.write("This method of calculation is not defined : "
                      + str(method) + "\n")
 
 
-def averageDistance_6(selection_init, selection_final):
+def averageDistance_6(model_init, model_final):
     """
     Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
     """
-    model_init = MVI.get_model(selection_init)
-    model_final = MVI.get_model(selection_final)
     if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []
         for AtomA in model_init.atom:
@@ -85,21 +81,20 @@ def averageDistance_6(selection_init, selection_final):
             try:
                 sum6 = sum6 + pow(distance, -6)
             except:
-                stderr.write("Problem with selection : "+ selection_init + " " +
-                             selection_final + "\n" + "distance is : "
+                stderr.write("Problem with selection : "+ model_init + " " +
+                             model_final + "\n" + "distance is : "
                              + str(distance)+" A")
         return pow(sum6/len(distance_list), -1./6)
     else:
-        stderr.write("selection is empty : " + selection_init + " "
-                     + selection_final + "\n")
+        #stderr.write("selection is empty : " + model_init + " "
+        #             + model_final + "\n")
         return 0.0
 
-def sumDistance_6(selection_init, selection_final):
+
+def sumDistance_6(model_init, model_final):
     """
     Calculate distance according to : (sum of all distances^-6)^-1/6
     """
-    model_init = MVI.get_model(selection_init)
-    model_final = MVI.get_model(selection_final)
 
     if len(model_init.atom) > 0 and len(model_final.atom) > 0:
         distance_list = []
@@ -114,13 +109,13 @@ def sumDistance_6(selection_init, selection_final):
             try:
                 sum6 = sum6 + pow(distance, -6)
             except:
-                stderr.write("Problem with selection : "+ selection_init + " "
-                             + selection_final + "\n" + "distance is : "
+                stderr.write("Problem with selection : "+ model_init + " "
+                             + model_final + "\n" + "distance is : "
                              + str(distance) + " A")
         result = pow(sum6, -1./6)
         return result
 
     else:
-        stderr.write("selection is empty : " + selection_init + " "
-                     + selection_final + "\n")
+        #stderr.write("selection is empty : " + model_init + " "
+        #             + model_final + "\n")
         return 0.0

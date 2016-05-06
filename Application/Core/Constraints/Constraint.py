@@ -54,6 +54,7 @@ class Constraint(object):
         self.numberOfAtomsSets = 0
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
         self.structureName = ""
+        self.atomsIDs = {}
 
     def __str__(self):
         """
@@ -93,17 +94,15 @@ class Constraint(object):
                                       self.resis[atomsSetNumber]['atoms_number']
                                       )
                               )
-
-        return self.isValid()
+            self.atomsIDs[atomsSetNumber] = self.atoms[atomsSetNumber].getID()
 
     def isValid(self):
-        """Return yes or no if one of the atomset is not valid
+        """Return false if one of the atomsets is not valid
         """
         validity = True
         for atomsSetNumber in range(self.numberOfAtomsSets):
-            if "noID" in self.atoms[atomsSetNumber].getID():
+            if self.atomsIDs[atomsSetNumber] == "noID":
                 validity = False
-                break
         return validity
 
     def addAtomGroups(self, parsingResult):

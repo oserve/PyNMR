@@ -32,7 +32,7 @@
 from sys import stderr
 from Constraint import Constraint
 from ..Geom import centerOfMass, calcDistance
-
+from ..MolecularViewerInterface import get_model
 
 class NOE(Constraint):
     """
@@ -47,6 +47,7 @@ class NOE(Constraint):
         self.points = {}
         self.numberOfAtomsSets = 2
         self.type = "NOE"
+        self.atomsPositions = {}
 
     def setViolationState(self, cutOff):
         """Set violation state, with optional additional cutoff
@@ -83,9 +84,11 @@ class NOE(Constraint):
     def setDistance(self, method):
         """Set actual distance of the constraint in the current structure file
         """
-        self.points[0] = centerOfMass(self.atoms[0].getID())
-        self.points[1] = centerOfMass(self.atoms[1].getID())
-        self.constraintValues['actual'] = calcDistance(self.atoms[0].getID(), self.atoms[1].getID(), method)
+        self.atomsPositions['initial'] = get_model(self.atomsIDs[0])
+        self.atomsPositions['final'] = get_model(self.atomsIDs[1])
+        self.points[0] = centerOfMass(self.atomsPositions['initial'])
+        self.points[1] = centerOfMass(self.atomsPositions['final'])
+        self.constraintValues['actual'] = calcDistance(self.atomsPositions['initial'], self.atomsPositions['final'], method)
         if self.constraintValues['actual'] <= 0:
             return False
         else:
