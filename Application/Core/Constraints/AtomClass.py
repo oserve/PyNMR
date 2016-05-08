@@ -37,13 +37,14 @@ class AtomSet(object):
         and the atom type of the atom
     """
 
-    def __init__(self, structureName, resi_number, resi_type):
+    def __init__(self, structureName, resi_number, resi_type, segid):
         """Initialisation sets the residu number
             and the atom type
         """
         self.structure = structureName
         self.number = resi_number
         self.atType = resi_type
+        self.segid = segid
 
     def __str__(self):
         return self.getID()

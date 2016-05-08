@@ -80,6 +80,8 @@ try:
             by Pymol functions. Form : structure & i. Number & n. atomType
         """
         selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
+        if atomSet.segid != "":
+            selection = selection + " & c. " + atomSet.segid
         if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
             if atomSet.atType == 'HN':
                 atomSet.atType = 'H'
@@ -90,6 +92,8 @@ try:
                 atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
             atomSet.atType = '*' + atomSet.atType
             selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
+            if atomSet.segid != "":
+                selection = selection + " & c. " + atomSet.segid
             if not select("", selection):
                 selection = "noID"
         return selection

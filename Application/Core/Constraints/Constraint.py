@@ -91,7 +91,8 @@ class Constraint(object):
             self.atoms.append(AtomSet(structureName,
                                       self.resis[atomsSetNumber]['number'],
                                       self.resis[atomsSetNumber]['atoms'] +
-                                      self.resis[atomsSetNumber]['atoms_number']
+                                      self.resis[atomsSetNumber]['atoms_number'],
+                                      self.resis[atomsSetNumber]['segid']
                                       )
                               )
             self.atomsIDs[atomsSetNumber] = self.atoms[atomsSetNumber].getID()

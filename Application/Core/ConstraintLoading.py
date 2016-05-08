@@ -35,6 +35,16 @@ import re
 from .Constraints.NOE import NOE
 from ConstraintManager import ConstraintSetManager
 
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# Useful RegEx definitions
+ParReg = re.compile('[()]')  # used in cns constraints loading. Suppression of ()
+SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
+RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
+SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
+AtTypeReg = re.compile('[CHON][A-Z]*')
+XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
+RegSeg = re.compile(r'SEGI\w*\s+[\w\d]*') # match CNS segid definition
+RegFloat = re.compile(r'-?\s+\d+\.?\d+'*3)
 
 class ConstraintLoader(object):
     """Classes used to lad constraints from
@@ -47,15 +57,8 @@ class ConstraintLoader(object):
         self.fileName = fileName
         self.managerName = managerName
         self.fileText = ""
+        self.segments = []
         self.inFileTab = []
-
-        # Useful RegEx definitions
-        self.ParReg = re.compile('[()]')  # used in cns constraints loading. Suppression of ()
-        self.SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
-        self.RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
-        self.SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
-        self.AtTypeReg = re.compile('[CHON][A-Z]*')
-        self.XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
 
     def loadConstraintsFromFile(self):
         """
@@ -91,17 +94,22 @@ class ConstraintLoader(object):
 
         if fin.find("ASSI") > -1:
             typeDefinition = 'CNS'
-        elif self.XEASYReg.search(fin):
+        elif XEASYReg.search(fin):
             typeDefinition = 'CYANA'
         else:
             typeDefinition = None
 
         for txt in fin.split('\n'):
             txt = txt.strip()
-            if txt.find('!') < 0:
-                self.inFileTab.append(txt)
-            else:
-                stderr.write(txt + " skipped. Commented out.\n")
+            if txt.find('!') > -1:
+                txt = txt[0:txt.find('!')].replace('!', '')
+                if txt == '':
+                    continue
+                if txt.find('OR') > -1:
+                    continue
+            self.inFileTab.append(txt)
+            # else:
+            #     stderr.write(txt + " skipped. Commented out.\n")
         return typeDefinition
 
     def synthesizeCNSFile(self):
@@ -112,7 +120,7 @@ class ConstraintLoader(object):
             if line.find("ASSI") > -1:
                 line = line.replace("GN", "")
                 self.validCNSConstraints.append(line.replace("ASSI", ""))
-            elif self.RegResi.search(line) != None:
+            elif RegResi.search(line) != None:
                 self.validCNSConstraints[-1] = self.validCNSConstraints[-1] + line
 
     def CNSConstraintLoading(self, aManager):
@@ -121,6 +129,7 @@ class ConstraintLoader(object):
         """
         constraint_number = 1
         aManager.format = "CNS"
+        self.segments = []
         for aConstLine in self.validCNSConstraints:  # itemizing constraints
             # avoid empty lines
             if re.search(r'\d', aConstLine):
@@ -129,8 +138,9 @@ class ConstraintLoader(object):
                     if len(parsingResult) == 3:  # 2 residues + distances (matches also H-Bonds)
                         aConstraint = NOE()
                     else:
+                        #print 'not a supported constraint'
                         # No other constraint type supported ... for now !
-                        break
+                        continue
                     aConstraint.id["number"] = constraint_number
                     aConstraint.definition = aConstLine
                     aConstraint.addAtomGroups(parsingResult)
@@ -161,10 +171,10 @@ class ConstraintLoader(object):
                     try:  # For errors not filtered previously
                         parsed = [
                             {'resid': int(cons_tab[0]),
-                             'name': self.AtTypeReg.match(
+                             'name': AtTypeReg.match(
                                 self.convertTypeDyana(cons_tab[2])).group()},
                             {'resid': int(cons_tab[3]),
-                             'name': self.AtTypeReg.match(
+                             'name': AtTypeReg.match(
                                 self.convertTypeDyana(cons_tab[5])).group()}
                             ]
                         aConstraint.addAtomGroups(parsed)
@@ -189,18 +199,28 @@ class ConstraintLoader(object):
         (dihedral, distance, ...)
         """
         try:
-            residuesList = self.RegResi.findall(aCNSConstraint, re.IGNORECASE)
-            constraintValuesList = self.SParReg.sub("", aCNSConstraint).split()
+            residuesList = RegResi.findall(aCNSConstraint, re.IGNORECASE)
+            segments = RegSeg.findall(aCNSConstraint, re.IGNORECASE)
+            for segment in segments:
+                if segment not in self.segments:
+                    self.segments.append(segment)
+            numberOfSegments = len(segments)
+            constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
             constraintParsingResult = []
             for aResidue in residuesList:
                 residueParsingResult = {}
-                for aDefinition in self.SharpReg.sub('*', aResidue).split("AND"):
+                for aDefinition in SharpReg.sub('*', aResidue).split("AND"):
                     definitionArray = aDefinition.split()
                     residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
+                if numberOfSegments > 0:
+                    residueParsingResult["segid"] = alphabet[self.segments.index(segment)]
+                else:
+                    residueParsingResult["segid"] = ""
                 constraintParsingResult.append(residueParsingResult)
             numericValues = [float(aValue) for aValue in constraintValuesList]
             constraintParsingResult.append(numericValues)
         except:
+            stderr.write('Can not parse : ' + aCNSConstraint + '\n')
             constraintParsingResult = None
         return constraintParsingResult
 

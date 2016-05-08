@@ -55,7 +55,6 @@ class ConstraintFilter(object):
         isSelected = False
         if aConstraint.getRange(self.rangeCutOff) in self.range:
             if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]) > 0:
-                aConstraint.structureName = self.structure
                 if aConstraint.isValid():
                     if aConstraint.setValueFromStructure(self.method):
                         aConstraint.setViolationState(self.cutOff)
