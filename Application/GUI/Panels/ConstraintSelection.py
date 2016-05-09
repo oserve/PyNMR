@@ -78,7 +78,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
         """
         """
         rowPosition = 0
-        for consRange in ['intra', 'sequential', 'medium', 'long']:
+        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
             self.RangesVars[consRange] = Tk.IntVar(self)
             self.RangesCB[consRange] = ttk.Checkbutton(self, text=': ' + consRange, command=self.tick, variable=self.RangesVars[consRange])
             self.RangesCB[consRange].grid(row=rowPosition, column=0, sticky=Tk.W)
@@ -91,14 +91,14 @@ class RangeSelectionPanel(ttk.LabelFrame):
     def tickAll(self):
         """
         """
-        for consRange in ['intra', 'sequential', 'medium', 'long']:
+        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
             self.RangesVars[consRange].set(self.RangesVars["all"].get())
 
     def tick(self):
         """
         """
         self.RangesVars["all"].set(1)
-        for aRange in ['intra', 'sequential', 'medium', 'long']:
+        for aRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
             if self.RangesVars[aRange].get() == 0:
                 self.RangesVars["all"].set(0)
                 break
@@ -107,7 +107,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
         """
         """
         ranges = []
-        for consRange in ['intra', 'sequential', 'medium', 'long']:
+        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
             if self.RangesVars[consRange].get() == 1:
                 ranges.append(consRange)
         return {"residuesRange": ranges}

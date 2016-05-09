@@ -138,7 +138,6 @@ class ConstraintLoader(object):
                     if len(parsingResult) == 3:  # 2 residues + distances (matches also H-Bonds)
                         aConstraint = NOE()
                     else:
-                        #print 'not a supported constraint'
                         # No other constraint type supported ... for now !
                         continue
                     aConstraint.id["number"] = constraint_number
@@ -207,16 +206,18 @@ class ConstraintLoader(object):
             numberOfSegments = len(segments)
             constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
             constraintParsingResult = []
+            indice = 0
             for aResidue in residuesList:
                 residueParsingResult = {}
                 for aDefinition in SharpReg.sub('*', aResidue).split("AND"):
                     definitionArray = aDefinition.split()
                     residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                 if numberOfSegments > 0:
-                    residueParsingResult["segid"] = alphabet[self.segments.index(segment)]
+                    residueParsingResult["segid"] = alphabet[self.segments.index(segments[indice])]
                 else:
                     residueParsingResult["segid"] = ""
                 constraintParsingResult.append(residueParsingResult)
+                indice += 1
             numericValues = [float(aValue) for aValue in constraintValuesList]
             constraintParsingResult.append(numericValues)
         except:

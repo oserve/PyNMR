@@ -80,9 +80,10 @@ class NMRCore(object):
                 self.displayedConstraints += selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
                 numberOfConstraints = results['DrawnConstraints']
-                selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
-                MVI.select('involRes', selection)
-                MVI.zoom(selection)
+                if numberOfConstraints > 0:
+                    selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
+                    MVI.select('involRes', selection)
+                    MVI.zoom(selection)
 
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
@@ -108,8 +109,8 @@ class NMRCore(object):
                 zoomSelection = self.ManagersList[managerName].structure + " &"
                 if len(densityList):
                     zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
-                MVI.zoom(zoomSelection)
-                MVI.select('involRes', zoomSelection)
+                    MVI.zoom(zoomSelection)
+                    MVI.select('involRes', zoomSelection)
         return {"numberOfConstraints": len(selectedConstraints),
                 "numberOfResidues": len(densityList)}
 
@@ -133,7 +134,7 @@ class NMRCore(object):
                                  residuesList + "\n")
         if not isinstance(dist_range, list):
             if dist_range == 'all':
-                dist_range = ['intra', 'sequential', 'medium', 'long']
+                dist_range = ['intra', 'sequential', 'medium', 'long', 'inter']
             else:
                 dist_range = [dist_range]
 

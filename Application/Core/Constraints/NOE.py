@@ -62,10 +62,12 @@ class NOE(Constraint):
             self.satisfaction = 'Satisfied'
 
     def getRange(self, RangeCutOff):
-        """Return the range name, according to the usual NMR specification
+        """Return the range name,
         range depends on the number of residus between the atomsets
         """
-        if not int(self.resis[0]['number']) - int(self.resis[1]['number']):
+        if self.resis[0]['segid'] != self.resis[1]['segid']:
+            return 'inter'
+        elif int(self.resis[0]['number']) - int(self.resis[1]['number']) == 0:
             return 'intra'
         elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) == 1:
             return 'sequential'

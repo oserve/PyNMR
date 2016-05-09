@@ -50,7 +50,7 @@ class ConstraintFilter(object):
         self.errors = []
 
     def filterAConstraint(self, aConstraint):
-        """Filter the constraints to be drawn
+        """Filter the constraints to be drawn.
         """
         isSelected = False
         if aConstraint.getRange(self.rangeCutOff) in self.range:
