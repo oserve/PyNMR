@@ -44,7 +44,8 @@ SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
 AtTypeReg = re.compile('[CHON][A-Z]*')
 XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
 RegSeg = re.compile(r'SEGI\w*\s+[\w\d]*') # match CNS segid definition
-RegFloat = re.compile(r'-?\s+\d+\.?\d+'*3)
+RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
+
 
 class ConstraintLoader(object):
     """Classes used to lad constraints from
@@ -92,7 +93,7 @@ class ConstraintLoader(object):
         file_in.close()
         self.fileText = fin
 
-        if fin.find("ASSI") > -1:
+        if "ASSI" in fin:
             typeDefinition = 'CNS'
         elif XEASYReg.search(fin):
             typeDefinition = 'CYANA'
@@ -101,23 +102,23 @@ class ConstraintLoader(object):
 
         for txt in fin.split('\n'):
             txt = txt.strip()
-            if txt.find('!') > -1:
+            if '!' in txt:
+                stderr.write('Comment excluded : ' + txt[txt.find('!'):-1] + "\n")
                 txt = txt[0:txt.find('!')].replace('!', '')
                 if txt == '':
                     continue
-                if txt.find('OR') > -1:
-                    continue
+            if 'OR ' in txt:
+                self.inFileTab[-1] = self.inFileTab[-1] + txt
+                continue
             self.inFileTab.append(txt)
-            # else:
-            #     stderr.write(txt + " skipped. Commented out.\n")
         return typeDefinition
 
     def synthesizeCNSFile(self):
         """
         """
         self.validCNSConstraints = []
-        for line in self.inFileTab:
-            if line.find("ASSI") > -1:
+        for line in [aline.replace('"', ' ') for aline in self.inFileTab]:
+            if "ASSI" in line:
                 line = line.replace("GN", "")
                 self.validCNSConstraints.append(line.replace("ASSI", ""))
             elif RegResi.search(line) != None:
@@ -204,12 +205,12 @@ class ConstraintLoader(object):
                 if segment not in self.segments:
                     self.segments.append(segment)
             numberOfSegments = len(segments)
-            constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
+
             constraintParsingResult = []
             indice = 0
             for aResidue in residuesList:
                 residueParsingResult = {}
-                for aDefinition in SharpReg.sub('*', aResidue).split("AND"):
+                for aDefinition in SharpReg.sub('*', aResidue).split("AND "):
                     definitionArray = aDefinition.split()
                     residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                 if numberOfSegments > 0:
@@ -218,8 +219,23 @@ class ConstraintLoader(object):
                     residueParsingResult["segid"] = ""
                 constraintParsingResult.append(residueParsingResult)
                 indice += 1
-            numericValues = [float(aValue) for aValue in constraintValuesList]
+
+            if 'OR ' in aCNSConstraint:
+                if constraintParsingResult[0] == constraintParsingResult[2] or constraintParsingResult[0] == constraintParsingResult[3]:
+                    indiceAmbiguous = 1
+                else:
+                    indiceAmbiguous = 0
+                constraintParsingResult[indiceAmbiguous]['name'] = constraintParsingResult[indiceAmbiguous]['name'][0:-1] + "*"
+                constraintParsingResult = [constraintParsingResult[0], constraintParsingResult[1]]
+
+            constraintValues = RegFloat.findall(aCNSConstraint)
+            if len(constraintValues) > 0:
+                constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
+            else:
+                constraintValuesList = []
+            numericValues = [float(aValue)  for aValue in constraintValuesList]
             constraintParsingResult.append(numericValues)
+
         except:
             stderr.write('Can not parse : ' + aCNSConstraint + '\n')
             constraintParsingResult = None
