@@ -126,11 +126,13 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         # Note here that Tkinter passes an event object
         w = evt.widget
-        index = int(w.curselection()[0])
-        self.selectedFile = w.get(index)
-        self.infoLabelString.set("Contains " +
-                                 str(len(self.NMRCommands.ManagersList[self.selectedFile])) +
-                                 " Constraints (" + self.NMRCommands.ManagersList[self.selectedFile].format + ")")
+        selection = w.curselection()
+        if len(selection) == 1:
+            index = int(selection[0])
+            self.selectedFile = w.get(index)
+            self.infoLabelString.set("Contains " +
+                                     str(len(self.NMRCommands.ManagersList[self.selectedFile])) +
+                                     " Constraints (" + self.NMRCommands.ManagersList[self.selectedFile].format + ")")
 
     def getInfo(self):
         """
