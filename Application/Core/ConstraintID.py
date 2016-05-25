@@ -42,4 +42,7 @@ def IDConstraint(aConstraint, UnSatisfactionMarker, SatisfactionMarker):
             marker = SatisfactionMarker
         return aConstraint.id['name'] + str(aConstraint.id['number']) + marker + aConstraint.structureName
     else:
-        stderr.write("Can not give ID : Violation state not defined for constraint : " + aConstraint.structureName + "_" + aConstraint.id['name'] + str(aConstraint.id['number']) + "\n" + str(aConstraint) + "\n")
+        stderr.write("Can not give ID : Violation state not defined for constraint : " +
+                     aConstraint.structureName + "_" + aConstraint.id['name'] +
+                     str(aConstraint.id['number']) + "\n" + str(aConstraint) +
+                     "\n")

@@ -51,7 +51,6 @@ class ConstraintDrawer(object):
         using the drawConstraint function
         """
         involvedResidueslist = []
-        numberOfDrawnConstraints = 0
         for aConstraint in selectedConstraints:
             if not aConstraint.resis[0]['number'] in involvedResidueslist:
                 involvedResidueslist.append(aConstraint.resis[0]['number'])
@@ -65,26 +64,19 @@ class ConstraintDrawer(object):
                                IDConstraint(aConstraint,
                                             self.UnSatisfactionMarker,
                                             self.SatisfactionMarker))
-            numberOfDrawnConstraints = numberOfDrawnConstraints + 1
         return {'Residueslist': involvedResidueslist,
-                'DrawnConstraints': numberOfDrawnConstraints}
+                'DrawnConstraints': len(selectedConstraints)}
 
     def constraintsDensity(self, selectedConstraints):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
+        densityStep = 10
         constraintList = {}
-        constraintsUsed = 0
         for aConstraint in selectedConstraints:
-            if not aConstraint.resis[0]['number'] in constraintList.keys():
-                constraintList[aConstraint.resis[0]['number']] = 10
-            else:
-                constraintList[aConstraint.resis[0]['number']] = constraintList[aConstraint.resis[0]['number']] + 10
-            if not aConstraint.resis[1]['number'] in constraintList.keys():
-                constraintList[aConstraint.resis[1]['number']] = 10
-            else:
-                constraintList[aConstraint.resis[1]['number']] = constraintList[aConstraint.resis[1]['number']] + 10
-            constraintsUsed = constraintsUsed + 1
+            for resi in aConstraint.resis:
+                constraintList[resi['number']] = constraintList.get(resi['number'], 0) + densityStep
+
         return constraintList
 
     def paD(self, selectedConstraints, structure, color_gradient):
@@ -92,7 +84,7 @@ class ConstraintDrawer(object):
         """
         densityList = self.constraintsDensity(selectedConstraints)
         MVI.zeroBFactors(structure)
-        for residu in densityList.keys():
-            MVI.setBfactor(structure + " & i. " + residu, densityList[residu])
+        for residu, density in densityList.iteritems():
+            MVI.setBfactor(structure + " & i. " + residu, density)
         MVI.paintDensity(color_gradient, structure)
         return densityList

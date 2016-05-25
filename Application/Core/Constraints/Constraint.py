@@ -111,14 +111,14 @@ class Constraint(object):
         """
         for position in range(self.numberOfAtomsSets):
             currentResidue = {}
-            if "resid" in parsingResult[position].keys():
+            if "resid" in parsingResult[position]:
                 currentResidue["number"] = parsingResult[position]["resid"]
             else:
                 currentResidue["number"] = parsingResult[position]["resi"]
             currentResidue["atoms"] = self.AtTypeReg.match(parsingResult[position]["name"]).group()
             currentResidue["atoms_number"] = self.AtTypeReg.sub('', parsingResult[position]["name"])
             currentResidue["ambiguity"] = self.AtTypeReg.sub('', parsingResult[position]["name"]).find('*')
-            if "segid" in parsingResult[position].keys():
+            if "segid" in parsingResult[position]:
                 currentResidue["segid"] = parsingResult[position]["segid"]
             self.resis.append(currentResidue)
 

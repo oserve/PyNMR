@@ -157,9 +157,8 @@ class NMRCore(object):
         """Save the selected constraint file under the format
         it has been loaded.
         """
-        fout = open(fileName, 'w')
-        fout.write(self.ManagersList[aManagerName].fileText)
-        fout.close()
+        with open(fileName, 'w') as fout:
+            fout.write(self.ManagersList[aManagerName].fileText)
 
     def downloadFromPDB(self, pdbCode, url):
         """Download constraint file from wwwPDB
@@ -187,5 +186,5 @@ class NMRCore(object):
                 os.chdir(workdir)
                 os.removedirs(tempDownloadDir)
         except:
-            sys.stderr.write("Can not download " +
+            sys.stderr.write("Error while downloading or opening " +
                              pdbCode + " NMR Restraints file from PDB.\n")

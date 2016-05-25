@@ -88,9 +88,9 @@ class ConstraintLoader(object):
         """
         """
 
-        file_in = open(self.fileName, 'r')
-        fin = file_in.read().upper()
-        file_in.close()
+        with open(self.fileName, 'r') as file_in:
+            fin = file_in.read().upper()
+
         self.fileText = fin
 
         if "ASSI" in fin:
