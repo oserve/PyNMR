@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
+import MolecularViewerInterface as MVI
 
 
 class ConstraintFilter(object):
@@ -69,6 +70,7 @@ class ConstraintFilter(object):
     def filterConstraints(self, constraintList):
         """
         """
+        MVI.setPDB(self.structure)
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
         stderr.write("\n".join(self.errors) + '\n')
         stderr.write(str(len(self.errors)) + " errors detected.\n")

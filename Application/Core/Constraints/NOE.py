@@ -86,12 +86,11 @@ class NOE(Constraint):
     def setDistance(self, method):
         """Set actual distance of the constraint in the current structure file
         """
-        self.atomsPositions['initial'] = get_model(self.atomsIDs[0])
-        self.atomsPositions['final'] = get_model(self.atomsIDs[1])
-        self.points[0] = centerOfMass(self.atomsPositions['initial'])
-        self.points[1] = centerOfMass(self.atomsPositions['final'])
-        self.constraintValues['actual'] = calcDistance(self.atomsPositions['initial'], self.atomsPositions['final'], method)
-        if self.constraintValues['actual'] <= 0:
+        self.points[0] = centerOfMass(self.atoms[0].coord)
+        self.points[1] = centerOfMass(self.atoms[1].coord)
+        self.constraintValues['actual'] = calcDistance(self.atoms[0].coord, self.atoms[1].coord, method)
+        if self.constraintValues['actual'] <= 0.0:
+            stderr.write("Distance error with " + str(self))
             return False
         else:
             return True
@@ -99,4 +98,4 @@ class NOE(Constraint):
     def getResisNumber(self):
         """Utility method
         """
-        return [self.resis[0]['number'], self.resis[1]['number']]
+        return [resi['number'] for resi in self.resis]

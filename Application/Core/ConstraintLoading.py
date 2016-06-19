@@ -60,6 +60,7 @@ class ConstraintLoader(object):
         self.fileText = ""
         self.segments = []
         self.inFileTab = []
+        self.validCNSConstraints = []
 
     def loadConstraintsFromFile(self):
         """
@@ -116,7 +117,7 @@ class ConstraintLoader(object):
     def synthesizeCNSFile(self):
         """
         """
-        self.validCNSConstraints = []
+        del self.validCNSConstraints[:]
         for line in [aline.replace('"', ' ') for aline in self.inFileTab]:
             if "ASSI" in line:
                 line = line.replace("GN", "")
@@ -130,7 +131,7 @@ class ConstraintLoader(object):
         """
         constraint_number = 1
         aManager.format = "CNS"
-        self.segments = []
+        del self.segments[:]
         for aConstLine in self.validCNSConstraints:  # itemizing constraints
             # avoid empty lines
             if re.search(r'\d', aConstLine):
@@ -216,7 +217,7 @@ class ConstraintLoader(object):
                 if numberOfSegments > 0:
                     residueParsingResult["segid"] = alphabet[self.segments.index(segments[indice])]
                 else:
-                    residueParsingResult["segid"] = ""
+                    residueParsingResult["segid"] = "A"
                 constraintParsingResult.append(residueParsingResult)
                 indice += 1
 

@@ -29,12 +29,37 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
+import pickle
+import os
+from sys import stdout, stderr
 
 lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
+
+pdb = {}
 
 try:
     from pymol import cmd as PymolCmd
     from pymol.cgo import CYLINDER
+
+    def setPDB(structure):
+        """
+        """
+        list_atoms = PymolCmd.get_model(str(structure))
+        pdb.clear()
+        pdb['name'] = str(structure)
+
+        for atom in list_atoms.atom:
+            signature = atom.get_signature().split(":")
+            if signature[3] in pdb:
+                pdb[signature[3]].append({'name': signature[5],
+                                          'coord': atom.coord,
+                                          'segi': atom.chain})
+            else:
+                pdb[signature[3]] = [{'name': signature[5], 'coord': atom.coord,
+                                      'segi': atom.chain}]
+        # fout = open(structure+".pyn", 'w')
+        # pickle.dump(pdb, fout)
+        # fout.close()
 
     def select(selectionName, selection):
         if selectionName == "":
@@ -75,29 +100,6 @@ try:
     def get_names():
         return PymolCmd.get_names()
 
-    def getID(atomSet):
-        """return ID of the atom for selection
-            by Pymol functions. Form : structure & i. Number & n. atomType
-        """
-        selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
-        if atomSet.segid != "":
-            selection = selection + " & c. " + atomSet.segid
-        if not select("", selection):  # often due to different format (e.g. : HB2 -> 2HB)
-            if atomSet.atType == 'HN':
-                atomSet.atType = 'H'
-            elif atomSet.atType == 'H':
-                atomSet.atType = 'HN'
-            elif lastDigit.search(atomSet.atType):
-                digit = lastDigit.search(atomSet.atType).group()[0]
-                atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
-            atomSet.atType = '*' + atomSet.atType
-            selection = atomSet.structure + " & i. " + str(atomSet.number) + " & n. " + str(atomSet.atType)
-            if atomSet.segid != "":
-                selection = selection + " & c. " + atomSet.segid
-            if not select("", selection):
-                selection = "noID"
-        return selection
-
 
 except ImportError:
     def select(selectionName, selection):
@@ -113,6 +115,7 @@ except ImportError:
         pass
 
     def drawConstraint(points, color, aRadius, ID):
+        stdout.write("Drawn " + ID + " between points " + str(points) + " with " + str(color) + " color and radius " + str(aRadius) +"\n")
         pass
 
     def zoom(selection):
@@ -129,10 +132,16 @@ except ImportError:
         return selection.rstrip("+")
 
     def get_names():
-        return []
+        return [fileName.split(".")[0] for fileName in os.listdir(os.getcwd()) if '.pyn' in fileName]
 
     def getID(atomSet):
         return ""
+
+    def setPDB(structure):
+        """
+        """
+        with open(structure + ".pyn", 'r') as fin:
+            pdb.update(pickle.load(fin))
 
 
 def zeroBFactors(structure):
@@ -145,3 +154,62 @@ def setBfactor(selection, bFactor):
 
 def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
+
+
+def checkID(atomSet):
+    """
+    """
+    check = False
+    error_message = ""
+    if atomSet.structure == pdb['name']:
+        if atomSet.number in pdb:
+            if atomSet.segid in [atom['segi'] for atom in pdb[atomSet.number]]:
+                if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+                    check = True
+                else:
+                    if '*' not in atomSet.atType:
+                        if atomSet.atType == 'HN':
+                            atomSet.atType = 'H'
+                        elif atomSet.atType == 'H':
+                            atomSet.atType = 'HN'
+                        elif lastDigit.search(atomSet.atType):
+                            digit = lastDigit.search(atomSet.atType).group()[0]
+                            atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
+                        if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+                            check = True
+                        else:
+                            error_message = "atom name not found"
+                    else:
+                        nameRoot = atomSet.atType.replace('*', '')
+                        for aName in (atom['name'] for atom in pdb[atomSet.number]):
+                            if nameRoot in aName:
+                                check = True
+                                break
+                        if check is False:
+                            error_message = "Atom name not found"
+            else:
+                error_message = "Wrong segment / chain"
+        else:
+            error_message = "Residue number not found"
+    if check is False:
+        stderr.write("Can't find :" + str(atomSet) + " in structure " + pdb['name'] + " because : " + error_message + "\n")
+    return check
+
+
+def get_coordinates(atomSet):
+    """
+    """
+    coordinates = []
+    if '*' in atomSet.atType:
+        nameRoot = atomSet.atType.replace('*', '')
+        for atom in pdb[atomSet.number]:
+            if atomSet.segid == atom['segi']:
+                if nameRoot in atom['name']:
+                    coordinates.append(atom['coord'])
+    else:
+        for atom in pdb[atomSet.number]:
+            if atomSet.segid == atom['segi']:
+                if atomSet.atType == atom['name']:
+                    coordinates = [atom['coord']]
+                    break
+    return coordinates

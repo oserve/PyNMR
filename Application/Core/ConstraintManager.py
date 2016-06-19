@@ -28,7 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
+import MolecularViewerInterface as MVI
 
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
@@ -64,6 +64,7 @@ class ConstraintSetManager(object):
         """
         result = 0
         if self.structure != '':
+            MVI.setPDB(self.structure)
             if len(self.constraints):
                 for constraint in self.constraints:
                     constraint.associatePDBAtoms(self.structure)
@@ -73,9 +74,7 @@ class ConstraintSetManager(object):
     def removeAllConstraints(self):
         """Empties an array of constraints
         """
-        while len(self.constraints) > 0:
-            for constraint in self.constraints:
-                self.constraints.remove(constraint)
+        del self.constraints[:]
 
     def addConstraint(self, aConstraint):
         """Add a constraint to the constraint list of the manager and

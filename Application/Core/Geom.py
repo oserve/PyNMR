@@ -32,90 +32,52 @@ from sys import stderr
 from math import sqrt
 
 
-def centerOfMass(model):
-    """ Author: Andreas Henschel 2006
-    assumes equal weights
+def centerOfMass(coords):
+    """ Adapted from : Andreas Henschel 2006
+    assumes equal weights for atoms (usually protons)
     """
-    if len(model.atom) > 0:
-        x, y, z = 0, 0, 0
-        for AtomA in model.atom:
-            x += AtomA.coord[0]
-            y += AtomA.coord[1]
-            z += AtomA.coord[2]
-        return (x/len(model.atom), y/len(model.atom), z/len(model.atom))
+    x, y, z = 0, 0, 0
+    if len(coords) > 0:
+        if len(coords) > 1:
+            for coord in coords:
+                x += coord[0]
+                y += coord[1]
+                z += coord[2]
+            return (x/len(coords), y/len(coords), z/len(coords))
+        else:
+            return coords[0]
     else:
-        #stderr.write("selection is empty :"+ str(selection)+"\n")
         return 0, 0, 0
 
 # Methods for distance constraints
 
 
-def calcDistance(model_init, model_final, method):
-    """
-    Choose which method to calculate distances
-    """
-    if method == 'ave6':
-        return averageDistance_6(model_init, model_final)
-    elif method == 'sum6':
-        return sumDistance_6(model_init, model_final)
-    else:
-        stderr.write("This method of calculation is not defined : "
-                     + str(method) + "\n")
-
-
-def averageDistance_6(model_init, model_final):
-    """
-    Calculate distance according to :
+def calcDistance(coord_init, coord_final, method):
+    """    Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
+    or (sum of all distances^-6)^-1/6
     """
-    if len(model_init.atom) > 0 and len(model_final.atom) > 0:
+    result = 0.0
+
+    if len(coord_init) > 0 and len(coord_final) > 0:
         distance_list = []
-        for AtomA in model_init.atom:
-            for AtomB in model_final.atom:
-                distance_list.append(sqrt(pow((AtomA.coord[0] - AtomB.coord[0]), 2)
-                                          + pow((AtomA.coord[1] - AtomB.coord[1]), 2)
-                                          + pow((AtomA.coord[2] - AtomB.coord[2]), 2))
-                                    )
-        sum6 = 0
-        for distance in distance_list:
+        for AtomA in coord_init:
+            for AtomB in coord_final:
+                distance_list.append(sqrt(pow((AtomA[0] - AtomB[0]), 2) +
+                                          pow((AtomA[1] - AtomB[1]), 2) +
+                                          pow((AtomA[2] - AtomB[2]), 2))
+                                     )
+        if len(distance_list) > 1:
             try:
-                sum6 = sum6 + pow(distance, -6)
+                sum6 = sum(pow(distance, -6) for distance in distance_list)
+                if method == 'ave6':
+                    result = pow(sum6/len(distance_list), -1./6)
+                elif method == 'sum6':
+                    result = pow(sum6, -1./6)
             except:
-                stderr.write("Problem with selection : "+ model_init + " " +
-                             model_final + "\n" + "distance is : "
-                             + str(distance)+" A")
-        return pow(sum6/len(distance_list), -1./6)
-    else:
-        #stderr.write("selection is empty : " + model_init + " "
-        #             + model_final + "\n")
-        return 0.0
-
-
-def sumDistance_6(model_init, model_final):
-    """
-    Calculate distance according to : (sum of all distances^-6)^-1/6
-    """
-
-    if len(model_init.atom) > 0 and len(model_final.atom) > 0:
-        distance_list = []
-        for AtomA in model_init.atom:
-            for AtomB in model_final.atom:
-                distance_list.append(sqrt(pow((AtomA.coord[0] - AtomB.coord[0]), 2)
-                                          +pow((AtomA.coord[1] - AtomB.coord[1]), 2)
-                                          +pow((AtomA.coord[2] - AtomB.coord[2]), 2))
-                                    )
-        sum6 = 0
-        for distance in distance_list:
-            try:
-                sum6 = sum6 + pow(distance, -6)
-            except:
-                stderr.write("Problem with selection : "+ model_init + " "
-                             + model_final + "\n" + "distance is : "
-                             + str(distance) + " A")
-        result = pow(sum6, -1./6)
-        return result
-
-    else:
-        #stderr.write("selection is empty : " + model_init + " "
-        #             + model_final + "\n")
-        return 0.0
+                stderr.write("Problem with coordinates : "+ str(coord_init) +
+                             " " + str(coord_final) + "\n" +
+                             " with distances list" + str(distance_list) + "\n")
+        else:
+            result = distance_list[0]
+    return result

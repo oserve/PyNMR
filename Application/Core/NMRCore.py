@@ -45,6 +45,20 @@ from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
+import cProfile
+
+
+def do_cprofile(func):
+    def profiled_func(*args, **kwargs):
+        profile = cProfile.Profile()
+        try:
+            profile.enable()
+            result = func(*args)
+            profile.disable()
+            return result
+        finally:
+            profile.dump_stats('profile.cprof')
+    return profiled_func
 
 
 class NMRCore(object):
@@ -64,6 +78,7 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
+    @do_cprofile
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -96,11 +111,10 @@ class NMRCore(object):
         which is then paint on the model according to a color gradient
         """
         self.ManagersList[managerName].setPDB(structure)
-        theFilter = self.constraintFilter
         drawer = ConstraintDrawer()
         if len(self.ManagersList[managerName]):
             if self.ManagersList[managerName].associateToPDB():
-                selectedConstraints = theFilter.filterConstraints(
+                selectedConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
                 self.displayedConstraints += selectedConstraints
                 densityList = drawer.paD(selectedConstraints,

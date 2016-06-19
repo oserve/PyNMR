@@ -54,7 +54,7 @@ class About(ttk.Frame):
         ttk.Label(self.helpFrame, text=u'- First open a file or ' +
                   'download one frome the PDB\n  using a structure PDB code\n' +
                   '- Then select which type of constraint you want\n' +
-                  '- You can select residue numbers (X, Y, Z)\n  or a range ' +
+                  '- You can select residue numbers (X+Y+Z)\n  or a range ' +
                   '(X-Z) or both (default is all)\n - After that, select the ' +
                   'structure you want\n to' +
                   ' display the constraints on.\n - Finally, click on the' +

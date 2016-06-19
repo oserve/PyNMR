@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from AtomClass import AtomSet
+from .. import MolecularViewerInterface as MVI
 import re
 
 
@@ -54,7 +55,6 @@ class Constraint(object):
         self.numberOfAtomsSets = 0
         self.AtTypeReg = re.compile('[CHON][A-Z]*')
         self.structureName = ""
-        self.atomsIDs = {}
 
     def __str__(self):
         """
@@ -92,18 +92,16 @@ class Constraint(object):
                                       self.resis[atomsSetNumber]['number'],
                                       self.resis[atomsSetNumber]['atoms'] +
                                       self.resis[atomsSetNumber]['atoms_number'],
-                                      self.resis[atomsSetNumber]['segid']
-                                      )
-                              )
-            self.atomsIDs[atomsSetNumber] = self.atoms[atomsSetNumber].getID()
+                                      self.resis[atomsSetNumber]['segid']))
 
     def isValid(self):
         """Return false if one of the atomsets is not valid
         """
         validity = True
-        for atomsSetNumber in range(self.numberOfAtomsSets):
-            if self.atomsIDs[atomsSetNumber] == "noID":
+        for atomSet in self.atoms:
+            if MVI.checkID(atomSet) == False:
                 validity = False
+                break
         return validity
 
     def addAtomGroups(self, parsingResult):

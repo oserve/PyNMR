@@ -47,7 +47,7 @@ class AtomSet(object):
         self.segid = segid
 
     def __str__(self):
-        return self.getID()
+        return "Set of atoms " + self.atType + " on residue " + str(self.number) + " on segment / chain " + self.segid
 
     def __eq__(self, otherAtomSet):
         return isinstance(otherAtomSet, self.__class__) and (self.__dict__ == otherAtomSet.__dict__)
@@ -55,5 +55,6 @@ class AtomSet(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def getID(self):
-        return MVI.getID(self)
+    @property
+    def coord(self):
+        return MVI.get_coordinates(self)
