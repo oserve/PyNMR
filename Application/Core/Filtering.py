@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 import MolecularViewerInterface as MVI
+import errors
 
 
 class ConstraintFilter(object):
@@ -48,7 +49,7 @@ class ConstraintFilter(object):
         self.structure = structure
         self.method = method
         self.rangeCutOff = RangeCutOff
-        self.errors = []
+        # self.errors = []
 
     def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn.
@@ -62,9 +63,9 @@ class ConstraintFilter(object):
                         if aConstraint.isSatisfied() in self.violationState:
                             isSelected = True
                     else:
-                        self.errors.append("Distance issue with constraint :\n" + aConstraint.definition)
+                        errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
                 else:
-                    self.errors.append("Selection issue with constraint :\n" + aConstraint.definition)
+                    errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
         return isSelected
 
     def filterConstraints(self, constraintList):
@@ -72,7 +73,7 @@ class ConstraintFilter(object):
         """
         MVI.setPDB(self.structure)
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
-        stderr.write("\n".join(self.errors) + '\n')
-        stderr.write(str(len(self.errors)) + " errors detected.\n")
-        self.errors = ""
+        stderr.write("\n".join(errors.get_error_messages()) + '\n')
+        # stderr.write(str(len(self.errors)) + " errors detected.\n")
+        errors.erase_all_error_messages()
         return selectedConstraints

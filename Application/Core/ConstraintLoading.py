@@ -234,7 +234,7 @@ class ConstraintLoader(object):
                 constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
             else:
                 constraintValuesList = []
-            numericValues = [float(aValue)  for aValue in constraintValuesList]
+            numericValues = [float(aValue) for aValue in constraintValuesList]
             constraintParsingResult.append(numericValues)
 
         except:

@@ -90,7 +90,6 @@ class NOE(Constraint):
         self.points[1] = centerOfMass(self.atoms[1].coord)
         self.constraintValues['actual'] = calcDistance(self.atoms[0].coord, self.atoms[1].coord, method)
         if self.constraintValues['actual'] <= 0.0:
-            stderr.write("Distance error with " + str(self))
             return False
         else:
             return True

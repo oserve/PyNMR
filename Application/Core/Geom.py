@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 from math import sqrt
+import errors
 
 
 def centerOfMass(coords):
@@ -74,10 +75,12 @@ def calcDistance(coord_init, coord_final, method):
                     result = pow(sum6/len(distance_list), -1./6)
                 elif method == 'sum6':
                     result = pow(sum6, -1./6)
-            except:
-                stderr.write("Problem with coordinates : "+ str(coord_init) +
-                             " " + str(coord_final) + "\n" +
-                             " with distances list" + str(distance_list) + "\n")
+            except ValueError:
+                errors.add_error_message("Problem with coordinates : " +
+                                         str(coord_init) + " " +
+                                         str(coord_final) + "\n" +
+                                         " with distances list" +
+                                         str(distance_list) + "\n")
         else:
             result = distance_list[0]
     return result

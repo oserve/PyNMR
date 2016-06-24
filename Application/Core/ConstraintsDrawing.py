@@ -85,6 +85,6 @@ class ConstraintDrawer(object):
         densityList = self.constraintsDensity(selectedConstraints)
         MVI.zeroBFactors(structure)
         for residu, density in densityList.iteritems():
-            MVI.setBfactor(structure + " & i. " + residu, density)
+            MVI.setBfactor(structure, residu, density)
         MVI.paintDensity(color_gradient, structure)
         return densityList

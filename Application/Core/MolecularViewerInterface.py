@@ -31,7 +31,8 @@
 import re
 import pickle
 import os
-from sys import stdout, stderr
+from sys import stdout
+import errors
 
 lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
 
@@ -116,7 +117,6 @@ except ImportError:
 
     def drawConstraint(points, color, aRadius, ID):
         stdout.write("Drawn " + ID + " between points " + str(points) + " with " + str(color) + " color and radius " + str(aRadius) +"\n")
-        pass
 
     def zoom(selection):
         pass
@@ -148,8 +148,8 @@ def zeroBFactors(structure):
     alterBFactors(structure, 0)
 
 
-def setBfactor(selection, bFactor):
-    alterBFactors(selection, bFactor)
+def setBfactor(structure, residu, bFactor):
+    alterBFactors(structure + " & i. " + residu, bFactor)
 
 
 def paintDensity(color_gradient, structure):
@@ -167,6 +167,7 @@ def checkID(atomSet):
                 if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
                     check = True
                 else:
+                    original_name = atomSet.atType
                     if '*' not in atomSet.atType:
                         if atomSet.atType == 'HN':
                             atomSet.atType = 'H'
@@ -178,7 +179,7 @@ def checkID(atomSet):
                         if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
                             check = True
                         else:
-                            error_message = "atom name not found"
+                            error_message = "Atom name not found"
                     else:
                         nameRoot = atomSet.atType.replace('*', '')
                         for aName in (atom['name'] for atom in pdb[atomSet.number]):
@@ -192,7 +193,7 @@ def checkID(atomSet):
         else:
             error_message = "Residue number not found"
     if check is False:
-        stderr.write("Can't find :" + str(atomSet) + " in structure " + pdb['name'] + " because : " + error_message + "\n")
+        errors.add_error_message("Can't find " + str(original_name) + " in structure " + pdb['name'] + " because : " + error_message)
     return check
 
 
