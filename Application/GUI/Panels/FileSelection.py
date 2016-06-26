@@ -137,7 +137,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        if len(self.selectedFile):
+        if self.selectedFile:
             return {"constraintFile": self.selectedFile}
         else:
             return {"constraintFile": ""}

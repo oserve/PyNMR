@@ -70,6 +70,7 @@ class NMRCore(object):
         self.constraintFilter = ""
         self.displayedConstraints = []
 
+    @do_cprofile
     def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
@@ -78,7 +79,6 @@ class NMRCore(object):
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
-    @do_cprofile
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -86,8 +86,7 @@ class NMRCore(object):
         """
         self.ManagersList[managerName].setPDB(structure)
         drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
-        selectedConstraints = []
-        if len(self.ManagersList[managerName]):
+        if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 filteredConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
@@ -112,7 +111,7 @@ class NMRCore(object):
         """
         self.ManagersList[managerName].setPDB(structure)
         drawer = ConstraintDrawer()
-        if len(self.ManagersList[managerName]):
+        if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName].constraints)
@@ -121,7 +120,7 @@ class NMRCore(object):
                                          self.ManagersList[managerName].structure,
                                          gradient)
                 zoomSelection = self.ManagersList[managerName].structure + " &"
-                if len(densityList):
+                if densityList:
                     zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
                     MVI.zoom(zoomSelection)
                     MVI.select('involRes', zoomSelection)

@@ -78,17 +78,18 @@ class NOE(Constraint):
         else:
             stderr.write('How come ?\n')
 
-    def setValueFromStructure(self, method):
+    def setValueFromStructure(self):
         """
         """
-        return self.setDistance(method)
+        return self.setDistance()
 
-    def setDistance(self, method):
+    def setDistance(self):
         """Set actual distance of the constraint in the current structure file
         """
         self.points[0] = centerOfMass(self.atoms[0].coord)
         self.points[1] = centerOfMass(self.atoms[1].coord)
-        self.constraintValues['actual'] = calcDistance(self.atoms[0].coord, self.atoms[1].coord, method)
+        self.constraintValues['actual'] = calcDistance(self.atoms[0].coord,
+                                                       self.atoms[1].coord)
         if self.constraintValues['actual'] <= 0.0:
             return False
         else:

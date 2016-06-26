@@ -28,9 +28,16 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from sys import stderr
 from math import sqrt
 import errors
+
+distance_method = ""
+
+def set_method(newMethod):
+    """
+    """
+    global distance_method
+    distance_method = newMethod
 
 
 def centerOfMass(coords):
@@ -38,7 +45,7 @@ def centerOfMass(coords):
     assumes equal weights for atoms (usually protons)
     """
     x, y, z = 0, 0, 0
-    if len(coords) > 0:
+    if coords:
         if len(coords) > 1:
             for coord in coords:
                 x += coord[0]
@@ -53,33 +60,32 @@ def centerOfMass(coords):
 # Methods for distance constraints
 
 
-def calcDistance(coord_init, coord_final, method):
+def calcDistance(coord_init, coord_final):
     """    Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
     or (sum of all distances^-6)^-1/6
     """
     result = 0.0
 
-    if len(coord_init) > 0 and len(coord_final) > 0:
+    if coord_init and coord_final:
         distance_list = []
         for AtomA in coord_init:
             for AtomB in coord_final:
                 distance_list.append(sqrt(pow((AtomA[0] - AtomB[0]), 2) +
                                           pow((AtomA[1] - AtomB[1]), 2) +
-                                          pow((AtomA[2] - AtomB[2]), 2))
-                                     )
+                                          pow((AtomA[2] - AtomB[2]), 2)))
         if len(distance_list) > 1:
             try:
                 sum6 = sum(pow(distance, -6) for distance in distance_list)
-                if method == 'ave6':
+                if distance_method == 'ave6':
                     result = pow(sum6/len(distance_list), -1./6)
-                elif method == 'sum6':
+                elif distance_method == 'sum6':
                     result = pow(sum6, -1./6)
             except ValueError:
-                errors.add_error_message("Problem with coordinates : " +
+                errors.add_error_message("Problem using coordinates : " +
                                          str(coord_init) + " " +
                                          str(coord_final) + "\n" +
-                                         " with distances list" +
+                                         " and distances list" +
                                          str(distance_list) + "\n")
         else:
             result = distance_list[0]

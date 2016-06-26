@@ -65,7 +65,7 @@ class ConstraintSetManager(object):
         result = 0
         if self.structure != '':
             MVI.setPDB(self.structure)
-            if len(self.constraints):
+            if self.constraints:
                 for constraint in self.constraints:
                     constraint.associatePDBAtoms(self.structure)
                 result = 1

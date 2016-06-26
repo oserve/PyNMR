@@ -230,7 +230,7 @@ class ConstraintLoader(object):
                 constraintParsingResult = [constraintParsingResult[0], constraintParsingResult[1]]
 
             constraintValues = RegFloat.findall(aCNSConstraint)
-            if len(constraintValues) > 0:
+            if constraintValues:
                 constraintValuesList = RegFloat.findall(aCNSConstraint)[0].split()
             else:
                 constraintValuesList = []

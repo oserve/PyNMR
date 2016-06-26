@@ -31,6 +31,7 @@
 from sys import stderr
 import MolecularViewerInterface as MVI
 import errors
+from Geom import set_method
 
 
 class ConstraintFilter(object):
@@ -49,16 +50,15 @@ class ConstraintFilter(object):
         self.structure = structure
         self.method = method
         self.rangeCutOff = RangeCutOff
-        # self.errors = []
 
     def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn.
         """
         isSelected = False
         if aConstraint.getRange(self.rangeCutOff) in self.range:
-            if len([aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]) > 0:
+            if [aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]:
                 if aConstraint.isValid():
-                    if aConstraint.setValueFromStructure(self.method):
+                    if aConstraint.setValueFromStructure():
                         aConstraint.setViolationState(self.cutOff)
                         if aConstraint.isSatisfied() in self.violationState:
                             isSelected = True
@@ -72,6 +72,7 @@ class ConstraintFilter(object):
         """
         """
         MVI.setPDB(self.structure)
+        set_method(self.method)
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
         stderr.write("\n".join(errors.get_error_messages()) + '\n')
         # stderr.write(str(len(self.errors)) + " errors detected.\n")
