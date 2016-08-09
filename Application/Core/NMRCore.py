@@ -138,8 +138,7 @@ class NMRCore(object):
             for resi_range in residuesList.split("+"):
                 aRange = resi_range.split("-")
                 if len(aRange) == 2:
-                    for residueNumber in range(int(aRange[0]), int(aRange[1]) + 1):
-                        resList = resList + [str(residueNumber)]
+                    resList += [str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[1]) + 1)]
                 elif len(aRange) == 1:
                     resList += [str(aRange[0])]
                 else:

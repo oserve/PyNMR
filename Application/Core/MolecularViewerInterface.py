@@ -161,37 +161,36 @@ def checkID(atomSet):
     """
     check = False
     error_message = ""
-    if atomSet.structure == pdb['name']:
-        if atomSet.number in pdb:
-            if atomSet.segid in [atom['segi'] for atom in pdb[atomSet.number]]:
-                if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
-                    check = True
-                else:
-                    original_name = atomSet.atType
-                    if '*' not in atomSet.atType:
-                        if atomSet.atType == 'HN':
-                            atomSet.atType = 'H'
-                        elif atomSet.atType == 'H':
-                            atomSet.atType = 'HN'
-                        elif lastDigit.search(atomSet.atType):
-                            digit = lastDigit.search(atomSet.atType).group()[0]
-                            atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
-                        if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
-                            check = True
-                        else:
-                            error_message = "Atom name not found"
-                    else:
-                        nameRoot = atomSet.atType.replace('*', '')
-                        for aName in (atom['name'] for atom in pdb[atomSet.number]):
-                            if nameRoot in aName:
-                                check = True
-                                break
-                        if check is False:
-                            error_message = "Atom name not found"
+    if atomSet.number in pdb:
+        if atomSet.segid in [atom['segi'] for atom in pdb[atomSet.number]]:
+            if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+                check = True
             else:
-                error_message = "Wrong segment / chain"
+                original_name = atomSet.atType
+                if '*' not in atomSet.atType:
+                    if atomSet.atType == 'HN':
+                        atomSet.atType = 'H'
+                    elif atomSet.atType == 'H':
+                        atomSet.atType = 'HN'
+                    elif lastDigit.search(atomSet.atType):
+                        digit = lastDigit.search(atomSet.atType).group()[0]
+                        atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
+                    if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+                        check = True
+                    else:
+                        error_message = "Atom name not found"
+                else:
+                    nameRoot = atomSet.atType.replace('*', '')
+                    for aName in (atom['name'] for atom in pdb[atomSet.number]):
+                        if nameRoot in aName:
+                            check = True
+                            break
+                    if check is False:
+                        error_message = "Atom name not found"
         else:
-            error_message = "Residue number not found"
+            error_message = "Wrong segment / chain"
+    else:
+        error_message = "Residue number not found"
     if check is False:
         errors.add_error_message("Can't find " + str(original_name) + " in structure " + pdb['name'] + " because : " + error_message)
     return check

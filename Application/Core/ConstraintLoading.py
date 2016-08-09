@@ -144,7 +144,7 @@ class ConstraintLoader(object):
                         continue
                     aConstraint.id["number"] = constraint_number
                     aConstraint.definition = aConstLine
-                    aConstraint.addAtomGroups(parsingResult)
+                    aConstraint.resis = aManager.addAtom(parsingResult)
                     aConstraint.setConstraintValues(parsingResult[-1][0],
                                                     parsingResult[-1][1],
                                                     parsingResult[-1][2])  # Values always at the end of the array

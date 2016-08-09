@@ -87,9 +87,8 @@ class Constraint(object):
         """
         Sets atoms sets, checks for inconsistency with structure file
         """
-        for atomsSetNumber in range(self.numberOfAtomsSets):
-            self.atoms.append(AtomSet(structureName,
-                                      self.resis[atomsSetNumber]['number'],
+        for atomsSetNumber in xrange(self.numberOfAtomsSets):
+            self.atoms.append(AtomSet(self.resis[atomsSetNumber]['number'],
                                       self.resis[atomsSetNumber]['atoms'] +
                                       self.resis[atomsSetNumber]['atoms_number'],
                                       self.resis[atomsSetNumber]['segid']))
@@ -104,23 +103,7 @@ class Constraint(object):
                 break
         return validity
 
-    def addAtomGroups(self, parsingResult):
-        """
-        """
-        for position in range(self.numberOfAtomsSets):
-            currentResidue = {}
-            if "resid" in parsingResult[position]:
-                currentResidue["number"] = parsingResult[position]["resid"]
-            else:
-                currentResidue["number"] = parsingResult[position]["resi"]
-            currentResidue["atoms"] = self.AtTypeReg.match(parsingResult[position]["name"]).group()
-            currentResidue["atoms_number"] = self.AtTypeReg.sub('', parsingResult[position]["name"])
-            currentResidue["ambiguity"] = self.AtTypeReg.sub('', parsingResult[position]["name"]).find('*')
-            if "segid" in parsingResult[position]:
-                currentResidue["segid"] = parsingResult[position]["segid"]
-            self.resis.append(currentResidue)
-
     def setValueFromStructure(self):
         """
         """
-        return False
+        raise NotImplementedError

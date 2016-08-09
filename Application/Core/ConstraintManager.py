@@ -29,10 +29,14 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import MolecularViewerInterface as MVI
+import re
 
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
     """
+
+    AtTypeReg = re.compile('[CHON][A-Z]*')
+
     def __init__(self, managerName):
         self.constraints = []
         self.residuesList = []
@@ -40,6 +44,7 @@ class ConstraintSetManager(object):
         self.name = managerName
         self.format = ""
         self.fileText = ""
+        self.atoms = {}
 
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
@@ -91,3 +96,29 @@ class ConstraintSetManager(object):
         """
         if int(aConstraintNumber) <= len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
+
+    def addAtom(self, parsingResult):
+        """Checks that atoms are loaded several times
+        should limits future memory issues
+        """
+        residues = []
+        for aResult in parsingResult[:-1]:
+            currentResidue = {}
+            if "resid" in aResult:
+                currentResidue["number"] = aResult["resid"]
+            else:
+                currentResidue["number"] = aResult["resi"]
+            currentResidue["atoms"] = ConstraintSetManager.AtTypeReg.match(aResult["name"]).group()
+            currentResidue["atoms_number"] = ConstraintSetManager.AtTypeReg.sub('', aResult["name"])
+            currentResidue["ambiguity"] = ConstraintSetManager.AtTypeReg.sub('', aResult["name"]).find('*')
+            if "segid" in aResult:
+                currentResidue["segid"] = aResult["segid"]
+
+            residueKey = ''.join(str(value) for value in currentResidue.values())
+
+            if residueKey not in self.atoms:
+                self.atoms[residueKey] = currentResidue
+                residues.append(currentResidue)
+            else:
+                residues.append(self.atoms[residueKey])
+        return residues
