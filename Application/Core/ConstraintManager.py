@@ -31,6 +31,7 @@
 import MolecularViewerInterface as MVI
 import re
 
+
 class ConstraintSetManager(object):
     """Class to manage a set of constraints
     """
@@ -87,9 +88,6 @@ class ConstraintSetManager(object):
         """
         self.constraints.append(aConstraint)
         aConstraint.setName(self.name)
-        for resiNumber in aConstraint.getResisNumber():
-            if resiNumber not in self.residuesList:
-                self.residuesList.append(resiNumber)
 
     def removeConstraint(self, aConstraintNumber):
         """
@@ -102,7 +100,7 @@ class ConstraintSetManager(object):
         should limits future memory issues
         """
         residues = []
-        for aResult in parsingResult[:-1]:
+        for aResult in parsingResult:
             currentResidue = {}
             if "resid" in aResult:
                 currentResidue["number"] = aResult["resid"]
@@ -118,6 +116,8 @@ class ConstraintSetManager(object):
 
             if residueKey not in self.atoms:
                 self.atoms[residueKey] = currentResidue
+                if currentResidue["number"] not in self.residuesList:
+                    self.residuesList.append(currentResidue["number"])
                 residues.append(currentResidue)
             else:
                 residues.append(self.atoms[residueKey])

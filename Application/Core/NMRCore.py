@@ -45,20 +45,6 @@ from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
-import cProfile
-
-
-def do_cprofile(func):
-    def profiled_func(*args, **kwargs):
-        profile = cProfile.Profile()
-        try:
-            profile.enable()
-            result = func(*args)
-            profile.disable()
-            return result
-        finally:
-            profile.dump_stats('profile.cprof')
-    return profiled_func
 
 
 class NMRCore(object):
@@ -70,7 +56,6 @@ class NMRCore(object):
         self.constraintFilter = ""
         self.displayedConstraints = []
 
-    @do_cprofile
     def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),

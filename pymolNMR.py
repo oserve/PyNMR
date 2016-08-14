@@ -38,7 +38,7 @@ lower limit violation, red for upper limit violation for NOEs)
 # ----------------------------------------------------------------------
 
 from sys import stderr, stdout
-from os.path import exists
+from os.path import exists, basename
 import Tkinter as Tk
 
 from Application.Core.NMRCore import NMRCore
@@ -100,6 +100,8 @@ def loadNOE(filename=""):
     """
     if exists(filename):
         Core.loadNOE(filename)
+        stdout.write(str(len(Core.ManagersList[basename(filename)])) + " constraints loaded.\n")
+
     else:
         stderr.write("File : " + filename + " has not been found.\n")
 
