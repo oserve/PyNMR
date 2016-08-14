@@ -21,7 +21,7 @@ Features :
 ---
 - Import popular data formats [CNS / X-PLOR](http://cns-online.org) or [CYANA / XEASY](http://www.cyana.org)
 - Command line and graphical user interfaces available
-- Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do) directly from this plugin (currently broken)
+- Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do) directly from this plugin
 - Choose method of distance calculation between atoms (in case of ambiguous restraints)
 - Choice for colors and size of NOE representations
 

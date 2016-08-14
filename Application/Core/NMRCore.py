@@ -31,7 +31,7 @@
 # ----------------------------------------------------------------------
 
 # Standard modules
-from os.path import basename
+from os.path import basename, exists
 from sys import stderr
 import urllib2
 import shutil
@@ -163,25 +163,25 @@ class NMRCore(object):
         """
         PDBfileName = pdbCode.lower() + ".mr"
         zippedFileName = PDBfileName + ".gz"
+        workdir = os.getcwd()
+        tempDownloadDir = tempfile.mkdtemp()
+        os.chdir(tempDownloadDir)
         try:
-            workdir = os.getcwd()
-            tempDownloadDir = tempfile.mkdtemp()
-            os.chdir(tempDownloadDir)
             restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
-            with open(zippedFileName, 'wb') as f:
-                shutil.copyfileobj(restraintFileRequest, f)
-                restraintFileRequest.close()
-                zippedFile = gzip.open(zippedFileName, 'rb')
+            localFile = open(zippedFileName, 'wb')
+            shutil.copyfileobj(restraintFileRequest, localFile)
+            localFile.close()
+            restraintFileRequest.close()
+            with gzip.open(zippedFileName, 'rb') as zippedFile:
                 decodedFile = zippedFile.read()
-                restraintFile = open(PDBfileName, 'w')
-                restraintFile.write(decodedFile)
-                zippedFile.close()
+                with open(PDBfileName, 'w') as restraintFile:
+                        restraintFile.write(decodedFile)
+            if exists(zippedFileName):
                 os.remove(zippedFileName)
-                restraintFile.close()
                 self.loadNOE(PDBfileName)
                 os.remove(PDBfileName)
                 os.chdir(workdir)
                 os.removedirs(tempDownloadDir)
-        except:
+        except IOError:
             sys.stderr.write("Error while downloading or opening " +
                              pdbCode + " NMR Restraints file from PDB.\n")
