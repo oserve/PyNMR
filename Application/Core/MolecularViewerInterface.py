@@ -90,14 +90,6 @@ try:
     def delete(selectionName):
         PymolCmd.delete(selectionName)
 
-    def createSelection(Items):
-        selection = ""
-        if len(Items) > 2:
-            selection = Items.pop(0) + " &"
-            for residue in Items:
-                selection += " resi " + residue + " +"
-        return selection.rstrip("+")
-
     def get_names():
         return PymolCmd.get_names()
 
@@ -123,13 +115,6 @@ except ImportError:
 
     def delete(selectionName):
         pass
-
-    def createSelection(Items):
-        if len(Items) > 2:
-            selection = Items.pop(0) + " &"
-            for residue in Items:
-                selection += " resi " + residue + " +"
-        return selection.rstrip("+")
 
     def get_names():
         return [fileName.split(".")[0] for fileName in os.listdir(os.getcwd()) if '.pyn' in fileName]
@@ -213,3 +198,10 @@ def get_coordinates(atomSet):
                     coordinates = [atom['coord']]
                     break
     return coordinates
+
+def createSelection(structure, Items):
+    """
+    """
+    selection = structure
+    selection += "".join(" resi " + residue + " +" for residue in Items)
+    return selection.rstrip("+")

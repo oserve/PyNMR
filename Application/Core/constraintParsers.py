@@ -131,6 +131,7 @@ class CNSParser(constraintParser):
                 self.validConstraints.append(line.replace("ASSI", ""))
             elif CNSParser.RegResi.search(line) != None:
                 self.validConstraints[-1] = self.validConstraints[-1] + line
+        self.validConstraints = [constraint for constraint in self.validConstraints if re.search(r'\d', constraint)]
 
     def parseAConstraint(self):
         """Split CNS/XPLOR type constraint into an array, contening the name of
@@ -139,52 +140,60 @@ class CNSParser(constraintParser):
         (dihedral, distance, ...)
         """
         for aCNSConstraint in self.validConstraints:
-            if re.search(r'\d', aCNSConstraint):
-                try:
-                    residuesList = CNSParser.RegResi.findall(aCNSConstraint, re.IGNORECASE)
-                    segments = CNSParser.RegSeg.findall(aCNSConstraint, re.IGNORECASE)
-                    for segment in segments:
-                        if segment not in self.segments:
-                            self.segments.append(segment)
-                    numberOfSegments = len(segments)
+            try:
+                residuesList = CNSParser.RegResi.findall(aCNSConstraint, re.IGNORECASE)
+                segments = CNSParser.RegSeg.findall(aCNSConstraint, re.IGNORECASE)
+                for segment in segments:
+                    if segment not in self.segments:
+                        self.segments.append(segment)
+                numberOfSegments = len(segments)
 
-                    constraintParsingResult = {}
-                    residues = []
-                    indice = 0
-                    for aResidue in residuesList:
-                        residueParsingResult = {}
-                        for aDefinition in CNSParser.SharpReg.sub('*', aResidue).split("AND "):
-                            definitionArray = aDefinition.split()
-                            residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
-                        if numberOfSegments > 0:
-                            residueParsingResult["segid"] = alphabet[self.segments.index(segments[indice])]
-                        else:
-                            residueParsingResult["segid"] = "A"
-                        residues.append(residueParsingResult)
-                        indice += 1
-                    constraintParsingResult["residues"] = residues
-
-                    if 'OR ' in aCNSConstraint:
-                        if constraintParsingResult[0] == constraintParsingResult[2] or constraintParsingResult[0] == constraintParsingResult[3]:
-                            indiceAmbiguous = 1
-                        else:
-                            indiceAmbiguous = 0
-                        constraintParsingResult[indiceAmbiguous]['name'] = constraintParsingResult[indiceAmbiguous]['name'][0:-1] + "*"
-                        constraintParsingResult = [constraintParsingResult[0], constraintParsingResult[1]]
-
-                    constraintValues = CNSParser.RegFloat.findall(aCNSConstraint)
-                    if constraintValues:
-                        constraintValuesList = CNSParser.RegFloat.findall(aCNSConstraint)[0].split()
+                constraintParsingResult = {}
+                residues = []
+                for (indice, aResidue) in enumerate(residuesList):
+                    residueParsingResult = {}
+                    for aDefinition in CNSParser.SharpReg.sub('*', aResidue).split("AND "):
+                        definitionArray = aDefinition.split()
+                        residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
+                    if numberOfSegments > 0:
+                        residueParsingResult["segid"] = alphabet[self.segments.index(segments[indice])]
                     else:
-                        constraintValuesList = []
-                    numericValues = [float(aValue) for aValue in constraintValuesList]
-                    constraintParsingResult["values"] = numericValues
-                    constraintParsingResult["definition"] = aCNSConstraint
+                        residueParsingResult["segid"] = "A"
+                    residues.append(residueParsingResult)
+                constraintParsingResult["residues"] = residues
 
-                except:
-                    stderr.write('Can not parse : ' + aCNSConstraint + '\n')
-                    constraintParsingResult = None
-                yield constraintParsingResult
+                if 'OR ' in aCNSConstraint:
+                    self.constraintAmbiguity(constraintParsingResult["residues"])
+
+                constraintParsingResult["values"] = self.constraintValues(aCNSConstraint)
+                constraintParsingResult["definition"] = aCNSConstraint
+
+            except:
+                stderr.write('Can not parse : ' + aCNSConstraint + '\n')
+                constraintParsingResult = None
+            yield constraintParsingResult
+
+    @staticmethod
+    def constraintAmbiguity(constraintParsingResult):
+        """
+        """
+        if constraintParsingResult[0] == constraintParsingResult[2] or constraintParsingResult[0] == constraintParsingResult[3]:
+            indiceAmbiguous = 1
+        else:
+            indiceAmbiguous = 0
+        constraintParsingResult[indiceAmbiguous]['name'] = constraintParsingResult[indiceAmbiguous]['name'][0:-1] + "*"
+        constraintParsingResult = [constraintParsingResult[0], constraintParsingResult[1]]
+
+    @staticmethod
+    def constraintValues(aCNSConstraint):
+        """
+        """
+        constraintValues = CNSParser.RegFloat.findall(aCNSConstraint)
+        if constraintValues:
+            constraintValuesList = CNSParser.RegFloat.findall(aCNSConstraint)[0].split()
+        else:
+            constraintValuesList = ()
+        return [float(aValue) for aValue in constraintValuesList]
 
 class CYANAParser(constraintParser):
     """
@@ -206,18 +215,19 @@ class CYANAParser(constraintParser):
                     parsed = None
             cons_tab = aConstraintLine.split()
             try:
-                parsed = [
-                    {'resid': int(cons_tab[0]),
+                parsed = {"residues":
+                    [{'resid': int(cons_tab[0]),
                      'name': CYANAParser.AtTypeReg.match(
                         self.convertTypeDyana(cons_tab[2])).group()},
                     {'resid': int(cons_tab[3]),
                      'name': CYANAParser.AtTypeReg.match(
-                        self.convertTypeDyana(cons_tab[5])).group()}]
+                        self.convertTypeDyana(cons_tab[5])).group()}]}
             except:
                 stderr.write("Unknown error while loading constraint " + ":\n" +
                              aConstraintLine + "\n")
                 parsed = None
-            parsed.append([str(1.8 + (float(cons_tab[6]) - 1.8)/2), '1.8', cons_tab[6]])
+            parsed["values"] = ([str(1.8 + (float(cons_tab[6]) - 1.8)/2), '1.8', cons_tab[6]])
+            parsed["definition"] = aConstraintLine
             yield parsed
 
     @staticmethod

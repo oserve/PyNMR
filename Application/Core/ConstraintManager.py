@@ -96,7 +96,7 @@ class ConstraintSetManager(object):
             del self.constraints[int(aConstraintNumber)]
 
     def addAtom(self, parsingResult):
-        """Checks that atoms are loaded several times
+        """Checks that atoms are not loaded several times
         should limits future memory issues
         """
         residues = []

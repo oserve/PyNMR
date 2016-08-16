@@ -80,7 +80,7 @@ class NMRCore(object):
                 results = drawer.drC(selectedConstraints, radius, colors)
                 numberOfConstraints = results['DrawnConstraints']
                 if numberOfConstraints > 0:
-                    selection = MVI.createSelection([self.ManagersList[managerName].structure] + results['Residueslist'])
+                    selection = MVI.createSelection(self.ManagersList[managerName].structure, results['Residueslist'])
                     MVI.select('involRes', selection)
                     MVI.zoom(selection)
 
@@ -106,7 +106,7 @@ class NMRCore(object):
                                          gradient)
                 zoomSelection = self.ManagersList[managerName].structure + " &"
                 if densityList:
-                    zoomSelection = MVI.createSelection([self.ManagersList[managerName].structure] + densityList.keys())
+                    zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
                     MVI.zoom(zoomSelection)
                     MVI.select('involRes', zoomSelection)
         return {"numberOfConstraints": len(selectedConstraints),
@@ -131,7 +131,7 @@ class NMRCore(object):
                                  residuesList + "\n")
         if not isinstance(dist_range, list):
             if dist_range == 'all':
-                dist_range = ['intra', 'sequential', 'medium', 'long', 'inter']
+                dist_range = ['intra', 'sequential', 'medium', 'long']
             else:
                 dist_range = [dist_range]
 

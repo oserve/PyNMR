@@ -87,9 +87,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def updateFilelist(self):
         """
         """
-        managerList = ""
-        for item in self.NMRCommands.ManagersList.keys():
-            managerList = managerList + " " + item
+        managerList = " ".join(self.NMRCommands.ManagersList.keys()).strip()
         self.constraintsFileList.set(managerList)
 
     def removeFile(self):

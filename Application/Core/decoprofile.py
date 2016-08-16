@@ -10,5 +10,5 @@ def do_cprofile(func):
             profile.disable()
             return result
         finally:
-            profile.dump_stats('profile.cprof')
+            profile.dump_stats('profileaftergenerators.cprof')
     return profiled_func

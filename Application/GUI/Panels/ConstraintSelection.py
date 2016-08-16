@@ -72,33 +72,32 @@ class RangeSelectionPanel(ttk.LabelFrame):
         self.RangesVars = {}
         self.RangesCB = {}
         self.RangesFunctions = {}
+        self.ranges = ['intra', 'sequential', 'medium', 'long']
         self.widgetCreation()
 
     def widgetCreation(self):
         """
         """
-        rowPosition = 0
-        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
+        for rowPosition, consRange in enumerate(self.ranges):
             self.RangesVars[consRange] = Tk.IntVar(self)
             self.RangesCB[consRange] = ttk.Checkbutton(self, text=': ' + consRange, command=self.tick, variable=self.RangesVars[consRange])
             self.RangesCB[consRange].grid(row=rowPosition, column=0, sticky=Tk.W)
-            rowPosition = rowPosition + 1
         self.RangesVars["all"] = Tk.IntVar(self)
         self.RangesCB["all"] = ttk.Checkbutton(self, text=': all', command=self.tickAll, variable=self.RangesVars["all"])
-        self.RangesCB["all"].grid(row=rowPosition, column=0, sticky=Tk.W)
+        self.RangesCB["all"].grid(row=rowPosition + 1, column=0, sticky=Tk.W)
         self.RangesCB["all"].invoke()
 
     def tickAll(self):
         """
         """
-        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
+        for consRange in self.ranges:
             self.RangesVars[consRange].set(self.RangesVars["all"].get())
 
     def tick(self):
         """
         """
         self.RangesVars["all"].set(1)
-        for aRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
+        for aRange in self.ranges:
             if self.RangesVars[aRange].get() == 0:
                 self.RangesVars["all"].set(0)
                 break
@@ -106,10 +105,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        ranges = []
-        for consRange in ['intra', 'sequential', 'medium', 'long', 'inter']:
-            if self.RangesVars[consRange].get() == 1:
-                ranges.append(consRange)
+        ranges = [aRange for aRange in self.ranges if self.RangesVars[aRange].get() == 1]
         return {"residuesRange": ranges}
 
 
@@ -129,31 +125,28 @@ class ViolationSelectionPanel(ttk.LabelFrame):
     def widgetCreation(self):
         """
         """
-        rowPosition = 0
-        for violationType in ['unSatisfied', 'Satisfied']:
+        for rowPosition, violationType in enumerate(['unSatisfied', 'Satisfied']):
             self.ViolationsVars[violationType] = Tk.IntVar(self)
             self.UnSatisfiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
             self.UnSatisfiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W, columnspan=2)
             self.ViolationsVars[violationType].set(1)
-            rowPosition = rowPosition + 1
 
-        ttk.Label(self, text=u'Distance CutOff :').grid(row=rowPosition + 1,
+        rowPosition += 1
+        ttk.Label(self, text=u'Distance CutOff :').grid(row=rowPosition,
                                                         column=0, columnspan=2)
 
+        rowPosition += 1
         self.spinBox_cutOff = Tk.Spinbox(self, textvariable=self.cutOff,
                                          from_=0.0, to=10.0, increment=0.1,
                                          format='%2.1f', width=6)
-        self.spinBox_cutOff.grid(row=rowPosition + 2, column=0)
-        ttk.Label(self, text=u'\u212b').grid(row=rowPosition + 2, column=1)
+        self.spinBox_cutOff.grid(row=rowPosition, column=0)
+        ttk.Label(self, text=u'\u212b').grid(row=rowPosition, column=1)
 
     def getInfo(self):
         """
         """
-        violationState = []
-        for violationType in ['unSatisfied', 'Satisfied']:
-            if self.ViolationsVars[violationType].get() == 1:
-                violationState.append(violationType)
-        return {"cutOff": self.cutOff.get(), "violationState": violationState}
+        violationStates = [violationType for violationType in ['unSatisfied', 'Satisfied'] if self.ViolationsVars[violationType].get() == 1]
+        return {"cutOff": self.cutOff.get(), "violationState": violationStates}
 
 
 class StructureSelectionPanel(ttk.LabelFrame):

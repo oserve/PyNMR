@@ -86,27 +86,39 @@ class SticksPreferencesPanel(ttk.LabelFrame):
     def setSatisfiedColor(self):
         """
         """
-        currentColor = float2intColor(self.colors["Satisfied"])
+        currentColor = self.float2intColor(self.colors["Satisfied"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["Satisfied"] = int2floatColor(result[0])
+            self.colors["Satisfied"] = self.int2floatColor(result[0])
 
     def setTooFarColor(self):
         """
         """
-        currentColor = float2intColor(self.colors["tooFar"])
+        currentColor = self.float2intColor(self.colors["tooFar"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooFar"] = int2floatColor(result[0])
+            self.colors["tooFar"] = self.int2floatColor(result[0])
 
     def setTooCloseColor(self):
         """
         """
-        currentColor = float2intColor(self.colors["tooClose"])
+        currentColor = self.float2intColor(self.colors["tooClose"])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["tooClose"] = int2floatColor(result[0])
+            self.colors["tooClose"] = self.int2floatColor(result[0])
 
+    @staticmethod
+    def float2intColor(color):
+        """
+        """
+        return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
+
+    @staticmethod
+    def int2floatColor(color):
+        """
+        """
+        return [color[0]/255.0, color[1]/255.0, color[2]/255.0,
+                color[0]/255.0, color[1]/255.0, color[2]/255.0]
 
 class DensityPreferencesPanel(ttk.LabelFrame):
     """
@@ -166,20 +178,20 @@ class PreferencesPanel(ttk.LabelFrame):
         for methodName, method in self.methodsList:
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                             value=method).grid(row=position, column=1)
-            position = position + 1
+            position += 1
 
         ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
 
         self.rangeCutOffEntry.grid(row=position, column=1)
-        position = position + 1
+        position += 1
         self.sticksPanel.grid(row=position, column=0, columnspan=2)
-        position = position + 1
+        position += 1
         self.densityPanel.grid(row=position, column=0, columnspan=2)
-        position = position + 1
+        position += + 1
         ttk.Label(self, text=u'PDB.org URL for download').grid(row=position, column=0, columnspan=2)
-        position = position + 1
+        position += + 1
         self.urlTextField.grid(row=position, column=0, columnspan=2)
-        position = position + 1
+        position += 1
         self.savePrefButton.grid(row=position, column=0)
         self.resetButton.grid(row=position, column=1)
 
@@ -216,16 +228,3 @@ class PreferencesPanel(ttk.LabelFrame):
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
-
-
-def float2intColor(color):
-    """
-    """
-    return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
-
-
-def int2floatColor(color):
-    """
-    """
-    return [color[0]/255.0, color[1]/255.0, color[2]/255.0,
-            color[0]/255.0, color[1]/255.0, color[2]/255.0]

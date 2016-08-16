@@ -1,4 +1,4 @@
-"""Module for drawing constraints
+"""Module for error logging
 """
 # Copyright Notice
 # ================

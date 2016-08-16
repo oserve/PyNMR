@@ -33,6 +33,7 @@ import errors
 
 distance_method = ""
 
+
 def set_method(newMethod):
     """
     """
@@ -46,16 +47,14 @@ def centerOfMass(coords):
     """
     x, y, z = 0, 0, 0
     if coords:
-        if len(coords) > 1:
-            for coord in coords:
-                x += coord[0]
-                y += coord[1]
-                z += coord[2]
-            return (x/len(coords), y/len(coords), z/len(coords))
-        else:
-            return coords[0]
+        numCoords = len(coords)
+        for coord in coords:
+            x += coord[0]
+            y += coord[1]
+            z += coord[2]
+        return [item/numCoords for item in (x, y, z)]
     else:
-        return 0, 0, 0
+        return [0, 0, 0]
 
 # Methods for distance constraints
 
@@ -71,9 +70,7 @@ def calcDistance(coord_init, coord_final):
         distance_list = []
         for AtomA in coord_init:
             for AtomB in coord_final:
-                distance_list.append(sqrt(pow((AtomA[0] - AtomB[0]), 2) +
-                                          pow((AtomA[1] - AtomB[1]), 2) +
-                                          pow((AtomA[2] - AtomB[2]), 2)))
+                distance_list.append(sqrt(sum((AtomA[i] - AtomB[i]) ** 2 for i in xrange(len(AtomA)))))
         if len(distance_list) > 1:
             try:
                 sum6 = sum(pow(distance, -6) for distance in distance_list)

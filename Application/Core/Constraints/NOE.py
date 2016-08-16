@@ -65,18 +65,15 @@ class NOE(Constraint):
         """Return the range name,
         range depends on the number of residus between the atomsets
         """
-        if self.resis[0]['segid'] != self.resis[1]['segid']:
-            return 'inter'
-        elif int(self.resis[0]['number']) - int(self.resis[1]['number']) == 0:
+        resi_diff = abs(int(self.resis[0]['number']) - int(self.resis[1]['number']))
+        if resi_diff == 0:
             return 'intra'
-        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) == 1:
+        elif resi_diff == 1:
             return 'sequential'
-        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > 1 and abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) <= RangeCutOff:
+        elif resi_diff > 1 and resi_diff <= RangeCutOff:
             return 'medium'
-        elif abs(int(self.resis[0]['number']) - int(self.resis[1]['number'])) > RangeCutOff:
-            return 'long'
         else:
-            stderr.write('How come ?\n')
+            return 'long'
 
     def setValueFromStructure(self):
         """

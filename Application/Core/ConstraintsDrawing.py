@@ -30,9 +30,8 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
+from sys import stderr
 import MolecularViewerInterface as MVI
-from ConstraintID import IDConstraint
 
 
 class ConstraintDrawer(object):
@@ -50,20 +49,18 @@ class ConstraintDrawer(object):
         Draw an array of constraints according to the filter defined by user,
         using the drawConstraint function
         """
-        involvedResidueslist = []
+        involvedResidueslist = set()
         for aConstraint in selectedConstraints:
-            if not aConstraint.resis[0]['number'] in involvedResidueslist:
-                involvedResidueslist.append(aConstraint.resis[0]['number'])
-            if not aConstraint.resis[1]['number'] in involvedResidueslist:
-                involvedResidueslist.append(aConstraint.resis[1]['number'])
+            for aResi in aConstraint.resis:
+                involvedResidueslist.add(aResi['number'])
             if aConstraint.satisfaction == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction == 'Satisfied':
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius,
-                               IDConstraint(aConstraint,
-                                            self.UnSatisfactionMarker,
-                                            self.SatisfactionMarker))
+                               self.IDConstraint(aConstraint,
+                                                 self.UnSatisfactionMarker,
+                                                 self.SatisfactionMarker))
         return {'Residueslist': involvedResidueslist,
                 'DrawnConstraints': len(selectedConstraints)}
 
@@ -88,3 +85,22 @@ class ConstraintDrawer(object):
             MVI.setBfactor(structure, residu, density)
         MVI.paintDensity(color_gradient, structure)
         return densityList
+
+    @staticmethod
+    def IDConstraint(aConstraint, UnSatisfactionMarker, SatisfactionMarker):
+        """Returns name of constraints :
+        Name_(constraint number)_(structureName)_(violation_state)
+        """
+        if aConstraint.satisfaction != '':
+            if aConstraint.satisfaction == 'unSatisfied':
+                marker = UnSatisfactionMarker
+            else:
+                marker = SatisfactionMarker
+            return aConstraint.id['name'] + str(aConstraint.id['number']) + marker + aConstraint.structureName
+        else:
+            stderr.write("Can not give ID : Violation state not defined for constraint : " +
+                         aConstraint.structureName + "_" +
+                         aConstraint.id['name'] +
+                         str(aConstraint.id['number']) + "\n" +
+                         str(aConstraint) +
+                         "\n")

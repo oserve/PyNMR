@@ -75,6 +75,5 @@ class ConstraintFilter(object):
         set_method(self.method)
         selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
         stderr.write("\n".join(errors.get_error_messages()) + '\n')
-        # stderr.write(str(len(self.errors)) + " errors detected.\n")
         errors.erase_all_error_messages()
         return selectedConstraints
