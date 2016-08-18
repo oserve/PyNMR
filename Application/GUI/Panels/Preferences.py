@@ -41,17 +41,17 @@ class SticksPreferencesPanel(ttk.LabelFrame):
     def __init__(self, master):
         """
         """
+        self.satisfactions = ["Satisfied", "tooFar", "tooClose"]
+        self.satisfactionColorButtons = {}
         ttk.LabelFrame.__init__(self, master, text=u"NOE Sticks Preferences")
         self.radius = Tk.DoubleVar(self)
         self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius,
                                          from_=0.00, to=0.5, increment=0.01,
                                          format='%1.2f', width=4)
-        self.satisfiedColorButton = ttk.Button(self, text=u"Choose color",
-                                               command=self.setSatisfiedColor)
-        self.tooFarButton = ttk.Button(self, text=u"Choose color",
-                                       command=self.setTooFarColor)
-        self.tooCloseButton = ttk.Button(self, text=u"Choose color",
-                                         command=self.setTooCloseColor)
+        for satisfaction in self.satisfactions:
+            self.satisfactionColorButtons[satisfaction] = ttk.Button(self,
+                                                                     text=u"Choose color",
+                                                                     command=lambda satisfaction=satisfaction: self.setColor(satisfaction))
         self.UnSatisfactionMarker = Tk.StringVar(self)
         self.SatisfactionMarker = Tk.StringVar(self)
         self.UnSatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.UnSatisfactionMarker, width=6)
@@ -65,15 +65,23 @@ class SticksPreferencesPanel(ttk.LabelFrame):
         ttk.Label(self, text=u'Stick radius (\u212b):').grid(row=0, column=0)
         self.spinBox_Radius.grid(row=0, column=1)
         ttk.Label(self, text=u'Satisfied constraint').grid(row=1, column=0)
-        self.satisfiedColorButton.grid(row=1, column=1)
+        self.satisfactionColorButtons["Satisfied"].grid(row=1, column=1)
         ttk.Label(self, text=u"Atoms too far").grid(row=2, column=0)
-        self.tooFarButton.grid(row=2, column=1)
+        self.satisfactionColorButtons["tooFar"].grid(row=2, column=1)
         ttk.Label(self, text=u"Atoms too close").grid(row=3, column=0)
-        self.tooCloseButton.grid(row=3, column=1)
+        self.satisfactionColorButtons["tooClose"].grid(row=3, column=1)
         ttk.Label(self, text=u'Unsatisfied Marker :').grid(row=4, column=0)
         self.UnSatisfactionMarkerEntry.grid(row=4, column=1)
         ttk.Label(self, text=u'Satisfied Marker :').grid(row=5, column=0)
         self.SatisfactionMarkerEntry.grid(row=5, column=1)
+
+    def setDefaults(self):
+        """
+        """
+        self.colors = appDefaults.defaultForParameter("colors")
+        self.UnSatisfactionMarker.set(appDefaults.defaultForParameter("UnSatisfactionMarker"))
+        self.SatisfactionMarker.set(appDefaults.defaultForParameter("SatisfactionMarker"))
+        self.radius.set(appDefaults.defaultForParameter("radius"))
 
     def getInfo(self):
         """
@@ -83,35 +91,13 @@ class SticksPreferencesPanel(ttk.LabelFrame):
                 "UnSatisfactionMarker": self.UnSatisfactionMarker.get(),
                 "SatisfactionMarker": self.SatisfactionMarker.get()}
 
-    def setSatisfiedColor(self):
+    def setColor(self, satisfaction):
         """
         """
-        currentColor = self.float2intColor(self.colors["Satisfied"])
+        currentColor = self.float2hex(self.colors[satisfaction])
         result = tkColorChooser.askcolor(currentColor)
         if result[0]:
-            self.colors["Satisfied"] = self.int2floatColor(result[0])
-
-    def setTooFarColor(self):
-        """
-        """
-        currentColor = self.float2intColor(self.colors["tooFar"])
-        result = tkColorChooser.askcolor(currentColor)
-        if result[0]:
-            self.colors["tooFar"] = self.int2floatColor(result[0])
-
-    def setTooCloseColor(self):
-        """
-        """
-        currentColor = self.float2intColor(self.colors["tooClose"])
-        result = tkColorChooser.askcolor(currentColor)
-        if result[0]:
-            self.colors["tooClose"] = self.int2floatColor(result[0])
-
-    @staticmethod
-    def float2intColor(color):
-        """
-        """
-        return (int(color[0]*255), int(color[1]*255), int(color[2]*255))
+            self.colors[satisfaction] = self.int2floatColor(result[0])
 
     @staticmethod
     def int2floatColor(color):
@@ -119,6 +105,12 @@ class SticksPreferencesPanel(ttk.LabelFrame):
         """
         return [color[0]/255.0, color[1]/255.0, color[2]/255.0,
                 color[0]/255.0, color[1]/255.0, color[2]/255.0]
+
+    @staticmethod
+    def float2hex(color):
+        """From stackoverflow
+        """
+        return '#%02x%02x%02x' % (int(color[0]*255), int(color[1]*255), int(color[2]*255))
 
 class DensityPreferencesPanel(ttk.LabelFrame):
     """
@@ -211,13 +203,10 @@ class PreferencesPanel(ttk.LabelFrame):
         """
         """
         self.densityPanel.gradient.set(appDefaults.defaultForParameter("gradient"))
-        self.sticksPanel.colors = appDefaults.defaultForParameter("colors")
-        self.sticksPanel.UnSatisfactionMarker.set(appDefaults.defaultForParameter("UnSatisfactionMarker"))
-        self.sticksPanel.SatisfactionMarker.set(appDefaults.defaultForParameter("SatisfactionMarker"))
-        self.sticksPanel.radius.set(appDefaults.defaultForParameter("radius"))
         self.selectedMethod.set(appDefaults.defaultForParameter("method"))
         self.url.set(appDefaults.defaultForParameter("urlPDB"))
         self.rangeCutOff.set(appDefaults.defaultForParameter("rangeCutOff"))
+        self.sticksPanel.setDefaults()
 
     def getInfo(self):
         """
