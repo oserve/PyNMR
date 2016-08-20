@@ -65,13 +65,16 @@ class NOE(Constraint):
         """Return the range name,
         range depends on the number of residus between the atomsets
         """
-        resi_diff = abs(int(self.resis[0]['number']) - int(self.resis[1]['number']))
-        if resi_diff == 0:
-            return 'intra'
-        elif resi_diff == 1:
-            return 'sequential'
-        elif resi_diff > 1 and resi_diff <= RangeCutOff:
-            return 'medium'
+        if self.resis[0]['segid'] == self.resis[1]['segid']:
+            resi_diff = abs(int(self.resis[0]['number']) - int(self.resis[1]['number']))
+            if resi_diff == 0:
+                return 'intra'
+            elif resi_diff == 1:
+                return 'sequential'
+            elif resi_diff > 1 and resi_diff <= RangeCutOff:
+                return 'medium'
+            else:
+                return 'long'
         else:
             return 'long'
 
