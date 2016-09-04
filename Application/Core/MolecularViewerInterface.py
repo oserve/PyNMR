@@ -147,8 +147,8 @@ def checkID(atomSet):
     check = False
     error_message = ""
     if atomSet.number in pdb:
-        if atomSet.segid in [atom['segi'] for atom in pdb[atomSet.number]]:
-            if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+        if atomSet.segid in (atom['segi'] for atom in pdb[atomSet.number]):
+            if atomSet.atType in (atom['name'] for atom in pdb[atomSet.number]):
                 check = True
             else:
                 original_name = atomSet.atType
@@ -160,7 +160,7 @@ def checkID(atomSet):
                     elif lastDigit.search(atomSet.atType):
                         digit = lastDigit.search(atomSet.atType).group()[0]
                         atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
-                    if atomSet.atType in [atom['name'] for atom in pdb[atomSet.number]]:
+                    if atomSet.atType in (atom['name'] for atom in pdb[atomSet.number]):
                         check = True
                     else:
                         error_message = "Atom name not found"
@@ -178,6 +178,7 @@ def checkID(atomSet):
         error_message = "Residue number not found"
     if check is False:
         errors.add_error_message("Can't find " + str(original_name) + " in structure " + pdb['name'] + " because : " + error_message)
+        atomSet.atType = original_name
     return check
 
 
