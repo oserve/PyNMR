@@ -49,18 +49,6 @@ class NOE(Constraint):
         self.type = "NOE"
         self.atomsPositions = {}
 
-    def setViolationState(self, cutOff):
-        """Set violation state, with optional additional cutoff
-        """
-        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff):
-            self.satisfaction = 'unSatisfied'
-            self.constraintValues['closeness'] = 'tooClose'
-        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff):
-            self.satisfaction = 'unSatisfied'
-            self.constraintValues['closeness'] = 'tooFar'
-        else:
-            self.satisfaction = 'Satisfied'
-
     def getRange(self, RangeCutOff):
         """Return the range name,
         range depends on the number of residus between the atomsets
@@ -94,8 +82,3 @@ class NOE(Constraint):
             return False
         else:
             return True
-
-    def getResisNumber(self):
-        """Utility method
-        """
-        return [resi['number'] for resi in self.resis]

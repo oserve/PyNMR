@@ -107,3 +107,21 @@ class Constraint(object):
         """
         """
         raise NotImplementedError
+
+
+    def getResisNumber(self):
+        """Utility method
+        """
+        return [resi['number'] for resi in self.resis]
+
+    def setViolationState(self, cutOff=0):
+        """Set violation state, with optional additional cutoff
+        """
+        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff):
+            self.satisfaction = 'unSatisfied'
+            self.constraintValues['closeness'] = 'tooClose'
+        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff):
+            self.satisfaction = 'unSatisfied'
+            self.constraintValues['closeness'] = 'tooFar'
+        else:
+            self.satisfaction = 'Satisfied'
