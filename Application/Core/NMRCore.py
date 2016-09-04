@@ -45,6 +45,7 @@ from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
+from ConstraintManager import ConstraintSetManager
 
 
 class NMRCore(object):
@@ -54,7 +55,7 @@ class NMRCore(object):
     def __init__(self):
         self.ManagersList = {}
         self.constraintFilter = ""
-        self.displayedConstraints = []
+        self.displayedConstraints = ConstraintSetManager('displayed')
 
     def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
@@ -74,10 +75,10 @@ class NMRCore(object):
         if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 filteredConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName].constraints)
+                    self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
-                self.displayedConstraints += selectedConstraints
                 results = drawer.drC(selectedConstraints, radius, colors)
+                self.displayedConstraints.constraints = selectedConstraints
                 numberOfConstraints = results['DrawnConstraints']
                 if numberOfConstraints > 0:
                     selection = MVI.createSelection(self.ManagersList[managerName].structure, results['Residueslist'])
@@ -99,8 +100,8 @@ class NMRCore(object):
         if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName].constraints)
-                self.displayedConstraints += selectedConstraints
+                    self.ManagersList[managerName])
+                self.displayedConstraints.addConstraints(selectedConstraints)
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)
@@ -147,7 +148,7 @@ class NMRCore(object):
     def cleanScreen(self, managerName):
         """Remove all sticks from pymol
         """
-        self.displayedConstraints = []
+        self.displayedConstraints.removeAllConstraints()
         MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):
@@ -185,3 +186,49 @@ class NMRCore(object):
         except IOError:
             sys.stderr.write("Error while downloading or opening " +
                              pdbCode + " NMR Restraints file from PDB.\n")
+
+# All the following methods should go into a separate class, something like
+# <NOEDataManager> which should be emnedded in the GUI part
+
+    def getDisplayedResiduesList(self, aManagerName):
+        """
+        """
+        residuesList = set()
+        if aManagerName in self.ManagersList:
+            residuesList = self.displayedConstraints.residuesList.intersection(self.ManagersList[aManagerName].residuesList)
+        return (str(residue) for residue in sorted(int(number) for number in residuesList))
+
+    def getSecondResiduesList(self, aManagerName, aResidueSelection):
+        """
+        """
+        residuesList = set()
+        if aManagerName in self.ManagersList:
+            residuesList = self.displayedConstraints.residuesList.intersection(self.ManagersList[aManagerName].constraintsManagerForResidues(aResidueSelection).partnerResidueListForResidues(aResidueSelection))
+
+        return sorted(int(number) for number in residuesList)
+
+    def getAtomsForResidue(self, aManagerName, aResidueNumber):
+        """
+        """
+        atomsList = set()
+        if aManagerName in self.ManagersList:
+            atomsList = self.ManagersList[aManagerName].atomsListForResidue(aResidueNumber)
+        return sorted(atomsList)
+
+    def getSecondResiduesForAtoms(self, aManagerName, anAtomSelection):
+        """
+        """
+        residuesList = set()
+        if anAtomSelection:
+            residueNumbers = [anAtom['resi_number'] for anAtom in anAtomSelection]
+            if aManagerName in self.ManagersList:
+                residuesList = self.ManagersList[aManagerName].constraintsManagerForAtoms(anAtomSelection).partnerResidueListForResidues(residueNumbers)
+        return sorted(int(number) for number in residuesList)
+
+    def getSecondAtomsinResidueForAtom(self, aManagerName, aResidueNumber, anAtomDefinition):
+        """
+        """
+        atomsList = set()
+        if aManagerName in self.ManagersList:
+            atomsList.update(self.ManagersList[aManagerName].partnerAtomsInResidueForAtoms(aResidueNumber, anAtomDefinition))
+        return sorted(atomsList)

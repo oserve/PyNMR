@@ -28,18 +28,20 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Constraints.NOE import NOE
 from sys import stderr
 import re
+from Constraints.NOE import NOE
+
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-# Useful RegEx definitions
+
 
 class constraintParser(object):
     """
     """
 
     XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
+    AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def __init__(self, text):
         """
@@ -47,12 +49,13 @@ class constraintParser(object):
         self.text = [aLine.strip() for aLine in text.split('\n')]
         self.inFileTab = []
         self.segments = []
+        self.atoms = {}
 
     def parseConstraints(self, aManager):
         """
         """
         self.prepareFile()
-        constraint_number = 1
+        constraint_number = 0
         for parsingResult in self.parseAConstraint():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
@@ -60,10 +63,10 @@ class constraintParser(object):
                     # No other constraint type supported ... for now !
                     aConstraint.id["number"] = constraint_number
                     aConstraint.definition = parsingResult["definition"]
-                    aConstraint.resis = aManager.addAtom(parsingResult["residues"])
+                    aConstraint.resis = self.addAtom(parsingResult["residues"])
                     aConstraint.setConstraintValues(parsingResult["values"][0],
                                                     parsingResult["values"][1],
-                                                    parsingResult["values"][2])  # Values always at the end of the array
+                                                    parsingResult["values"][2])
 
                     aManager.addConstraint(aConstraint)
                     constraint_number += 1
@@ -71,6 +74,31 @@ class constraintParser(object):
             else:
                 stderr.write("Error while loading : " + parsingResult["definition"])
 
+    def addAtom(self, parsingResult):
+        """Checks that atoms are not loaded several times
+        should limits future memory issues
+        """
+        residues = []
+        for aResult in parsingResult:
+            currentResidue = {}
+            if "resid" in aResult:
+                currentResidue["number"] = aResult["resid"]
+            else:
+                currentResidue["number"] = aResult["resi"]
+            currentResidue["atoms"] = constraintParser.AtTypeReg.match(aResult["name"]).group()
+            currentResidue["atoms_number"] = constraintParser.AtTypeReg.sub('', aResult["name"])
+            currentResidue["ambiguity"] = constraintParser.AtTypeReg.sub('', aResult["name"]).find('*')
+            if "segid" in aResult:
+                currentResidue["segid"] = aResult["segid"]
+
+            residueKey = ''.join(str(value) for value in currentResidue.values())
+
+            if residueKey not in self.atoms:
+                self.atoms[residueKey] = currentResidue
+                residues.append(currentResidue)
+            else:
+                residues.append(self.atoms[residueKey])
+        return residues
 
     def prepareFile(self):
         """
@@ -190,7 +218,7 @@ class CNSParser(constraintParser):
         """
         constraintValues = CNSParser.RegFloat.findall(aCNSConstraint)
         if constraintValues:
-            constraintValuesList = CNSParser.RegFloat.findall(aCNSConstraint)[0].split()
+            constraintValuesList = constraintValues[0].split()
         else:
             constraintValuesList = ()
         return [float(aValue) for aValue in constraintValuesList]
@@ -222,12 +250,12 @@ class CYANAParser(constraintParser):
                     {'resid': int(cons_tab[3]),
                      'name': CYANAParser.AtTypeReg.match(
                         self.convertTypeDyana(cons_tab[5])).group()}]}
+                parsed["values"] = ([str(1.8 + (float(cons_tab[6]) - 1.8)/2), '1.8', cons_tab[6]])
+                parsed["definition"] = aConstraintLine
             except:
                 stderr.write("Unknown error while loading constraint " + ":\n" +
                              aConstraintLine + "\n")
                 parsed = None
-            parsed["values"] = ([str(1.8 + (float(cons_tab[6]) - 1.8)/2), '1.8', cons_tab[6]])
-            parsed["definition"] = aConstraintLine
             yield parsed
 
     @staticmethod
