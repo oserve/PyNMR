@@ -1,1 +1,1 @@
-__all__=["NMRGUI", "Panels", "Core"]
+__all__=["NMRGUI", "Panels", "Core", "DataViewer", "DataControllers"]

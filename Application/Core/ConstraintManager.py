@@ -31,7 +31,6 @@
 import re
 import MolecularViewerInterface as MVI
 from Constraints.AtomClass import AtomSet
-import pdb
 
 class imConstraintSetManager(object):
     """Class to manage a set of constraints
@@ -125,6 +124,17 @@ class imConstraintSetManager(object):
         for constraint in self.constraintsManagerForAtoms([atomDefinition]).constraintsManagerForResidues([aResidueNumber]):
             atoms.update(atom.atType for atom in constraint.atoms if atom != newAtom)
         return atoms
+
+    def intersection(self, anotherManager):
+        """
+        """
+        newManager = imConstraintSetManager("")
+        if isinstance(anotherManager, self.__class__):
+            constraints = set()
+            constraints.update(constraint for constraint in self.constraints if constraint in anotherManager)
+            newManager.constraints = tuple(constraints)
+            newManager.name = self.name + anotherManager.name
+        return newManager
 
 class ConstraintSetManager(imConstraintSetManager):
     """Class to manage a set of constraints

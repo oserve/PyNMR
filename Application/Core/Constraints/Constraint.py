@@ -42,6 +42,8 @@ class Constraint(object):
     and methods that allows to get these informations
     or to determine if the constraints is unSatisfied or not (TODO)
     """
+    
+    AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def __init__(self):
         """
@@ -53,7 +55,6 @@ class Constraint(object):
         self.atoms = []
         self.constraintValues = {}
         self.numberOfAtomsSets = 0
-        self.AtTypeReg = re.compile('[CHON][A-Z]*')
         self.structureName = ""
 
     def __str__(self):
@@ -62,6 +63,11 @@ class Constraint(object):
         return self.definition
 
     __repr__ = __str__
+
+    def __eq__(self, anotherConstraint):
+        """
+        """
+        return isinstance(anotherConstraint, self.__class__) and (anotherConstraint.__dict__ == self.__dict__)
 
     def setName(self, aName):
         """Utility method to set constraint name
