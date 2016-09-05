@@ -78,17 +78,13 @@ class NMRCore(object):
                     self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
                 results = drawer.drC(selectedConstraints, radius, colors)
-                self.displayedConstraints.constraints = selectedConstraints
-                numberOfConstraints = results['DrawnConstraints']
-                if numberOfConstraints > 0:
+                self.displayedConstraints.constraints.extend(selectedConstraints)
+                if len(selectedConstraints) > 0:
                     selection = MVI.createSelection(self.ManagersList[managerName].structure, results['Residueslist'])
                     MVI.select('involRes', selection)
                     MVI.zoom(selection)
-
         else:
             stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
-        return {"numberOfConstraints": numberOfConstraints,
-                "numberOfResidues": len(results['Residueslist'])}
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -101,17 +97,14 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName])
-                self.displayedConstraints.addConstraints(selectedConstraints)
+                self.displayedConstraints.constraints.extend(selectedConstraints)
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)
-                zoomSelection = self.ManagersList[managerName].structure + " &"
                 if densityList:
                     zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
                     MVI.zoom(zoomSelection)
                     MVI.select('involRes', zoomSelection)
-        return {"numberOfConstraints": len(selectedConstraints),
-                "numberOfResidues": len(densityList)}
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):

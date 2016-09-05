@@ -61,15 +61,14 @@ class ConstraintDrawer(object):
                                self.IDConstraint(aConstraint,
                                                  self.UnSatisfactionMarker,
                                                  self.SatisfactionMarker))
-        return {'Residueslist': involvedResidueslist,
-                'DrawnConstraints': len(selectedConstraints)}
+        return {'Residueslist': involvedResidueslist}
 
     def constraintsDensity(self, selectedConstraints):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
         densityStep = 10
-        constraintList = {}
+        constraintList = dict()
         for aConstraint in selectedConstraints:
             for resi in aConstraint.resis:
                 constraintList[resi['number']] = constraintList.get(resi['number'], 0) + densityStep

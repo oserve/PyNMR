@@ -1,1 +1,1 @@
-__all__ = ["Core", "GUI", "NMRApplication"]
+__all__ = ["Core", "GUI", "NMRApplication", "NMRCLI"]

@@ -36,10 +36,7 @@ lower limit violation, red for upper limit violation for NOEs)
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
-from sys import stderr, stdout
-from os.path import exists, basename
-import Tkinter as Tk
+from sys import stderr
 
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
@@ -52,7 +49,6 @@ Core = NMRCore()
 
 pyNMR = NMRApplication(Core, app="NoGUI")
 
-
 def __init__(self):
     """Add the plugin to Pymol main menu
     """
@@ -62,8 +58,10 @@ def __init__(self):
                              command=lambda s=self: NMRApplication(Core, app="GUI"))
 
 
-def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
-            violationState='all',
+PyNMRCLI = pyNMR.NMRCLI
+
+def showNOE(structure='', managerName="", residuesList='all',
+            dist_range='all', violationState='all',
             violCutoff=appDefaults.defaultForParameter("cutOff"),
             method=appDefaults.defaultForParameter('method'),
             radius=appDefaults.defaultForParameter("radius"),
@@ -71,40 +69,16 @@ def showNOE(structure='', managerName="", residuesList='all', dist_range='all',
             rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
             UnSatisfactionMarker=appDefaults.defaultForParameter("UnSatisfactionMarker"),
             SatisfactionMarker=appDefaults.defaultForParameter("SatisfactionMarker")):
-    """Command to display NMR restraints as sticks on protein structure with
-    different parameters : filtering according to distance, restraints display
-    options
     """
-    if managerName == '' and len(Core.ManagersList) == 0:
-        stderr.write("No constraints loaded.\n")
-    else:
-        if managerName == '':
-            managerName = Core.ManagersList.keys()[0]
-        if managerName in Core.ManagersList:
-            Core.commandsInterpretation(structure, managerName, residuesList,
-                                        dist_range, violationState, violCutoff,
-                                        method, rangeCutOff)
-            results = Core.showSticks(managerName, structure, colors, radius,
-                            UnSatisfactionMarker, SatisfactionMarker)
-            stdout.write(str(results['numberOfConstraints']) +
-                             " constraints drawn on a total of " +
-                             str(len(Core.ManagersList[managerName])) + "\n")
-
-        else:
-            stderr.write("Please check constraints filename.\n")
-
+    """
+    PyNMRCLI.showNOE(structure, managerName, residuesList, dist_range,
+                     violationState, violCutoff, method, radius, colors,
+                     rangeCutOff, UnSatisfactionMarker, SatisfactionMarker)
 
 def loadNOE(filename=""):
-    """load NMR distance constraints, call for the correct file format
-    (CNS/CYANA),
     """
-    if exists(filename):
-        Core.loadNOE(filename)
-        stdout.write(str(len(Core.ManagersList[basename(filename)])) + " constraints loaded.\n")
-
-    else:
-        stderr.write("File : " + filename + " has not been found.\n")
-
+    """
+    PyNMRCLI.loadNOE(filename)
 
 def showNOEDensity(structure='', managerName="", residuesList='all',
                    dist_range='all', violationState='all',
@@ -112,54 +86,41 @@ def showNOEDensity(structure='', managerName="", residuesList='all',
                    rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
                    method=appDefaults.defaultForParameter('method'),
                    colors=appDefaults.defaultForParameter("gradient")):
-    """Command to display NMR restraints as color map on protein structure with
-    different parameters : filtering according to distance, restraints display
-    options
     """
-    if managerName == '' and len(Core.ManagersList) == 0:
-        stderr.write("No constraints loaded.\n")
-    else:
-        if managerName == '':
-            managerName = Core.ManagersList.keys()[0]
-        if managerName in Core.ManagersList:
-            Core.commandsInterpretation(structure, managerName, residuesList,
-                                        dist_range, violationState, violCutoff,
-                                        method, rangeCutOff)
-            results = Core.showNOEDensity(managerName, structure, colors)
-            stdout.write(str(results["numberOfConstraints"]) +
-                         " constraints used.\n")
-            stdout.write(str(results["numberOfResidues"]) +
-                         " residues involved.\n")
-        else:
-            stderr.write("Please check constraints filename.\n")
+    """
+    PyNMRCLI.showNOEDensity(structure, managerName, residuesList,
+                            dist_range, violationState, violCutoff, rangeCutOff,
+                            method, colors)
 
-
-def loadAndShow(filename, consDef, structure='', residuesList='all',
-                dist_range='all', violationState='all',
+def loadAndShow(filename, structure='', residuesList='all', dist_range='all',
+                violationState='all',
                 violCutoff=appDefaults.defaultForParameter("cutOff"),
                 method=appDefaults.defaultForParameter('method'),
                 rangeCutOff=appDefaults.defaultForParameter("rangeCutOff"),
                 radius=appDefaults.defaultForParameter("radius"),
-                colors=appDefaults.defaultForParameter("colors")):
-    """Combine two previous defined functions : load and display"""
-    loadNOE(filename)
-    showNOE(structure, filename, residuesList, dist_range, violationState,
-            violCutoff, method, radius, colors, rangeCutOff)
-
-
-def downloadNMR(pdbCode, url = appDefaults.defaultForParameter("urlPDB")):
+                colors=appDefaults.defaultForParameter("colors"),
+                UnSatisfactionMarker=appDefaults.defaultForParameter("UnSatisfactionMarker"),
+                SatisfactionMarker=appDefaults.defaultForParameter("SatisfactionMarker")):
     """
     """
-    Core.downloadFromPDB(pdbCode, url)
+    PyNMRCLI.loadAndShow(filename, structure, residuesList, dist_range,
+                         violationState, violCutoff, method, rangeCutOff,
+                         radius, colors, UnSatisfactionMarker,
+                         SatisfactionMarker)
+
+def downloadNMR(pdbCode, url=appDefaults.defaultForParameter("urlPDB")):
+    """
+    """
+    PyNMRCLI.downloadNMR(pdbCode, url)
 
 def cleanScreen(filename):
-    """Call the command to clear the screen from all NMR
-    restraints
     """
-    if filename in Core.ManagersList:
-        Core.cleanScreen(filename)
+    """
+    PyNMRCLI.cleanScreen(filename)
+
 
 if __name__ == "__main__":
+    import Tkinter as Tk
     MainWin = Tk.Tk()
     pyNMR.startGUI()
     MainWin.mainloop()

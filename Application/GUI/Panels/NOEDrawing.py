@@ -75,12 +75,12 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showSticks(infos["constraintFile"],
-                                                  infos["structure"],
-                                                  infos["colors"],
-                                                  infos["radius"],
-                                                  infos["UnSatisfactionMarker"],
-                                                  infos["SatisfactionMarker"])
+            self.NMRCommands.showSticks(infos["constraintFile"],
+                                        infos["structure"],
+                                        infos["colors"],
+                                        infos["radius"],
+                                        infos["UnSatisfactionMarker"],
+                                        infos["SatisfactionMarker"])
 
             self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
             self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
@@ -99,9 +99,9 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showNOEDensity(infos["constraintFile"],
-                                                      infos["structure"],
-                                                      infos["gradient"])
+            self.NMRCommands.showNOEDensity(infos["constraintFile"],
+                                            infos["structure"],
+                                            infos["gradient"])
 
             self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
             self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
