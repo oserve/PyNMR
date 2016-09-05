@@ -40,6 +40,11 @@ class NOEDataController(object):
         self.name = aManagerName
         self.manager = dataSource.ManagersList.get(aManagerName, "").intersection(dataSource.displayedConstraints)
 
+    def __len__(self):
+        """
+        """
+        return len(self.manager)
+
     def getDisplayedResiduesList(self):
         """
         """

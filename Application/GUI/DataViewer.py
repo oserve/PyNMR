@@ -40,37 +40,46 @@ class NOEDataViewer(Tk.Toplevel):
         """
         """
         Tk.Toplevel.__init__(self)
-        
+        self.labelFrame = ttk.LabelFrame(self, text='Select NOE residue and / or atom to see their counterparts :')
         self.NOEDataController = dataController
         self.title("NOE from " + dataController.name)
-
+        self.constraintSelectionText = Tk.StringVar()
+        self.labelConstraints = ttk.Label(self.labelFrame,
+                                          textvariable=self.constraintSelectionText,
+                                          justify=Tk.CENTER)
         self.resiList_1 = Tk.StringVar()
-        self.resiScrollList_1 = ScrolledList.ScrolledList(self,
+        self.resiScrollList_1 = ScrolledList.ScrolledList(self.labelFrame,
                                                           listvariable=self.resiList_1,
-                                                          selectmode=Tk.EXTENDED)
+                                                          selectmode=Tk.EXTENDED,
+                                                          width=10)
         self.resiList_2 = Tk.StringVar()
-        self.resiScrollList_2 = ScrolledList.ScrolledList(self,
+        self.resiScrollList_2 = ScrolledList.ScrolledList(self.labelFrame,
                                                           listvariable=self.resiList_2,
-                                                          selectmode=Tk.EXTENDED)
+                                                          selectmode=Tk.EXTENDED,
+                                                          width=10)
         self.atomList_1 = Tk.StringVar()
-        self.atomScrollList_1 = ScrolledList.ScrolledList(self,
-                                                          listvariable=self.atomList_1)
+        self.atomScrollList_1 = ScrolledList.ScrolledList(self.labelFrame,
+                                                          listvariable=self.atomList_1,
+                                                          width=10)
         self.atomList_2 = Tk.StringVar()
-        self.atomScrollList_2 = ScrolledList.ScrolledList(self,
-                                                          listvariable=self.atomList_2)
+        self.atomScrollList_2 = ScrolledList.ScrolledList(self.labelFrame,
+                                                          listvariable=self.atomList_2,
+                                                          width=10)
         self.widgetCreation()
 
     def widgetCreation(self):
         """
         """
-        ttk.Label(self, text='1st Residue').grid(row=0, column=0)
-        self.resiScrollList_1.grid(row=1, column=0)
-        ttk.Label(self, text='1st Atom').grid(row=0, column=1)
-        self.atomScrollList_1.grid(row=1, column=1)
-        ttk.Label(self, text='2nd Residue').grid(row=0, column=2)
-        self.resiScrollList_2.grid(row=1, column=2)
-        ttk.Label(self, text='2nd Atom').grid(row=0, column=3)
-        self.atomScrollList_2.grid(row=1, column=3)
+        self.labelFrame.grid(row=0, column=0)
+        self.labelConstraints.grid(row=0, column=0, columnspan=4)
+        ttk.Label(self.labelFrame, text='1st Residue').grid(row=1, column=0)
+        self.resiScrollList_1.grid(row=2, column=0)
+        ttk.Label(self.labelFrame, text='1st Atom').grid(row=1, column=1)
+        self.atomScrollList_1.grid(row=2, column=1)
+        ttk.Label(self.labelFrame, text='2nd Residue').grid(row=1, column=2)
+        self.resiScrollList_2.grid(row=2, column=2)
+        ttk.Label(self.labelFrame, text='2nd Atom').grid(row=1, column=3)
+        self.atomScrollList_2.grid(row=2, column=3)
         self.resiScrollList_1.listbox.bind('<<ListboxSelect>>',
                                            self.selectResidue_1)
         self.atomScrollList_1.listbox.bind('<<ListboxSelect>>',
@@ -78,6 +87,11 @@ class NOEDataViewer(Tk.Toplevel):
         self.resiScrollList_2.listbox.bind('<<ListboxSelect>>',
                                            self.selectResidue_2)
         self.fillResList1()
+        self.constraintSelectionText.set(str(len(self.NOEDataController)) +
+                                         " constraints used, involving " +
+                                         str(len([residue for residue in self.NOEDataController.getDisplayedResiduesList()])) +
+                                         " residues")
+
 
     def fillResList1(self):
         """
