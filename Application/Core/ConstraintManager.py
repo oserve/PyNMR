@@ -64,6 +64,14 @@ class imConstraintSetManager(object):
 
     # Constraints management methods
 
+    def constraintsManagerForDataType(self, dataType):
+        """
+        """
+        newManager = imConstraintSetManager(self.name + str(dataType))
+        newConstraintsSet = set(constraint for constraint in self.constraints if constraint.type == dataType)
+        newManager.constraints = tuple(newConstraintsSet)
+        return newManager
+
     def constraintsManagerForResidues(self, residueNumbers):
         """
         """

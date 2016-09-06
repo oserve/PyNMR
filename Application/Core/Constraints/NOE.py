@@ -32,7 +32,6 @@
 from sys import stderr
 from Constraint import Constraint
 from ..Geom import centerOfMass, calcDistance
-from ..MolecularViewerInterface import get_model
 
 class NOE(Constraint):
     """

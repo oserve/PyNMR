@@ -38,14 +38,15 @@ class NOEDataController(object):
         """
         self.dataSource = dataSource
         self.name = aManagerName
-        self.manager = dataSource.ManagersList.get(aManagerName, "").intersection(dataSource.displayedConstraints)
+        self.dataType = 'NOE'
+        self.manager = dataSource.ManagersList.get(aManagerName, "").constraintsManagerForDataType(self.dataType).intersection(dataSource.displayedConstraints)
 
     def __len__(self):
         """
         """
         return len(self.manager)
 
-    def getDisplayedResiduesList(self):
+    def getResiduesList(self):
         """
         """
         return (str(residue) for residue in sorted(int(number) for number in self.manager.residuesList))

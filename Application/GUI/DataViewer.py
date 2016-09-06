@@ -89,7 +89,7 @@ class NOEDataViewer(Tk.Toplevel):
         self.fillResList1()
         self.constraintSelectionText.set(str(len(self.NOEDataController)) +
                                          " constraints used, involving " +
-                                         str(len([residue for residue in self.NOEDataController.getDisplayedResiduesList()])) +
+                                         str(len([residue for residue in self.NOEDataController.getResiduesList()])) +
                                          " residues")
 
 

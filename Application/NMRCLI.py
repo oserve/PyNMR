@@ -30,9 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stderr, stdout
 from os.path import exists, basename
-import GUI.Panels.appDefaults as appDefaults
 from GUI.DataControllers.NOEDataController import NOEDataController
-appDefaults.loadDefaults()
 
 class NMRCLI(object):
     """
@@ -124,8 +122,7 @@ class NMRCLI(object):
                      rangeCutOff, UnSatisfactionMarker, SatisfactionMarker)
 
 
-    def downloadNMR(self, pdbCode,
-                    url=appDefaults.defaultForParameter("urlPDB")):
+    def downloadNMR(self, pdbCode, url):
         """
         """
         self.Core.downloadFromPDB(pdbCode, url)

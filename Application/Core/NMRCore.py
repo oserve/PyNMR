@@ -31,13 +31,13 @@
 # ----------------------------------------------------------------------
 
 # Standard modules
+import os
 from os.path import basename, exists
+import sys
 from sys import stderr
 import urllib2
 import shutil
 import gzip
-import os
-import sys
 import tempfile
 
 # Custom Classes

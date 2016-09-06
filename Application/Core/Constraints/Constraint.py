@@ -28,9 +28,9 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from AtomClass import AtomSet
-from .. import MolecularViewerInterface as MVI
 import re
+from AtomClass import AtomSet
+from .. Core import MolecularViewerInterface as MVI
 
 
 class Constraint(object):
@@ -42,20 +42,21 @@ class Constraint(object):
     and methods that allows to get these informations
     or to determine if the constraints is unSatisfied or not (TODO)
     """
-    
+
     AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def __init__(self):
         """
         """
-        self.id = {}
-        self.resis = []
+        self.id = dict()
+        self.resis = list()
         self.satisfaction = ''
         self.definition = ''
-        self.atoms = []
-        self.constraintValues = {}
+        self.atoms = list()
+        self.constraintValues = dict()
         self.numberOfAtomsSets = 0
         self.structureName = ""
+        self.type = ""
 
     def __str__(self):
         """
