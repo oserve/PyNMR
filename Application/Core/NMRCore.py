@@ -77,10 +77,10 @@ class NMRCore(object):
                 filteredConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
-                results = drawer.drC(selectedConstraints, radius, colors)
+                drawer.drC(selectedConstraints, radius, colors)
                 self.displayedConstraints.constraints.extend(selectedConstraints)
                 if len(selectedConstraints) > 0:
-                    selection = MVI.createSelection(self.ManagersList[managerName].structure, results['Residueslist'])
+                    selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.residuesList)
                     MVI.select('involRes', selection)
                     MVI.zoom(selection)
         else:

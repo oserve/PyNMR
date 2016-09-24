@@ -30,10 +30,10 @@
 # ----------------------------------------------------------------------
 import re
 import MolecularViewerInterface as MVI
-from Constraints.AtomClass import AtomSet
+
 
 class imConstraintSetManager(object):
-    """Class to manage a set of constraints
+    """Class to manage an immutable set of constraints
     Usable as an iterator
     """
 
@@ -59,10 +59,28 @@ class imConstraintSetManager(object):
         if self.index == len(self.constraints) - 1:
             self.index = -1
             raise StopIteration
-        self.index +=1
+        self.index += 1
         return self.constraints[self.index]
 
     # Constraints management methods
+
+    def setPDB(self, structure):
+        """Sets the name of the structure (usually a PDB File) on which the
+        distance should be calculated
+        """
+        self.structure = structure
+        for constraint in self.constraints:
+            constraint.structureName = self.structure
+
+    def associateToPDB(self):
+        """read strutural data
+        """
+        result = 0
+        if self.structure != '':
+            MVI.setPDB(self.structure)
+            if self.constraints:
+                result = 1
+        return result
 
     def constraintsManagerForDataType(self, dataType):
         """
@@ -72,23 +90,14 @@ class imConstraintSetManager(object):
         newManager.constraints = tuple(newConstraintsSet)
         return newManager
 
-    def constraintsManagerForResidues(self, residueNumbers):
-        """
-        """
-        newManager = imConstraintSetManager(self.name + " for resis " + ", ".join(str(number) for number in residueNumbers))
-        newConstraints = set(constraint for constraint in self.constraints if set(constraint.getResisNumber()).intersection(set(residueNumbers)))
-        newManager.constraints = tuple(newConstraints)
-        return newManager
-
     def constraintsManagerForAtoms(self, atomDefinitions):
         """
         """
-        newAtoms = [AtomSet(str(atomDefinition['resi_number']), atomDefinition['resi_type'], atomDefinition.get('segid', 'A')) for atomDefinition in atomDefinitions]
         newManager = imConstraintSetManager(self.name + " for atoms " + str(atomDefinitions))
         newConstraints = set()
-        for constraint in self.constraintsManagerForResidues([str(atomDefinition['resi_number']) for atomDefinition in atomDefinitions]):
+        for constraint in self.constraints:
             for atom in constraint.atoms:
-                if atom in newAtoms:
+                if atom in atomDefinitions:
                     newConstraints.add(constraint)
         newManager.constraints = tuple(newConstraints)
         return newManager
@@ -102,37 +111,6 @@ class imConstraintSetManager(object):
             resis.update(number for number in constraint.getResisNumber())
         return resis
 
-    def atomsListForResidue(self, aResidueNumber):
-        """
-        """
-        atoms = set()
-        for constraint in self.constraints:
-            atoms.update(atom.atType for atom in constraint.atoms if int(atom.number) == int(aResidueNumber))
-        return atoms
-
-    def partnerResidueListForResidues(self, residueNumbers):
-        """
-        """
-        residues = set()
-        for constraint in self.constraints:
-            for aResidueNumber in residueNumbers:
-                resis = set(atom.number for atom in constraint.atoms)
-                if str(aResidueNumber) in resis:
-                    if len(resis) == 1:
-                        residues.update(resis)
-                    if len(resis) > 1:
-                        residues.update(aNumber for aNumber in resis if int(aNumber) != int(aResidueNumber))
-        return residues
-
-    def partnerAtomsInResidueForAtoms(self, aResidueNumber, atomDefinition):
-        """
-        """
-        atoms = set()
-        newAtom = AtomSet(str(atomDefinition['resi_number']), atomDefinition['resi_type'], atomDefinition.get('segid', 'A'))
-        for constraint in self.constraintsManagerForAtoms([atomDefinition]).constraintsManagerForResidues([aResidueNumber]):
-            atoms.update(atom.atType for atom in constraint.atoms if atom != newAtom)
-        return atoms
-
     def intersection(self, anotherManager):
         """
         """
@@ -144,8 +122,31 @@ class imConstraintSetManager(object):
             newManager.name = self.name + anotherManager.name
         return newManager
 
+    @property
+    def atomsList(self):
+        """
+        """
+        atomList = set()
+        for constraint in self.constraints:
+            atomList.update(constraint.atoms)
+        return atomList
+
+    def setPartnerAtoms(self, AtomSelection):
+        """
+        """
+        self.partnerManager = self.constraintsManagerForAtoms(AtomSelection)
+
+    def areAtomsPartner(self, anAtom):
+        """
+        """
+        if anAtom in self.partnerManager.atomsList:
+            return True
+        else:
+            return False
+
+
 class ConstraintSetManager(imConstraintSetManager):
-    """Class to manage a set of constraints
+    """Class to manage a mutable set of constraints
     Usable as an iterator
     """
 
@@ -160,26 +161,6 @@ class ConstraintSetManager(imConstraintSetManager):
 
     # Constraints management methods
 
-    def setPDB(self, structure):
-        """Sets the name of the structure (usually a PDB File) on which the
-        distance should be calculated
-        """
-        self.structure = structure
-        for constraint in self.constraints:
-            constraint.structureName = self.structure
-
-    def associateToPDB(self):
-        """Invokes associatePDBAtoms function on all constraints
-        """
-        result = 0
-        if self.structure != '':
-            MVI.setPDB(self.structure)
-            if self.constraints:
-                for constraint in self.constraints:
-                    constraint.associatePDBAtoms(self.structure)
-                result = 1
-        return result
-
     def removeAllConstraints(self):
         """Empties an array of constraints
         """
@@ -193,6 +174,8 @@ class ConstraintSetManager(imConstraintSetManager):
         aConstraint.setName(self.name)
 
     def addConstraints(self, constraints):
+        """
+        """
         for constraint in constraints:
             self.addConstraint(constraint)
 

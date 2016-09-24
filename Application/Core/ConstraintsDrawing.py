@@ -49,10 +49,7 @@ class ConstraintDrawer(object):
         Draw an array of constraints according to the filter defined by user,
         using the drawConstraint function
         """
-        involvedResidueslist = set()
         for aConstraint in selectedConstraints:
-            for aResi in aConstraint.resis:
-                involvedResidueslist.add(aResi['number'])
             if aConstraint.satisfaction == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction == 'Satisfied':
@@ -61,7 +58,6 @@ class ConstraintDrawer(object):
                                self.IDConstraint(aConstraint,
                                                  self.UnSatisfactionMarker,
                                                  self.SatisfactionMarker))
-        return {'Residueslist': involvedResidueslist}
 
     def constraintsDensity(self, selectedConstraints):
         """Calculate number of constraints per residue for selected constraints

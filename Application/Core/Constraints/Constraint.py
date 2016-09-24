@@ -29,8 +29,10 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
-from AtomClass import AtomSet
-from .. Core import MolecularViewerInterface as MVI
+from collections import namedtuple
+from .. import MolecularViewerInterface as MVI
+
+Atoms = namedtuple("Atoms", ['resi_number', 'atoms', 'segid'])
 
 
 class Constraint(object):
@@ -40,16 +42,16 @@ class Constraint(object):
     atoms, model value, theoretical value,
     constraint number, constraint name
     and methods that allows to get these informations
-    or to determine if the constraints is unSatisfied or not (TODO)
+    or to determine if the constraints is unSatisfied or not
     """
 
     AtTypeReg = re.compile('[CHON][A-Z]*')
+    atoms = dict()
 
     def __init__(self):
         """
         """
         self.id = dict()
-        self.resis = list()
         self.satisfaction = ''
         self.definition = ''
         self.atoms = list()
@@ -69,6 +71,25 @@ class Constraint(object):
         """
         """
         return isinstance(anotherConstraint, self.__class__) and (anotherConstraint.__dict__ == self.__dict__)
+
+    @classmethod
+    def addAtoms(cls, parsingResult):
+        """
+        """
+        residues = list()
+        for aResult in parsingResult:
+            residues.append(Constraint.addAtom(aResult))
+        return residues
+
+    @classmethod
+    def addAtom(cls, aParsingResult):
+        """Checks that atoms are not loaded several times
+        should limits future memory issues
+        """
+        residueKey = ''.join(str(value) for value in aParsingResult.values())
+        if residueKey not in Constraint.atoms:
+            Constraint.atoms[residueKey] = Atoms(**aParsingResult)
+        return Constraint.atoms[residueKey]
 
     def setName(self, aName):
         """Utility method to set constraint name
@@ -90,36 +111,36 @@ class Constraint(object):
         """
         return self.satisfaction
 
-    def associatePDBAtoms(self, structureName):
-        """
-        Sets atoms sets, checks for inconsistency with structure file
-        """
-        for atomsSetNumber in xrange(self.numberOfAtomsSets):
-            self.atoms.append(AtomSet(self.resis[atomsSetNumber]['number'],
-                                      self.resis[atomsSetNumber]['atoms'] +
-                                      self.resis[atomsSetNumber]['atoms_number'],
-                                      self.resis[atomsSetNumber]['segid']))
-
     def isValid(self):
         """Return false if one of the atomsets is not valid
+        calls checkid to check this assertion and modify
+        atoms data if it can
         """
-        validity = True
-        for atomSet in self.atoms:
-            if MVI.checkID(atomSet) == False:
-                validity = False
+        atoms = dict()
+        for index, atomSet in enumerate(self.atoms):
+            check = MVI.checkID(atomSet)
+            if check['valid'] is True:
+                if check['NewData']:
+                    atom = dict(atomSet._asdict())
+                    atom.update(check['NewData'])
+                    atoms[index] = Constraint.addAtom(atom)
+            else:
+                return False
                 break
-        return validity
+        else:
+            for key, value in atoms.items():
+                self.atoms[key] = value
+            return True
 
     def setValueFromStructure(self):
         """
         """
         raise NotImplementedError
 
-
     def getResisNumber(self):
         """Utility method
         """
-        return [resi['number'] for resi in self.resis]
+        return [atom.resi_number for atom in self.atoms]
 
     def setViolationState(self, cutOff=0):
         """Set violation state, with optional additional cutoff
