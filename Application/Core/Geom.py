@@ -45,14 +45,11 @@ def centerOfMass(coords):
     """ Adapted from : Andreas Henschel 2006
     assumes equal weights for atoms (usually protons)
     """
-    x, y, z = 0, 0, 0
+
     if coords:
+        sumCoords = (sum(coord) for coord in zip(*coords))
         numCoords = len(coords)
-        for coord in coords:
-            x += coord[0]
-            y += coord[1]
-            z += coord[2]
-        return [item/numCoords for item in (x, y, z)]
+        return [coord/numCoords for coord in sumCoords]
     else:
         return [0, 0, 0]
 
@@ -67,10 +64,7 @@ def calcDistance(coord_init, coord_final):
     result = 0.0
 
     if coord_init and coord_final:
-        distance_list = []
-        for AtomA in coord_init:
-            for AtomB in coord_final:
-                distance_list.append(sqrt(sum((AtomA[i] - AtomB[i]) ** 2 for i in xrange(len(AtomA)))))
+        distance_list = [sqrt(sum((coord[0] - coord[1]) ** 2 for coord in zip(AtomA, AtomB))) for AtomA in coord_init for AtomB in coord_final]
         if len(distance_list) > 1:
             try:
                 sum6 = sum(pow(distance, -6) for distance in distance_list)

@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stderr, stdout
 from os.path import exists, basename
-from GUI.DataControllers.NOEDataController import NOEDataController
+from GUI.DataControllers import NOEDataController
 
 
 class NMRCLI(object):

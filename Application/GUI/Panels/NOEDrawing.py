@@ -28,12 +28,10 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
-import Tkinter as Tk
 import ttk
-import ScrolledList
 from ..DataViewer import NOEDataViewer
-from .. DataControllers.NOEDataController import NOEDataController
+from .. DataControllers import NOEDataController
+
 
 class NOEDrawingPanel(ttk.LabelFrame):
     """
