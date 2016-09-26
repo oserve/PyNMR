@@ -32,13 +32,13 @@
 
 # Standard modules
 import os
-from os.path import basename, exists
+import os.path as path
 import sys
-from sys import stderr
 import urllib2
 import shutil
 import gzip
 import tempfile
+
 
 # Custom Classes
 from ConstraintLoading import ConstraintLoader
@@ -61,7 +61,7 @@ class NMRCore(object):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
         """
-        managerName = basename(filename)
+        managerName = path.basename(filename)
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
@@ -81,10 +81,10 @@ class NMRCore(object):
                 self.displayedConstraints.constraints.extend(selectedConstraints)
                 if len(selectedConstraints) > 0:
                     selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.residuesList)
-                    MVI.select('involRes', selection)
+                    MVI.select('NOE', selection)
                     MVI.zoom(selection)
         else:
-            stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
+            sys.stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -121,7 +121,7 @@ class NMRCore(object):
                 elif len(aRange) == 1:
                     resList += [str(aRange[0])]
                 else:
-                    stderr.write("Residues set definition error : " +
+                    sys.stderr.write("Residues set definition error : " +
                                  residuesList + "\n")
         if not isinstance(dist_range, list):
             if dist_range == 'all':
@@ -170,7 +170,7 @@ class NMRCore(object):
                 decodedFile = zippedFile.read()
                 with open(PDBfileName, 'w') as restraintFile:
                         restraintFile.write(decodedFile)
-            if exists(zippedFileName):
+            if path.exists(zippedFileName):
                 os.remove(zippedFileName)
                 self.loadNOE(PDBfileName)
                 os.remove(PDBfileName)

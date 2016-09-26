@@ -31,21 +31,22 @@
 from collections import OrderedDict
 
 
-class atomTypeListController(object):
+def atomTypeList(selectedAtoms):
     """
     """
+    atomTypeList = OrderedDict()
+    for atomType in sorted(set(atom.atoms for atom in selectedAtoms)):
+        resi = tuple(atom for atom in selectedAtoms if atom.atoms == atomType)
+        atomTypeList[atomType] = resi
+    return atomTypeList
 
-    def __init__(self):
-        """
-        """
-        self.selectedAtoms = list()
 
-    @property
-    def atomTypeList(self):
-        """
-        """
-        atomTypeList = OrderedDict()
-        for atomType in sorted(set(atom.atoms for atom in self.selectedAtoms)):
-            resi = tuple(atom for atom in self.selectedAtoms if atom.atoms == atomType)
-            atomTypeList[atomType] = resi
-        return atomTypeList
+def resiNumberList(atomsList):
+    """
+    """
+    resiNumberList = OrderedDict()
+    for segid in sorted(set(atom.segid for atom in atomsList)):
+        for resi_number in sorted(set(atom[0] for atom in atomsList)):
+            resi = tuple(atom for atom in atomsList if atom.resi_number == resi_number and atom.segid == segid)
+            resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
+    return resiNumberList

@@ -32,6 +32,7 @@ from sys import stderr, stdout
 from os.path import exists, basename
 from GUI.DataControllers.NOEDataController import NOEDataController
 
+
 class NMRCLI(object):
     """
     """
@@ -65,7 +66,7 @@ class NMRCLI(object):
                     self.dataControllers[managerName] = NOEDataController(self.Core, managerName)
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
-                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getDisplayedResiduesList()])) +
+                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getResiduesList()])) +
                                  " residues involved.\n")
 
                 else:
@@ -105,7 +106,7 @@ class NMRCLI(object):
 
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
-                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getDisplayedResiduesList()])) +
+                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getResiduesList()])) +
                                  " residues involved.\n")
                 else:
                     stderr.write("Please check constraints filename.\n")
