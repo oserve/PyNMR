@@ -29,10 +29,10 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from sys import stderr
 from Constraint import Constraint
 from ..Geom import centerOfMass, calcDistance
-from ..MolecularViewerInterface import get_model
+from .. import MolecularViewerInterface as MVI
+
 
 class NOE(Constraint):
     """
@@ -44,17 +44,16 @@ class NOE(Constraint):
         """
         """
         super(NOE, self).__init__()
-        self.points = {}
+        self.points = tuple()
         self.numberOfAtomsSets = 2
         self.type = "NOE"
-        self.atomsPositions = {}
 
     def getRange(self, RangeCutOff):
         """Return the range name,
         range depends on the number of residus between the atomsets
         """
-        if self.resis[0]['segid'] == self.resis[1]['segid']:
-            resi_diff = abs(int(self.resis[0]['number']) - int(self.resis[1]['number']))
+        if self.atoms[0].segid == self.atoms[1].segid:
+            resi_diff = abs(int(self.atoms[0].resi_number) - int(self.atoms[1].resi_number))
             if resi_diff == 0:
                 return 'intra'
             elif resi_diff == 1:
@@ -74,10 +73,10 @@ class NOE(Constraint):
     def setDistance(self):
         """Set actual distance of the constraint in the current structure file
         """
-        self.points[0] = centerOfMass(self.atoms[0].coord)
-        self.points[1] = centerOfMass(self.atoms[1].coord)
-        self.constraintValues['actual'] = calcDistance(self.atoms[0].coord,
-                                                       self.atoms[1].coord)
+        self.points = tuple(centerOfMass(MVI.get_coordinates(atom)) for atom in self.atoms)
+
+        self.constraintValues['actual'] = calcDistance(MVI.get_coordinates(self.atoms[0]),
+                                                       MVI.get_coordinates(self.atoms[1]))
         if self.constraintValues['actual'] <= 0.0:
             return False
         else:

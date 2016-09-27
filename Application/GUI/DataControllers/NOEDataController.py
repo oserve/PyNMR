@@ -29,31 +29,47 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 
-from .. import MolecularViewerInterface as MVI
 
-
-class AtomSet(object):
-    """Base Class contains residu number
-        and the atom type of the atom
+class NOEDataController(object):
+    """
     """
 
-    def __init__(self, resi_number, resi_type, segid):
-        """Initialisation sets the residu number
-            and the atom type
+    def __init__(self, dataSource, aManagerName):
         """
-        self.number = resi_number
-        self.atType = resi_type
-        self.segid = segid
+        """
+        self.dataSource = dataSource
+        self.name = aManagerName
+        self.dataType = 'NOE'
+        self.selectedAtoms = list()
+        self.manager = dataSource.ManagersList.get(aManagerName, "").constraintsManagerForDataType(self.dataType).intersection(dataSource.displayedConstraints)
 
-    def __str__(self):
-        return "Set of atoms " + self.atType + " on residue " + str(self.number) + " on segment / chain " + self.segid
+    def __len__(self):
+        """
+        """
+        return len(self.manager)
 
-    def __eq__(self, otherAtomSet):
-        return isinstance(otherAtomSet, self.__class__) and (self.__dict__ == otherAtomSet.__dict__)
+    def getResiduesList(self):
+        """
+        """
+        return (str(residue) for residue in sorted(int(number) for number in self.manager.residuesList))
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    def setSelectedAtoms(self, aSelection):
+        """
+        """
+        self.selectedAtoms = aSelection
+        self.manager.setPartnerAtoms(aSelection)
 
     @property
-    def coord(self):
-        return MVI.get_coordinates(self)
+    def displayedAtoms(self):
+        """
+        """
+        return sorted(self.manager.atomsList)
+
+    @property
+    def partnerAtoms(self):
+        """
+        """
+        if self.selectedAtoms:
+            return sorted(set(atom for atom in self.manager.atomsList if self.manager.areAtomsPartner(atom) and atom not in self.selectedAtoms))
+        else:
+            return set()

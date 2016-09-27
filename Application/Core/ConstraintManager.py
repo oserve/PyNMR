@@ -28,24 +28,21 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-import MolecularViewerInterface as MVI
 import re
+import MolecularViewerInterface as MVI
 
 
-class ConstraintSetManager(object):
-    """Class to manage a set of constraints
+class imConstraintSetManager(object):
+    """Class to manage an immutable set of constraints
+    Usable as an iterator
     """
 
     AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def __init__(self, managerName):
-        self.constraints = []
-        self.residuesList = []
-        self.structure = ''
+        self.constraints = ()
         self.name = managerName
-        self.format = ""
-        self.fileText = ""
-        self.atoms = {}
+        self.index = -1
 
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
@@ -54,6 +51,16 @@ class ConstraintSetManager(object):
         return len(self.constraints)
 
     __repr__ = __str__
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.index == len(self.constraints) - 1:
+            self.index = -1
+            raise StopIteration
+        self.index += 1
+        return self.constraints[self.index]
 
     # Constraints management methods
 
@@ -66,16 +73,93 @@ class ConstraintSetManager(object):
             constraint.structureName = self.structure
 
     def associateToPDB(self):
-        """Invokes associatePDBAtoms function on all constraints
+        """read strutural data
         """
         result = 0
         if self.structure != '':
             MVI.setPDB(self.structure)
             if self.constraints:
-                for constraint in self.constraints:
-                    constraint.associatePDBAtoms(self.structure)
                 result = 1
         return result
+
+    def constraintsManagerForDataType(self, dataType):
+        """
+        """
+        newManager = imConstraintSetManager(self.name + str(dataType))
+        newConstraintsSet = set(constraint for constraint in self.constraints if constraint.type == dataType)
+        newManager.constraints = tuple(newConstraintsSet)
+        return newManager
+
+    def constraintsManagerForAtoms(self, atomDefinitions):
+        """
+        """
+        newManager = imConstraintSetManager(self.name + " for atoms " + str(atomDefinitions))
+        newConstraints = set()
+        for constraint in self.constraints:
+            for atom in constraint.atoms:
+                if atom in atomDefinitions:
+                    newConstraints.add(constraint)
+        newManager.constraints = tuple(newConstraints)
+        return newManager
+
+    @property
+    def residuesList(self):
+        """
+        """
+        resis = set()
+        for constraint in self.constraints:
+            resis.update(number for number in constraint.getResisNumber())
+        return resis
+
+    def intersection(self, anotherManager):
+        """
+        """
+        newManager = imConstraintSetManager("")
+        if isinstance(anotherManager, self.__class__):
+            constraints = set()
+            constraints.update(constraint for constraint in self.constraints if constraint in anotherManager)
+            newManager.constraints = tuple(constraints)
+            newManager.name = self.name + anotherManager.name
+        return newManager
+
+    @property
+    def atomsList(self):
+        """
+        """
+        atomList = set()
+        for constraint in self.constraints:
+            atomList.update(constraint.atoms)
+        return atomList
+
+    def setPartnerAtoms(self, AtomSelection):
+        """
+        """
+        self.partnerManager = self.constraintsManagerForAtoms(AtomSelection)
+
+    def areAtomsPartner(self, anAtom):
+        """
+        """
+        if anAtom in self.partnerManager.atomsList:
+            return True
+        else:
+            return False
+
+
+class ConstraintSetManager(imConstraintSetManager):
+    """Class to manage a mutable set of constraints
+    Usable as an iterator
+    """
+
+    AtTypeReg = re.compile('[CHON][A-Z]*')
+
+    def __init__(self, managerName):
+        super(ConstraintSetManager, self).__init__(managerName)
+        self.constraints = []
+        self.structure = ''
+        self.format = ""
+        self.fileText = ""
+
+    # Constraints management methods
 
     def removeAllConstraints(self):
         """Empties an array of constraints
@@ -89,36 +173,14 @@ class ConstraintSetManager(object):
         self.constraints.append(aConstraint)
         aConstraint.setName(self.name)
 
+    def addConstraints(self, constraints):
+        """
+        """
+        for constraint in constraints:
+            self.addConstraint(constraint)
+
     def removeConstraint(self, aConstraintNumber):
         """
         """
         if int(aConstraintNumber) <= len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
-
-    def addAtom(self, parsingResult):
-        """Checks that atoms are not loaded several times
-        should limits future memory issues
-        """
-        residues = []
-        for aResult in parsingResult:
-            currentResidue = {}
-            if "resid" in aResult:
-                currentResidue["number"] = aResult["resid"]
-            else:
-                currentResidue["number"] = aResult["resi"]
-            currentResidue["atoms"] = ConstraintSetManager.AtTypeReg.match(aResult["name"]).group()
-            currentResidue["atoms_number"] = ConstraintSetManager.AtTypeReg.sub('', aResult["name"])
-            currentResidue["ambiguity"] = ConstraintSetManager.AtTypeReg.sub('', aResult["name"]).find('*')
-            if "segid" in aResult:
-                currentResidue["segid"] = aResult["segid"]
-
-            residueKey = ''.join(str(value) for value in currentResidue.values())
-
-            if residueKey not in self.atoms:
-                self.atoms[residueKey] = currentResidue
-                if currentResidue["number"] not in self.residuesList:
-                    self.residuesList.append(currentResidue["number"])
-                residues.append(currentResidue)
-            else:
-                residues.append(self.atoms[residueKey])
-        return residues

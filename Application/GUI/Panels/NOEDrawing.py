@@ -28,9 +28,9 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
-import Tkinter as Tk
 import ttk
+from ..DataViewer import NOEDataViewer
+from .. DataControllers import NOEDataController
 
 
 class NOEDrawingPanel(ttk.LabelFrame):
@@ -46,10 +46,10 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         command=self.showDensity)
         self.cleanButton = ttk.Button(self, text="Clean Sticks",
                                       command=self.cleanAll)
-        self.constraintSelectionText = Tk.StringVar()
-        self.labelConstraints = ttk.Label(self, textvariable=self.constraintSelectionText)
         self.mainGUI = ""  # Must be set at run time
         self.NMRCommands = ""  # Must be set by application at run time
+        self.dataControllers = dict()
+        self.dataViewers = dict()
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -58,8 +58,6 @@ class NOEDrawingPanel(ttk.LabelFrame):
         self.sticksButton.grid(row=0, column=0)
         self.densityButton.grid(row=0, column=1)
         self.cleanButton.grid(row=0, column=2)
-        self.labelConstraints.grid(row=1, column=0, columnspan=3)
-        self.constraintSelectionText.set('')
 
     def showSticks(self):
         """
@@ -75,17 +73,15 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showSticks(infos["constraintFile"],
-                                                  infos["structure"],
-                                                  infos["colors"],
-                                                  infos["radius"],
-                                                  infos["UnSatisfactionMarker"],
-                                                  infos["SatisfactionMarker"])
+            self.NMRCommands.showSticks(infos["constraintFile"],
+                                        infos["structure"],
+                                        infos["colors"],
+                                        infos["radius"],
+                                        infos["UnSatisfactionMarker"],
+                                        infos["SatisfactionMarker"])
 
-            self.constraintSelectionText.set(str(results['numberOfConstraints']) +
-                                             " constraints used, involving " +
-                                             str(results["numberOfResidues"]) +
-                                             " residues")
+            self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
+            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
 
     def showDensity(self):
         """
@@ -101,14 +97,12 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
-            results = self.NMRCommands.showNOEDensity(infos["constraintFile"],
-                                                      infos["structure"],
-                                                      infos["gradient"])
+            self.NMRCommands.showNOEDensity(infos["constraintFile"],
+                                            infos["structure"],
+                                            infos["gradient"])
 
-            self.constraintSelectionText.set(str(results['numberOfConstraints']) +
-                                             " constraints used, involving " +
-                                             str(results["numberOfResidues"]) +
-                                             " residues")
+            self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
+            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
 
     def cleanAll(self):
         """Remove all displayed sticks
@@ -117,7 +111,9 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
         if self.infoCheck(infos):
             self.NMRCommands.cleanScreen(infos["constraintFile"])
-        self.constraintSelectionText.set("0 constraints used.")
+            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]].destroy()
+            del self.dataViewers[self.mainGUI.getInfo()["constraintFile"]]
+            del self.dataControllers[self.mainGUI.getInfo()["constraintFile"]]
 
     def infoCheck(self, infos):
         """

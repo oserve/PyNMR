@@ -31,20 +31,21 @@
 # ----------------------------------------------------------------------
 
 # Standard modules
-from os.path import basename, exists
-from sys import stderr
+import os
+import os.path as path
+import sys
 import urllib2
 import shutil
 import gzip
-import os
-import sys
 import tempfile
+
 
 # Custom Classes
 from ConstraintLoading import ConstraintLoader
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
+from ConstraintManager import ConstraintSetManager
 
 
 class NMRCore(object):
@@ -54,13 +55,13 @@ class NMRCore(object):
     def __init__(self):
         self.ManagersList = {}
         self.constraintFilter = ""
-        self.displayedConstraints = []
+        self.displayedConstraints = ConstraintSetManager('displayed')
 
     def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
         """
-        managerName = basename(filename)
+        managerName = path.basename(filename)
         loader = ConstraintLoader(filename, managerName)
         self.ManagersList[managerName] = loader.loadConstraintsFromFile()
 
@@ -74,20 +75,16 @@ class NMRCore(object):
         if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 filteredConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName].constraints)
+                    self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
-                self.displayedConstraints += selectedConstraints
-                results = drawer.drC(selectedConstraints, radius, colors)
-                numberOfConstraints = results['DrawnConstraints']
-                if numberOfConstraints > 0:
-                    selection = MVI.createSelection(self.ManagersList[managerName].structure, results['Residueslist'])
-                    MVI.select('involRes', selection)
+                drawer.drC(selectedConstraints, radius, colors)
+                self.displayedConstraints.constraints.extend(selectedConstraints)
+                if len(selectedConstraints) > 0:
+                    selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.residuesList)
+                    MVI.select('NOE', selection)
                     MVI.zoom(selection)
-
         else:
-            stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
-        return {"numberOfConstraints": numberOfConstraints,
-                "numberOfResidues": len(results['Residueslist'])}
+            sys.stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -99,18 +96,15 @@ class NMRCore(object):
         if self.ManagersList[managerName]:
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName].constraints)
-                self.displayedConstraints += selectedConstraints
+                    self.ManagersList[managerName])
+                self.displayedConstraints.constraints.extend(selectedConstraints)
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)
-                zoomSelection = self.ManagersList[managerName].structure + " &"
                 if densityList:
                     zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
                     MVI.zoom(zoomSelection)
                     MVI.select('involRes', zoomSelection)
-        return {"numberOfConstraints": len(selectedConstraints),
-                "numberOfResidues": len(densityList)}
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):
@@ -127,7 +121,7 @@ class NMRCore(object):
                 elif len(aRange) == 1:
                     resList += [str(aRange[0])]
                 else:
-                    stderr.write("Residues set definition error : " +
+                    sys.stderr.write("Residues set definition error : " +
                                  residuesList + "\n")
         if not isinstance(dist_range, list):
             if dist_range == 'all':
@@ -147,7 +141,7 @@ class NMRCore(object):
     def cleanScreen(self, managerName):
         """Remove all sticks from pymol
         """
-        self.displayedConstraints = []
+        self.displayedConstraints.removeAllConstraints()
         MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):
@@ -176,7 +170,7 @@ class NMRCore(object):
                 decodedFile = zippedFile.read()
                 with open(PDBfileName, 'w') as restraintFile:
                         restraintFile.write(decodedFile)
-            if exists(zippedFileName):
+            if path.exists(zippedFileName):
                 os.remove(zippedFileName)
                 self.loadNOE(PDBfileName)
                 os.remove(PDBfileName)

@@ -41,7 +41,7 @@ class ConstraintSelectionPanel(ttk.LabelFrame):
         self.consRangeFrame = RangeSelectionPanel(self)
         self.violationsFrame = ViolationSelectionPanel(self)
         self.structureManagement = StructureSelectionPanel(self)
-        self.panelsList = [self.consRangeFrame, self.violationsFrame, self.structureManagement]
+        self.panelsList = (self.consRangeFrame, self.violationsFrame, self.structureManagement)
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -72,7 +72,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
         self.RangesVars = {}
         self.RangesCB = {}
         self.RangesFunctions = {}
-        self.ranges = ['intra', 'sequential', 'medium', 'long']
+        self.ranges = ('intra', 'sequential', 'medium', 'long')
         self.widgetCreation()
 
     def widgetCreation(self):

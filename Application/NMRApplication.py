@@ -32,6 +32,7 @@ from sys import stdout
 from GUI.NMRGUI import NMRGUI
 import Core.MolecularViewerInterface as MVI
 from GUI.Panels.appDefaults import defaultForParameter
+from NMRCLI import NMRCLI
 
 
 class NMRApplication(object):
@@ -42,6 +43,7 @@ class NMRApplication(object):
         """
         self.NMRCommands = Core
         self.log = ""
+        self.NMRCLI = NMRCLI(Core)
         if app == "NoGUI":
             stdout.write("Starting PyNMR CLI ...\n")
         else:

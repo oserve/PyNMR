@@ -145,28 +145,28 @@ def checkID(atomSet):
     """
     """
     check = False
+    newName = ""
     error_message = ""
-    if atomSet.number in pdb:
-        if atomSet.segid in (atom['segi'] for atom in pdb[atomSet.number]):
-            if atomSet.atType in (atom['name'] for atom in pdb[atomSet.number]):
+    if str(atomSet.resi_number) in pdb:
+        if atomSet.segid in (atom['segi'] for atom in pdb[str(atomSet.resi_number)]):
+            if atomSet.atoms in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
                 check = True
             else:
-                original_name = atomSet.atType
-                if '*' not in atomSet.atType:
-                    if atomSet.atType == 'HN':
-                        atomSet.atType = 'H'
-                    elif atomSet.atType == 'H':
-                        atomSet.atType = 'HN'
-                    elif lastDigit.search(atomSet.atType):
-                        digit = lastDigit.search(atomSet.atType).group()[0]
-                        atomSet.atType = digit + lastDigit.sub('', atomSet.atType)  # put final digit at the beginning
-                    if atomSet.atType in (atom['name'] for atom in pdb[atomSet.number]):
+                if '*' not in atomSet.atoms:
+                    if atomSet.atoms == 'HN':
+                        newName = 'H'
+                    elif atomSet.atoms == 'H':
+                        newName = 'HN'
+                    elif lastDigit.search(atomSet.atoms):
+                        digit = lastDigit.search(atomSet.atoms).group()[0]
+                        newName = digit + lastDigit.sub('', atomSet.atoms)  # put final digit at the beginning
+                    if newName in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
                         check = True
                     else:
                         error_message = "Atom name not found"
                 else:
-                    nameRoot = atomSet.atType.replace('*', '')
-                    for aName in (atom['name'] for atom in pdb[atomSet.number]):
+                    nameRoot = atomSet.atoms.replace('*', '')
+                    for aName in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
                         if nameRoot in aName:
                             check = True
                             break
@@ -177,32 +177,35 @@ def checkID(atomSet):
     else:
         error_message = "Residue number not found"
     if check is False:
-        errors.add_error_message("Can't find " + str(original_name) + " in structure " + pdb['name'] + " because : " + error_message)
-        atomSet.atType = original_name
-    return check
+        errors.add_error_message("Can't find " + str(atomSet.atoms) + " in structure " + pdb['name'] + " because : " + error_message)
+    if newName:
+        return {'valid': check, 'NewData': {'atoms': newName}}
+    else:
+        return {'valid': check, 'NewData': ''}
 
 
 def get_coordinates(atomSet):
     """
     """
-    coordinates = []
-    if '*' in atomSet.atType:
-        nameRoot = atomSet.atType.replace('*', '')
-        for atom in pdb[atomSet.number]:
+    coordinates = list()
+    if '*' in atomSet.atoms:
+        nameRoot = atomSet.atoms.replace('*', '')
+        for atom in pdb[str(atomSet.resi_number)]:
             if atomSet.segid == atom['segi']:
                 if nameRoot in atom['name']:
                     coordinates.append(atom['coord'])
     else:
-        for atom in pdb[atomSet.number]:
+        for atom in pdb[str(atomSet.resi_number)]:
             if atomSet.segid == atom['segi']:
-                if atomSet.atType == atom['name']:
+                if atomSet.atoms == atom['name']:
                     coordinates = [atom['coord']]
                     break
     return coordinates
+
 
 def createSelection(structure, Items):
     """
     """
     selection = structure
-    selection += "".join(" resi " + residue + " +" for residue in Items)
+    selection += "".join(" resi " + str(residue_number) + " +" for residue_number in Items)
     return selection.rstrip("+")
