@@ -167,3 +167,8 @@ class ScrolledList(ttk.Frame):
         """Remove all lines.
         """
         self.listbox.delete(0, Tk.END)
+
+    def curselection(self):
+        """
+        """
+        return self.listbox.curselection()

@@ -78,7 +78,7 @@ class NMRCore(object):
                     self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
                 drawer.drC(selectedConstraints, radius, colors)
-                self.displayedConstraints.constraints.extend(selectedConstraints)
+                self.displayedConstraints.addConstraints(selectedConstraints)
                 if len(selectedConstraints) > 0:
                     selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.residuesList)
                     MVI.select('NOE', selection)
@@ -97,7 +97,7 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName])
-                self.displayedConstraints.constraints.extend(selectedConstraints)
+                self.displayedConstraints.addConstraints(selectedConstraints)
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)
@@ -113,7 +113,7 @@ class NMRCore(object):
         if residuesList == 'all':
             resList = self.ManagersList[managerName].residuesList
         else:
-            resList = []
+            resList = list()
             for resi_range in residuesList.split("+"):
                 aRange = resi_range.split("-")
                 if len(aRange) == 2:

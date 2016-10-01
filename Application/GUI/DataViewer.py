@@ -32,7 +32,7 @@
 import Tkinter as Tk
 import ttk
 from Panels import ScrolledList
-from DataControllers import atomTypeList, resiNumberList
+from ..DataControllers import atomTypeListController, resiNumberListController
 
 
 class NOEDataViewer(Tk.Toplevel):
@@ -54,20 +54,23 @@ class NOEDataViewer(Tk.Toplevel):
                                                           listvariable=self.resiListVarDisplayed,
                                                           selectmode=Tk.EXTENDED,
                                                           width=10)
+        self.resiListDisplayedController = resiNumberListController()
         self.resiListVarPartner = Tk.StringVar()
         self.resiScrollListPartner = ScrolledList.ScrolledList(self.labelFrame,
                                                           listvariable=self.resiListVarPartner,
                                                           selectmode=Tk.EXTENDED,
                                                           width=10)
+        self.resiListPartnerController = resiNumberListController()
         self.atomListVarDisplayed = Tk.StringVar()
         self.atomScrollListDisplayed = ScrolledList.ScrolledList(self.labelFrame,
                                                           listvariable=self.atomListVarDisplayed,
                                                           width=10)
+        self.atomListDisplayedController = atomTypeListController()
         self.atomListVarPartner = Tk.StringVar()
         self.atomScrollListPartner = ScrolledList.ScrolledList(self.labelFrame,
                                                           listvariable=self.atomListVarPartner,
                                                           width=10)
-
+        self.atomListPartnerController = atomTypeListController()
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -103,8 +106,8 @@ class NOEDataViewer(Tk.Toplevel):
         self.atomScrollListDisplayed.clear()
         self.resiScrollListPartner.clear()
         self.atomScrollListPartner.clear()
-
-        self.resiListVarDisplayed.set(" ".join(resiNumberList(self.NOEDataController.displayedAtoms)))
+        self.resiListDisplayedController.atomsList = self.NOEDataController.displayedAtoms
+        self.resiListVarDisplayed.set(" ".join(self.resiListDisplayedController.resiNumberList))
 
     def selectResidueDisplayed(self, evt):
         """
@@ -119,12 +122,14 @@ class NOEDataViewer(Tk.Toplevel):
 
         selectedAtoms = list()
         for residue in residue_selection:
-            selectedAtoms.extend(resiNumberList(self.NOEDataController.displayedAtoms)[residue.replace(" ", "\ ")])
+            selectedAtoms.extend(self.resiListDisplayedController.resiNumberList[residue.replace(" ", "\ ")])
         if len(selection) > 0:
             self.NOEDataController.setSelectedAtoms(selectedAtoms)
-            self.resiListVarPartner.set(" ".join(resiNumberList(self.NOEDataController.partnerAtoms)))
+            self.resiListPartnerController.atomsList = self.NOEDataController.partnerAtoms
+            self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
         if len(selection) == 1:
-            self.atomListVarDisplayed.set(" ".join(atomTypeList(selectedAtoms)))
+            self.atomListDisplayedController.selectedAtoms = selectedAtoms
+            self.atomListVarDisplayed.set(" ".join(self.atomListDisplayedController.atomTypeList))
 
     def selectAtomDisplayed(self, evt):
         """
@@ -137,11 +142,12 @@ class NOEDataViewer(Tk.Toplevel):
 
         selectedAtoms = list()
         for atomType in atomType_selection:
-            selectedAtoms.extend(atomTypeList(self.NOEDataController.displayedAtoms)[atomType])
+            selectedAtoms.extend(self.atomListDisplayedController.atomTypeList[atomType])
 
         if len(selection) == 1:
             self.NOEDataController.setSelectedAtoms(selectedAtoms)
-            self.resiListVarPartner.set(" ".join(resiNumberList(self.NOEDataController.partnerAtoms)))
+            self.resiListPartnerController.atomsList = self.NOEDataController.partnerAtoms
+            self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
 
     def selectResiduePartner(self, evt):
         """
@@ -152,14 +158,14 @@ class NOEDataViewer(Tk.Toplevel):
         if len(selection) == 1:
             self.atomListVarPartner.set('')
 
-            if len(self.atomScrollListDisplayed.listbox.curselection()) == 1:
+            if len(self.atomScrollListDisplayed.curselection()) == 1:
 
                 residue2_selection = [w.get(resi_number_index) for resi_number_index in selection]
 
                 selectedAtoms = list()
                 for residue in residue2_selection:
-                    selectedAtoms.extend(resiNumberList(self.NOEDataController.partnerAtoms)[residue.replace(" ", "\ ")])
+                    selectedAtoms.extend(self.resiListPartnerController.resiNumberList[residue.replace(" ", "\ ")])
 
                 self.NOEDataController.setSelectedAtoms(selectedAtoms)
-
-                self.atomListVarPartner.set(" ".join(atomTypeList(selectedAtoms)))
+                self.atomListPartnerController.selectedAtoms = self.NOEDataController.partnerAtoms
+                self.atomListVarPartner.set(" ".join(self.atomListPartnerController.atomTypeList))

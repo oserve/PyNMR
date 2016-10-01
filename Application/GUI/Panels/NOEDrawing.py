@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 import ttk
 from ..DataViewer import NOEDataViewer
-from .. DataControllers import NOEDataController
+from Application.DataControllers import NOEDataController
 
 
 class NOEDrawingPanel(ttk.LabelFrame):
