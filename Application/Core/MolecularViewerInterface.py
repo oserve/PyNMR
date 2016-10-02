@@ -51,13 +51,10 @@ try:
 
         for atom in list_atoms.atom:
             signature = atom.get_signature().split(":")
-            if signature[3] in pdb:
-                pdb[signature[3]].append({'name': signature[5],
-                                          'coord': atom.coord,
-                                          'segi': atom.chain})
-            else:
-                pdb[signature[3]] = [{'name': signature[5], 'coord': atom.coord,
-                                      'segi': atom.chain}]
+            pdb.setdefault(signature[3], []).append({'name': signature[5],
+                                                     'coord': atom.coord,
+                                                     'segi': atom.chain})
+
         # fout = open(structure+".pyn", 'w')
         # pickle.dump(pdb, fout)
         # fout.close()
@@ -206,6 +203,13 @@ def get_coordinates(atomSet):
 def createSelection(structure, Items):
     """
     """
-    selection = structure
+    selection = structure + " and "
     selection += "".join(" resi " + str(residue_number) + " +" for residue_number in Items)
     return selection.rstrip("+")
+
+
+def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
+    """
+    """
+    objectsLists = get_names()
+    return [name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0)]

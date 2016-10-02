@@ -31,6 +31,7 @@
 
 import Tkinter as Tk
 import ttk
+from ...Core import MolecularViewerInterface as MVI
 
 
 class ConstraintSelectionPanel(ttk.LabelFrame):
@@ -184,4 +185,4 @@ class StructureSelectionPanel(ttk.LabelFrame):
         """
         """
         infos = self.mainApp.NMRInterface.getInfo()
-        self.comboPDB['values'] = self.mainApp.getModelsNames(infos['SatisfactionMarker'], infos['UnSatisfactionMarker'])
+        self.comboPDB['values'] = MVI.getModelsNames(infos['SatisfactionMarker'], infos['UnSatisfactionMarker'])

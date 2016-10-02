@@ -64,7 +64,7 @@ class NMRApplication(object):
         self.NMRInterface.preferencesPanel.densityPanel.gradientSelection['values'] = defaultForParameter('gradientColorList')
         self.NMRInterface.preferencesPanel.setDefaults()
         self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(defaultForParameter("cutOff"))
-        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = self.getModelsNames(defaultForParameter('SatisfactionMarker'), defaultForParameter('UnSatisfactionMarker'))
+        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = MVI.getModelsNames(defaultForParameter('SatisfactionMarker'), defaultForParameter('UnSatisfactionMarker'))
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 
     def GUIBindings(self):
@@ -74,9 +74,3 @@ class NMRApplication(object):
         self.NMRInterface.mainPanel.NOEDrawing.NMRCommands = self.NMRCommands
         self.NMRInterface.mainPanel.constraintPanel.structureManagement.mainApp = self
         self.NMRInterface.preferencesPanel.mainApp = self
-
-    def getModelsNames(self, satisfactionMarker="", unSatisfactionMarker=""):
-        """
-        """
-        objectsLists = MVI.get_names()
-        return [name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0)]
