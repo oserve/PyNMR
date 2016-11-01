@@ -24,6 +24,7 @@ Features :
 - Download NMR restraints file from the [PDB](http://www.rcsb.org/pdb/home/home.do) directly from this plugin
 - Choose method of distance calculation between atoms (in case of ambiguous restraints)
 - Choice for colors and size of NOE representations
+- Selection of constraint by clicking and visualization on the 3D structure
 
 Installation :
 ------------
@@ -31,7 +32,7 @@ Installation :
 - Copy all files into a single directory anywhere on your disk
 
 ###For user friendly version :
-- Download "PyNMRPU.py"
+- Download "PyNMRPU.py" (usually not up to date)
 
 For both versions, use the Pymol standard plugin install in the main menu
 
@@ -44,7 +45,7 @@ Usage :
 -----
 The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
 
-![Interface](pictures/mainWindow.png) ![Preferences](pictures/preferences.png)
+![Interface](pictures/mainWindow.png) ![Preferences](pictures/preferences.png) ![Selection](pictures/Selection.png)
 
 Possible future features :
 ------------------------
@@ -52,14 +53,14 @@ Possible future features :
 * Display of angular, dihedral and h-bonds constraints
 * Text list of constraints with :
     * Color code
-    * Link to 3D display
     * Real-time edit / display
 * Import other formats (CCPNMR, ...)
 
-Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competences I do not have.
+Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competencies I do not have.
 
 Known difficulties :
 ------------------
 * When displaying a large number of constraints as sticks, Pymol performances decrease rapidly (Depends strongly on the performance of your computer):
     * Avoid to draw all constraints if not necessary
     * Remove them before any other action if you can
+* Since this is a continuous work in progress, there might be some bugs I am not aware of. I am learning Python while coding this piece of sofware.
