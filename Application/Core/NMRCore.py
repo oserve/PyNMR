@@ -80,7 +80,7 @@ class NMRCore(object):
                 drawer.drC(selectedConstraints, radius, colors)
                 self.displayedConstraints.addConstraints(selectedConstraints)
                 if len(selectedConstraints) > 0:
-                    selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.residuesList)
+                    selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.atomsList)
                     MVI.select('NOE', selection)
                     MVI.zoom(selection)
         else:
@@ -113,16 +113,15 @@ class NMRCore(object):
         if residuesList == 'all':
             resList = self.ManagersList[managerName].residuesList
         else:
-            resList = list()
+            resList = set()
             for resi_range in residuesList.split("+"):
                 aRange = resi_range.split("-")
-                if len(aRange) == 2:
-                    resList += [str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[1]) + 1)]
-                elif len(aRange) == 1:
-                    resList += [str(aRange[0])]
+                if 1 <= len(aRange) <= 2:
+                    resList.update([str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1)])
                 else:
                     sys.stderr.write("Residues set definition error : " +
-                                 residuesList + "\n")
+                                     residuesList + "\n")
+
         if not isinstance(dist_range, list):
             if dist_range == 'all':
                 dist_range = ['intra', 'sequential', 'medium', 'long']

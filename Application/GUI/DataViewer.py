@@ -28,10 +28,12 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-
 import Tkinter as Tk
 import ttk
+
 from Panels import ScrolledList
+
+from ..Core import MolecularViewerInterface as MVI
 from ..DataControllers import atomTypeListController, resiNumberListController
 
 
@@ -127,9 +129,15 @@ class NOEDataViewer(Tk.Toplevel):
             self.NOEDataController.setSelectedAtoms(selectedAtoms)
             self.resiListPartnerController.atomsList = self.NOEDataController.partnerAtoms
             self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
-        if len(selection) == 1:
-            self.atomListDisplayedController.selectedAtoms = selectedAtoms
-            self.atomListVarDisplayed.set(" ".join(self.atomListDisplayedController.atomTypeList))
+
+            if len(selection) == 1:
+                self.atomListDisplayedController.selectedAtoms = selectedAtoms
+                self.atomListVarDisplayed.set(" ".join(self.atomListDisplayedController.atomTypeList))
+
+            zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms)
+            MVI.zoom(zoomSelect)
+            MVI.delete('involRes')
+            MVI.select('involRes', zoomSelect)
 
     def selectAtomDisplayed(self, evt):
         """
@@ -140,14 +148,16 @@ class NOEDataViewer(Tk.Toplevel):
         self.resiListVarPartner.set('')
         self.atomListVarPartner.set('')
 
-        selectedAtoms = list()
-        for atomType in atomType_selection:
-            selectedAtoms.extend(self.atomListDisplayedController.atomTypeList[atomType])
+        selectedAtoms = [self.atomListDisplayedController.atomTypeList[atomType] for atomType in atomType_selection]
 
         if len(selection) == 1:
-            self.NOEDataController.setSelectedAtoms(selectedAtoms)
+            self.NOEDataController.setSelectedAtoms(selectedAtoms[0])
             self.resiListPartnerController.atomsList = self.NOEDataController.partnerAtoms
             self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
+            zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms[0])
+            MVI.zoom(zoomSelect)
+            MVI.delete('involRes')
+            MVI.select('involRes', zoomSelect)
 
     def selectResiduePartner(self, evt):
         """
@@ -160,12 +170,13 @@ class NOEDataViewer(Tk.Toplevel):
 
             if len(self.atomScrollListDisplayed.curselection()) == 1:
 
-                residue2_selection = [w.get(resi_number_index) for resi_number_index in selection]
+                partnerResidue_selection = [w.get(resi_number_index) for resi_number_index in selection]
 
-                selectedAtoms = list()
-                for residue in residue2_selection:
-                    selectedAtoms.extend(self.resiListPartnerController.resiNumberList[residue.replace(" ", "\ ")])
+                selectedPartnerAtoms = [self.resiListPartnerController.resiNumberList[residue.replace(" ", "\ ")] for residue in partnerResidue_selection]
 
-                self.NOEDataController.setSelectedAtoms(selectedAtoms)
-                self.atomListPartnerController.selectedAtoms = self.NOEDataController.partnerAtoms
+                self.atomListPartnerController.selectedAtoms = selectedPartnerAtoms[0]
                 self.atomListVarPartner.set(" ".join(self.atomListPartnerController.atomTypeList))
+                zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms[0])
+                MVI.zoom(zoomSelect)
+                MVI.delete('involRes')
+                MVI.select('involRes', zoomSelect)

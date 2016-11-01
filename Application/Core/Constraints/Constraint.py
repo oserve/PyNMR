@@ -32,7 +32,7 @@ import re
 from collections import namedtuple
 from .. import MolecularViewerInterface as MVI
 
-Atoms = namedtuple("Atoms", ['resi_number', 'atoms', 'segid'])
+Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
 
 
 class Constraint(object):

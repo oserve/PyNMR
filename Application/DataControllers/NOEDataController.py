@@ -28,45 +28,49 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from collections import OrderedDict
 
 
-class atomTypeListController(object):
+class NOEDataController(object):
     """
     """
 
-    def __init__(self):
+    def __init__(self, dataSource, aManagerName, structure):
         """
         """
+        self.dataSource = dataSource
+        self.structure = structure
+        self.name = aManagerName
+        self.dataType = 'NOE'
         self.selectedAtoms = list()
+        self.manager = dataSource.ManagersList.get(aManagerName, "").constraintsManagerForDataType(self.dataType).intersection(dataSource.displayedConstraints)
+
+    def __len__(self):
+        """
+        """
+        return len(self.manager)
+
+    def getResiduesList(self):
+        """
+        """
+        return (str(residue) for residue in sorted(int(number) for number in self.manager.residuesList))
+
+    def setSelectedAtoms(self, aSelection):
+        """
+        """
+        self.selectedAtoms = aSelection
+        self.manager.setPartnerAtoms(aSelection)
 
     @property
-    def atomTypeList(self):
+    def displayedAtoms(self):
         """
         """
-        atomTypeList = OrderedDict()
-        for atomType in sorted(set(atom.atoms for atom in self.selectedAtoms)):
-            resi = [atom for atom in self.selectedAtoms if atom.atoms == atomType]
-            atomTypeList[atomType] = resi
-        return atomTypeList
-
-
-class resiNumberListController(object):
-    """
-    """
-
-    def __init__(self):
-        """
-        """
-        self.atomsList = list()
+        return sorted(self.manager.atomsList)
 
     @property
-    def resiNumberList(self):
+    def partnerAtoms(self):
         """
         """
-        resiNumberList = OrderedDict()
-        for segid in sorted(set(atom.segid for atom in self.atomsList)):
-            for resi_number in sorted(set(atom[1] for atom in self.atomsList)):
-                resi = [atom for atom in self.atomsList if atom.resi_number == resi_number and atom.segid == segid]
-                resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
-        return resiNumberList
+        if self.selectedAtoms:
+            return sorted(set(atom for atom in self.manager.atomsList if self.manager.areAtomsPartner(atom) and atom not in self.selectedAtoms))
+        else:
+            return set()

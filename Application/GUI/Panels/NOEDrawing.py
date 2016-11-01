@@ -80,8 +80,10 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
-            self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
-            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands,
+                                                                              infos["constraintFile"],
+                                                                              infos["structure"])
+            self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
 
     def showDensity(self):
         """
@@ -101,8 +103,10 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                             infos["structure"],
                                             infos["gradient"])
 
-            self.dataControllers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataController(self.NMRCommands, self.mainGUI.getInfo()["constraintFile"])
-            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]] = NOEDataViewer(self.dataControllers[self.mainGUI.getInfo()["constraintFile"]])
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands,
+                                                                              infos["constraintFile"],
+                                                                              infos["structure"])
+            self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
 
     def cleanAll(self):
         """Remove all displayed sticks

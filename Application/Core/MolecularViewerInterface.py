@@ -55,9 +55,8 @@ try:
                                                      'coord': atom.coord,
                                                      'segi': atom.chain})
 
-        # fout = open(structure+".pyn", 'w')
-        # pickle.dump(pdb, fout)
-        # fout.close()
+        #with open(structure+".pyn", 'w') as fout:
+        #    pickle.dump(pdb, fout)
 
     def select(selectionName, selection):
         if selectionName == "":
@@ -207,6 +206,13 @@ def createSelection(structure, Items):
     selection += "".join(" resi " + str(residue_number) + " +" for residue_number in Items)
     return selection.rstrip("+")
 
+
+def createSelection(structure, Atoms):
+    """
+    """
+    selection = structure + " and ("
+    selection += " ".join("chain {} and resi {} +".format(atom.segid, atom.resi_number) for atom in sorted(Atoms))
+    return selection.rstrip("+") + ")"
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """
