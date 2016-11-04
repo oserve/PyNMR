@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
+
 import MolecularViewerInterface as MVI
 
 
@@ -56,6 +57,8 @@ class imConstraintSetManager(object):
         return self
 
     def next(self):
+        """
+        """
         if self.index == len(self.constraints) - 1:
             self.index = -1
             raise StopIteration
@@ -75,19 +78,17 @@ class imConstraintSetManager(object):
     def associateToPDB(self):
         """read strutural data
         """
-        result = 0
         if self.structure != '':
             MVI.setPDB(self.structure)
             if self.constraints:
-                result = 1
-        return result
+                return 1
+        return 0
 
     def constraintsManagerForDataType(self, dataType):
         """
         """
         newManager = imConstraintSetManager(self.name + str(dataType))
-        newConstraintsSet = set(constraint for constraint in self.constraints if constraint.type == dataType)
-        newManager.constraints = tuple(newConstraintsSet)
+        newManager.constraints = tuple(constraint for constraint in self.constraints if constraint.type == dataType)
         return newManager
 
     def constraintsManagerForAtoms(self, atomDefinitions):
@@ -115,10 +116,8 @@ class imConstraintSetManager(object):
         """
         """
         newManager = imConstraintSetManager("")
-        if isinstance(anotherManager, self.__class__):
-            constraints = set()
-            constraints.update(constraint for constraint in self.constraints if constraint in anotherManager)
-            newManager.constraints = tuple(constraints)
+        if isinstance(anotherManager, imConstraintSetManager):
+            newManager.constraints = tuple(constraint for constraint in self.constraints if constraint in anotherManager)
             newManager.name = self.name + anotherManager.name
         return newManager
 

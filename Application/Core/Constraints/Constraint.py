@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 import re
 from collections import namedtuple
+
 from .. import MolecularViewerInterface as MVI
 
 Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
@@ -70,7 +71,13 @@ class Constraint(object):
     def __eq__(self, anotherConstraint):
         """
         """
-        return isinstance(anotherConstraint, self.__class__) and (anotherConstraint.__dict__ == self.__dict__)
+        if isinstance(anotherConstraint, self.__class__):
+            for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)):
+                if not AAtom == SAtom:
+                    break
+            else:
+                return True
+        return False
 
     @classmethod
     def addAtoms(cls, parsingResult):
@@ -125,12 +132,12 @@ class Constraint(object):
                     atom.update(check['NewData'])
                     atoms[index] = Constraint.addAtom(atom)
             else:
-                return False
                 break
         else:
-            for key, value in atoms.items():
-                self.atoms[key] = value
+            for index, value in atoms.items():
+                self.atoms[index] = value
             return True
+        return False
 
     def setValueFromStructure(self):
         """
