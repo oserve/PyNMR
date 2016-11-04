@@ -58,17 +58,21 @@ class constraintParser(object):
         for parsingResult in self.parseAConstraint():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
-                    aConstraint = NOE()
-                    # No other constraint type supported ... for now !
-                    aConstraint.id["number"] = constraint_number
-                    aConstraint.definition = parsingResult["definition"]
-                    aConstraint.atoms = NOE.addAtoms(constraintParser.parseAtoms(parsingResult["residues"]))
-                    aConstraint.setConstraintValues(parsingResult["values"][0],
-                                                    parsingResult["values"][1],
-                                                    parsingResult["values"][2])
+                    for residue in parsingResult["residues"]: # filters H-Bonds
+                        if residue['name'] == "O":
+                            break
+                    else:
+                        aConstraint = NOE()
+                        # No other constraint type supported ... for now !
+                        aConstraint.id["number"] = constraint_number
+                        aConstraint.definition = parsingResult["definition"]
+                        aConstraint.atoms = NOE.addAtoms(constraintParser.parseAtoms(parsingResult["residues"]))
+                        aConstraint.setConstraintValues(parsingResult["values"][0],
+                                                        parsingResult["values"][1],
+                                                        parsingResult["values"][2])
 
-                    aManager.addConstraint(aConstraint)
-                    constraint_number += 1
+                        aManager.addConstraint(aConstraint)
+                        constraint_number += 1
 
             else:
                 stderr.write("Error while loading : " + parsingResult["definition"])
