@@ -29,8 +29,9 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
-import MolecularViewerInterface as MVI
+
 import errors
+import MolecularViewerInterface as MVI
 from Geom import set_method
 
 
@@ -54,19 +55,18 @@ class ConstraintFilter(object):
     def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn.
         """
-        isSelected = False
         if aConstraint.getRange(self.rangeCutOff) in self.range:
             if [aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]:
                 if aConstraint.isValid():
                     if aConstraint.setValueFromStructure():
                         aConstraint.setViolationState(self.cutOff)
                         if aConstraint.isSatisfied() in self.violationState:
-                            isSelected = True
+                            return True
                     else:
                         errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
                 else:
                     errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
-        return isSelected
+        return False
 
     def filterConstraints(self, constraintList):
         """

@@ -168,7 +168,7 @@ class NMRCore(object):
             with gzip.open(zippedFileName, 'rb') as zippedFile:
                 decodedFile = zippedFile.read()
                 with open(PDBfileName, 'w') as restraintFile:
-                        restraintFile.write(decodedFile)
+                    restraintFile.write(decodedFile)
             if path.exists(zippedFileName):
                 os.remove(zippedFileName)
                 self.loadNOE(PDBfileName)
