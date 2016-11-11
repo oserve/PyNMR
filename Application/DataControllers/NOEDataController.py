@@ -74,3 +74,15 @@ class NOEDataController(object):
             return sorted(set(atom for atom in self.manager.atomsList if self.manager.areAtomsPartner(atom) and atom not in self.selectedAtoms))
         else:
             return set()
+
+    def constraintsForAtoms(self, atomsList):
+        """
+        """
+        if len(atomsList) == 2:
+            consManager = self.manager.constraintsManagerForAtoms([atomsList[0]]).intersection(self.manager.constraintsManagerForAtoms([atomsList[1]]))
+            return consManager.constraints
+
+    def constraintValueForAtoms(self, atomsList):
+        """
+        """
+        return [(constraint.constraintValues, constraint.isSatisfied()) for constraint in self.constraintsForAtoms(atomsList)]

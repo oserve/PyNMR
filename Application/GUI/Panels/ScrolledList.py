@@ -172,3 +172,8 @@ class ScrolledList(ttk.Frame):
         """
         """
         return self.listbox.curselection()
+
+    def bind(self, sequence=None, func=None, add=None):
+        """
+        """
+        self.listbox.bind(sequence, func, add)

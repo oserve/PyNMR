@@ -75,9 +75,9 @@ class NOEDataViewer(Tk.Toplevel):
         self.atomListPartnerController = atomTypeListController()
         self.NOEValues = dict()
         self.NOEValueLabels = dict()
-        for valueType in ('NOE', 'min', 'max', 'Actual'):
+        for valueType in ('constraint', 'min', 'plus', 'actual'):
             self.NOEValues[valueType] = Tk.DoubleVar()
-            self.NOEValueLabels[valueType] = ttk.Label(self.labelFrame, textvariable=self.NOEValues[valueType])
+            self.NOEValueLabels[valueType] = ttk.Label(self.labelFrame, textvariable=self.NOEValues[valueType], width=3)
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -95,22 +95,18 @@ class NOEDataViewer(Tk.Toplevel):
         for key, aLabel in self.NOEValueLabels.iteritems():
             aLabel.grid(row=3, column=columnPosition + 1)
             aLabel.state(['disabled'])
-            ttk.Label(self.labelFrame, text=key).grid(row=3, column=columnPosition)
+            ttk.Label(self.labelFrame, text=key).grid(row=3, column=columnPosition, sticky=Tk.W)
             columnPosition += 2
 
-        self.resiScrollListDisplayed.listbox.bind('<<ListboxSelect>>',
-                                                  self.selectResidueDisplayed)
-        self.atomScrollListDisplayed.listbox.bind('<<ListboxSelect>>',
-                                                  self.selectAtomDisplayed)
-        self.resiScrollListPartner.listbox.bind('<<ListboxSelect>>',
-                                                self.selectResiduePartner)
+        self.resiScrollListDisplayed.bind('<<ListboxSelect>>', self.selectResidueDisplayed)
+        self.atomScrollListDisplayed.bind('<<ListboxSelect>>', self.selectAtomDisplayed)
+        self.resiScrollListPartner.bind('<<ListboxSelect>>', self.selectResiduePartner)
         self.fillResListDisplayed()
         self.constraintSelectionText.set(str(len(self.NOEDataController)) +
                                          " constraints used, involving " +
                                          str(len([residue for residue in self.NOEDataController.getResiduesList()])) +
                                          " residues")
-        self.atomScrollListPartner.listbox.bind('<<ListboxSelect>>',
-                                                self.selectAtomPartner)
+        self.atomScrollListPartner.bind('<<ListboxSelect>>', self.selectAtomPartner)
 
     def fillResListDisplayed(self):
         """
@@ -202,9 +198,22 @@ class NOEDataViewer(Tk.Toplevel):
         """
         w = evt.widget
         selection = w.curselection()
+        atomType_selection = [w.get(atom_number_index) for atom_number_index in selection]
+        selectedPartnerAtoms = [self.atomListPartnerController.atomTypeList[atomType] for atomType in atomType_selection]
 
         if len(selection) == 1:
-            self.switchLabelsState(['!disabled'])
+            constraintValues = self.NOEDataController.constraintValueForAtoms(selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
+            if constraintValues:
+                for key, value in self.NOEValues.iteritems():
+                    value.set(round(float(constraintValues[0][0][key]), 1))
+                self.switchLabelsState(['!disabled'])
+                style = ttk.Style()
+                if constraintValues[0][1] is 'unSatisfied':
+                    style.configure("Red.TLabel", foreground="red")
+                    self.NOEValueLabels['constraint'].configure(style="Red.TLabel")
+                if constraintValues[0][1] is 'Satisfied':
+                    style.configure("Green.TLabel", foreground="green")
+                    self.NOEValueLabels['constraint'].configure(style="Green.TLabel")
 
     def switchLabelsState(self, state):
         """
