@@ -70,8 +70,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.downloadButton.grid(row=2, column=0)
         self.saveButton.grid(row=3, column=0)
         self.infoLabel.grid(row=4, column=0, columnspan=2)
-        self.constraintsList.listbox.bind('<<ListboxSelect>>',
-                                          self.onStructureSelect)
+        self.constraintsList.bind('<<ListboxSelect>>', self.onStructureSelect)
 
     def loadFile(self):
         """Use a standard Tk dialog to get filename,
@@ -80,7 +79,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         filename = tkFileDialog.askopenfilename(
             title="Open a constraint file")
-        if filename is not None:
+        if len(filename):
             self.NMRCommands.loadNOE(filename)
             self.updateFilelist()
 
@@ -89,6 +88,10 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         managerList = " ".join(self.NMRCommands.ManagersList.keys()).strip()
         self.constraintsFileList.set(managerList)
+        if len(managerList) == 0:
+            self.infoLabelString.set('')
+        else:
+            self.constraintsList.listbox.activate(len(managerList) - 1)
 
     def removeFile(self):
         """

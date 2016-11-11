@@ -52,8 +52,7 @@ Possible future features :
 
 * Display of angular, dihedral and h-bonds constraints
 * Text list of constraints with :
-    * Color code
-    * Real-time edit / display
+    * Real-time edit
 * Import other formats (CCPNMR, ...)
 
 Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competencies I do not have.
