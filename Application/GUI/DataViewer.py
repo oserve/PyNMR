@@ -202,6 +202,11 @@ class NOEDataViewer(Tk.Toplevel):
         selectedPartnerAtoms = [self.atomListPartnerController.atomTypeList[atomType] for atomType in atomType_selection]
 
         if len(selection) == 1:
+            zoomSelect = MVI.createSelection(self.NOEDataController.structure, selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
+            MVI.zoom(zoomSelect)
+            MVI.delete('involRes')
+            MVI.select('involRes', zoomSelect)
+
             constraintValues = self.NOEDataController.constraintValueForAtoms(selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
             if constraintValues:
                 for key, value in self.NOEValues.iteritems():

@@ -198,20 +198,11 @@ def get_coordinates(atomSet):
                     break
     return coordinates
 
-
-def createSelection(structure, Items):
-    """
-    """
-    selection = structure + " and "
-    selection += "".join(" resi " + str(residue_number) + " +" for residue_number in Items)
-    return selection.rstrip("+")
-
-
 def createSelection(structure, Atoms):
     """
     """
     selection = structure + " and ("
-    selection += " ".join("chain {} and resi {} +".format(atom.segid, atom.resi_number) for atom in sorted(Atoms))
+    selection += " ".join("chain {} and resi {} and name {} +".format(atom.segid, atom.resi_number, atom.atoms) for atom in sorted(Atoms))
     return selection.rstrip("+") + ")"
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
