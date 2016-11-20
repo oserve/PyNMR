@@ -28,11 +28,11 @@ Features :
 
 Installation :
 ------------
+###For user friendly version :
+- Download "PyNMR.py" (Version of 20/11/16)
+
 ###For development version :
 - Copy all files into a single directory anywhere on your disk
-
-###For user friendly version :
-- Download "PyNMRPU.py" (usually not up to date)
 
 For both versions, use the Pymol standard plugin install in the main menu
 
@@ -40,19 +40,29 @@ Start plugin :
 ------------
 
 Start PyNMR from the plugin menu.
+(For development version, start pymol from the directory where you copy the files)
 
 Usage :
 -----
 The GUI is quite straightforward for NMR people I think. For CLI, read pymolNMR.py.
 
-![Interface](pictures/mainWindow.png) ![Preferences](pictures/preferences.png) ![Selection](pictures/Selection.png)
+The main Interface
+
+![Interface](pictures/mainWindow.png)
+
+The Preference window
+
+![Preferences](pictures/preferences.png)
+
+The NOE selection window
+
+![Selection](pictures/Selection.png)
 
 Possible future features :
 ------------------------
 
 * Display of angular, dihedral and h-bonds constraints
-* Text list of constraints with :
-    * Real-time edit
+* Text list of constraints with real-time edit
 * Import other formats (CCPNMR, ...)
 
 Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competencies I do not have.
