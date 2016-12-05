@@ -71,7 +71,7 @@ class constraintParser(object):
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
 
-                        aManager.addConstraint(aConstraint)
+                        aManager.append(aConstraint)
                         constraint_number += 1
 
             else:

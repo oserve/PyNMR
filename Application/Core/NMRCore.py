@@ -46,6 +46,7 @@ from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
 from ConstraintManager import ConstraintSetManager
+import errors
 
 
 class NMRCore(object):
@@ -67,44 +68,46 @@ class NMRCore(object):
 
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
-        """Seeks for constraints that fit criteria, increases a counter for
-        each residue which has a matching constraint.
+        """Seeks for constraints that fit some criteria.
         """
-        self.ManagersList[managerName].setPDB(structure)
-        drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
-        if self.ManagersList[managerName]:
-            if self.ManagersList[managerName].associateToPDB():
-                filteredConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName])
-                selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
-                drawer.drC(selectedConstraints, radius, colors)
-                self.displayedConstraints.addConstraints(selectedConstraints)
-                if len(selectedConstraints) > 0:
-                    selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.atomsList)
-                    MVI.select('NOE', selection)
-                    MVI.zoom(selection)
-        else:
-            sys.stderr.write("No constraints to draw ! You might want to load a few of them first ...\n")
+        with errors.errorLog():
+            self.ManagersList[managerName].setPDB(structure)
+            drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
+            if self.ManagersList[managerName]:
+                if self.ManagersList[managerName].associateToPDB():
+                    filteredConstraints = self.constraintFilter.constraints(
+                        self.ManagersList[managerName])
+                    selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
+                    drawer.drC(selectedConstraints, radius, colors)
+                    self.displayedConstraints.extend(selectedConstraints)
+                    if len(selectedConstraints) > 0:
+                        selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.atomsList)
+                        MVI.select('involRes', selection)
+                        MVI.zoom(selection)
+            else:
+                errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...\n")
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
         each residue which has a matching constraint. That simulates a density
         which is then paint on the model according to a color gradient
         """
-        self.ManagersList[managerName].setPDB(structure)
-        drawer = ConstraintDrawer()
-        if self.ManagersList[managerName]:
-            if self.ManagersList[managerName].associateToPDB():
-                selectedConstraints = self.constraintFilter.filterConstraints(
-                    self.ManagersList[managerName])
-                self.displayedConstraints.addConstraints(selectedConstraints)
-                densityList = drawer.paD(selectedConstraints,
-                                         self.ManagersList[managerName].structure,
-                                         gradient)
-                if densityList:
-                    zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
-                    MVI.zoom(zoomSelection)
-                    MVI.select('involRes', zoomSelection)
+        with errors.errorLog():
+            self.ManagersList[managerName].setPDB(structure)
+            drawer = ConstraintDrawer()
+            if self.ManagersList[managerName]:
+                if self.ManagersList[managerName].associateToPDB():
+                    filteredConstraints = self.constraintFilter.constraints(
+                        self.ManagersList[managerName])
+                    selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
+                    self.displayedConstraints.extend(selectedConstraints)
+                    densityList = drawer.paD(selectedConstraints,
+                                            self.ManagersList[managerName].structure,
+                                            gradient)
+                    if densityList:
+                        zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
+                        MVI.zoom(zoomSelection)
+                        MVI.select('involRes', zoomSelection)
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                violationState, violCutoff, method, rangeCutOff):

@@ -342,18 +342,18 @@ class ConstraintSetManager(imConstraintSetManager):
         """
         del self.constraints[:]
 
-    def addConstraint(self, aConstraint):
+    def append(self, aConstraint):
         """Add a constraint to the constraint list of the manager and
         update the list of residues
         """
         self.constraints.append(aConstraint)
         aConstraint.setName(self.name)
 
-    def addConstraints(self, constraints):
+    def extend(self, constraints):
         """
         """
         for constraint in constraints:
-            self.addConstraint(constraint)
+            self.append(constraint)
 
     def removeConstraint(self, aConstraintNumber):
         """
@@ -400,7 +400,7 @@ class constraintParser(object):
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
 
-                        aManager.addConstraint(aConstraint)
+                        aManager.append(aConstraint)
                         constraint_number += 1
 
             else:
@@ -992,7 +992,7 @@ class NMRCore(object):
                     self.ManagersList[managerName])
                 selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
                 drawer.drC(selectedConstraints, radius, colors)
-                self.displayedConstraints.addConstraints(selectedConstraints)
+                self.displayedConstraints.extend(selectedConstraints)
                 if len(selectedConstraints) > 0:
                     selection = createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.atomsList)
                     select('NOE', selection)
@@ -1011,7 +1011,7 @@ class NMRCore(object):
             if self.ManagersList[managerName].associateToPDB():
                 selectedConstraints = self.constraintFilter.filterConstraints(
                     self.ManagersList[managerName])
-                self.displayedConstraints.addConstraints(selectedConstraints)
+                self.displayedConstraints.extend(selectedConstraints)
                 densityList = drawer.paD(selectedConstraints,
                                          self.ManagersList[managerName].structure,
                                          gradient)

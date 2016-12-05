@@ -30,6 +30,9 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+import sys
+from contextlib import contextmanager
+
 
 error_messages = []
 
@@ -50,3 +53,13 @@ def erase_all_error_messages():
     """
     """
     del error_messages[:]
+
+@contextmanager
+def errorLog():
+    """
+    """
+    try:
+        yield None
+    finally:
+        sys.stderr.write("\n".join(get_error_messages()) + '\n')
+        erase_all_error_messages()

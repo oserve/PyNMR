@@ -43,7 +43,6 @@ class imConstraintSetManager(object):
     def __init__(self, managerName):
         self.constraints = ()
         self.name = managerName
-        self.index = -1
 
     def __str__(self):
         return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
@@ -54,16 +53,7 @@ class imConstraintSetManager(object):
     __repr__ = __str__
 
     def __iter__(self):
-        return self
-
-    def next(self):
-        """
-        """
-        if self.index == len(self.constraints) - 1:
-            self.index = -1
-            raise StopIteration
-        self.index += 1
-        return self.constraints[self.index]
+        return self.constraints.__iter__()
 
     # Constraints management methods
 
@@ -165,21 +155,23 @@ class ConstraintSetManager(imConstraintSetManager):
         """
         del self.constraints[:]
 
-    def addConstraint(self, aConstraint):
+    def append(self, aConstraint):
         """Add a constraint to the constraint list of the manager and
         update the list of residues
         """
         self.constraints.append(aConstraint)
         aConstraint.setName(self.name)
 
-    def addConstraints(self, constraints):
+    def extend(self, constraints):
         """
         """
         for constraint in constraints:
-            self.addConstraint(constraint)
+            self.append(constraint)
 
     def removeConstraint(self, aConstraintNumber):
         """
         """
-        if int(aConstraintNumber) <= len(self.constraints):
+        if 0 <= int(aConstraintNumber) < len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
+        else:
+            raise IndexError

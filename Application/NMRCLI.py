@@ -63,7 +63,7 @@ class NMRCLI(object):
                     self.Core.showSticks(managerName, structure, colors, radius,
                                          UnSatisfactionMarker, SatisfactionMarker)
 
-                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName)
+                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName, structure)
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
                     stdout.write(str(len([residue for residue in self.dataControllers[managerName].getResiduesList()])) +
@@ -102,7 +102,7 @@ class NMRCLI(object):
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
                     self.Core.showNOEDensity(managerName, structure, colors)
-                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName)
+                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName, structure)
 
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")

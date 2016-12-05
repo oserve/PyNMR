@@ -28,7 +28,6 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from sys import stderr
 
 import errors
 import MolecularViewerInterface as MVI
@@ -51,6 +50,8 @@ class ConstraintFilter(object):
         self.structure = structure
         self.method = method
         self.rangeCutOff = RangeCutOff
+        MVI.setPDB(self.structure)
+        set_method(self.method)
 
     def filterAConstraint(self, aConstraint):
         """Filter the constraints to be drawn.
@@ -68,12 +69,9 @@ class ConstraintFilter(object):
                     errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
         return False
 
-    def filterConstraints(self, constraintList):
-        """
-        """
-        MVI.setPDB(self.structure)
-        set_method(self.method)
-        selectedConstraints = [constraint for constraint in constraintList if self.filterAConstraint(constraint)]
-        stderr.write("\n".join(errors.get_error_messages()) + '\n')
-        errors.erase_all_error_messages()
-        return selectedConstraints
+    def constraints(self, constraintList):
+        for aConstraint in constraintList:
+            if self.filterAConstraint(aConstraint):
+                yield aConstraint
+            else:
+                pass
