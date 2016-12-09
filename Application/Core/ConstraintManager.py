@@ -174,4 +174,4 @@ class ConstraintSetManager(imConstraintSetManager):
         if 0 <= int(aConstraintNumber) < len(self.constraints):
             del self.constraints[int(aConstraintNumber)]
         else:
-            raise IndexError
+            raise IndexError("Constraint {} is unknown".format(aConstraintNumber))

@@ -31,7 +31,7 @@
 import Tkinter as Tk
 import ttk
 
-from Panels import ScrolledList
+from Panels.ttkScrolledList import ScrolledList
 
 from ..Core import MolecularViewerInterface as MVI
 from ..DataControllers import atomTypeListController, resiNumberListController
@@ -52,26 +52,24 @@ class NOEDataViewer(Tk.Toplevel):
                                           textvariable=self.constraintSelectionText,
                                           justify=Tk.CENTER)
         self.resiListVarDisplayed = Tk.StringVar()
-        self.resiScrollListDisplayed = ScrolledList.ScrolledList(self.labelFrame,
-                                                                 listvariable=self.resiListVarDisplayed,
-                                                                 selectmode=Tk.EXTENDED,
-                                                                 width=10)
+        self.resiScrollListDisplayed = ScrolledList(self.labelFrame,
+                                                    listvariable=self.resiListVarDisplayed,
+                                                    selectmode=Tk.EXTENDED, width=10)
         self.resiListDisplayedController = resiNumberListController()
         self.resiListVarPartner = Tk.StringVar()
-        self.resiScrollListPartner = ScrolledList.ScrolledList(self.labelFrame,
-                                                               listvariable=self.resiListVarPartner,
-                                                               selectmode=Tk.EXTENDED,
-                                                               width=10)
+        self.resiScrollListPartner = ScrolledList(self.labelFrame,
+                                                  listvariable=self.resiListVarPartner,
+                                                  selectmode=Tk.EXTENDED, width=10)
         self.resiListPartnerController = resiNumberListController()
         self.atomListVarDisplayed = Tk.StringVar()
-        self.atomScrollListDisplayed = ScrolledList.ScrolledList(self.labelFrame,
-                                                                 listvariable=self.atomListVarDisplayed,
-                                                                 width=10)
+        self.atomScrollListDisplayed = ScrolledList(self.labelFrame,
+                                                    listvariable=self.atomListVarDisplayed,
+                                                    width=10)
         self.atomListDisplayedController = atomTypeListController()
         self.atomListVarPartner = Tk.StringVar()
-        self.atomScrollListPartner = ScrolledList.ScrolledList(self.labelFrame,
-                                                               listvariable=self.atomListVarPartner,
-                                                               width=10)
+        self.atomScrollListPartner = ScrolledList(self.labelFrame,
+                                                  listvariable=self.atomListVarPartner,
+                                                  width=10)
         self.atomListPartnerController = atomTypeListController()
         self.NOEValues = dict()
         self.NOEValueLabels = dict()
@@ -107,6 +105,7 @@ class NOEDataViewer(Tk.Toplevel):
                                          str(len([residue for residue in self.NOEDataController.getResiduesList()])) +
                                          " residues")
         self.atomScrollListPartner.bind('<<ListboxSelect>>', self.selectAtomPartner)
+        self.resizable(width=False, height=False)
 
     def fillResListDisplayed(self):
         """

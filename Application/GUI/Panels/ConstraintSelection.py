@@ -106,7 +106,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        ranges = [aRange for aRange in self.ranges if self.RangesVars[aRange].get() == 1]
+        ranges = tuple(aRange for aRange in self.ranges if self.RangesVars[aRange].get() == 1)
         return {"residuesRange": ranges}
 
 
@@ -126,7 +126,7 @@ class ViolationSelectionPanel(ttk.LabelFrame):
     def widgetCreation(self):
         """
         """
-        for rowPosition, violationType in enumerate(['unSatisfied', 'Satisfied']):
+        for rowPosition, violationType in enumerate(('unSatisfied', 'Satisfied')):
             self.ViolationsVars[violationType] = Tk.IntVar(self)
             self.UnSatisfiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
             self.UnSatisfiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W, columnspan=2)
@@ -146,7 +146,7 @@ class ViolationSelectionPanel(ttk.LabelFrame):
     def getInfo(self):
         """
         """
-        violationStates = [violationType for violationType in ['unSatisfied', 'Satisfied'] if self.ViolationsVars[violationType].get() == 1]
+        violationStates = tuple(violationType for violationType in ('unSatisfied', 'Satisfied') if self.ViolationsVars[violationType].get() == 1)
         return {"cutOff": self.cutOff.get(), "violationState": violationStates}
 
 

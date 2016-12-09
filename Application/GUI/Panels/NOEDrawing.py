@@ -122,9 +122,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
     def infoCheck(self, infos):
         """
         """
-        check = 1
         for item in infos.values():
             if item == "":
-                check = 0
-                break
-        return check
+                return 0
+        return 1

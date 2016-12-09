@@ -6,7 +6,7 @@ from os.path import exists
 from os import remove
 
 configFileName = "pymolNMR.cfg"
-defaults = {}
+defaults = dict()
 
 standardDefaults = {'radius': 0.03, 'cutOff': 0.3,
 					'colors':
@@ -19,7 +19,7 @@ standardDefaults = {'radius': 0.03, 'cutOff': 0.3,
 		'UnSatisfactionMarker': '_US_', 'SatisfactionMarker': '_S_',
 		'rangeCutOff': 5,
 		'urlPDB': 'ftp://ftp.wwpdb.org/pub/pdb/data/structures/all/nmr_restraints/',
-		'gradientColorList' : [
+		'gradientColorList' : (
             "blue_green", "blue_magenta", "blue_red", "blue_white_green",
             "blue_white_magenta", "blue_white_red", "blue_white_yellow",
             "blue_yellow", "cbmr", "cyan_magenta", "cyan_red",
@@ -37,8 +37,7 @@ standardDefaults = {'radius': 0.03, 'cutOff': 0.3,
             "yellow_blue", "yellow_cyan", "yellow_cyan_white", "yellow_green",
             "yellow_magenta", "yellow_red", "yellow_white_blue",
             "yellow_white_green", "yellow_white_magenta", "yellow_white_red",
-            "yrmbcg"
-            ]
+            "yrmbcg")
         }
 
 
@@ -65,9 +64,8 @@ def setToStandardDefaults():
 def saveDefaults():
     """
     """
-    configFile = open(configFileName, 'w')
-    pickle.dump(defaults, configFile)
-    configFile.close()
+    with open(configFileName, 'w') as configFile:
+        pickle.dump(defaults, configFile)
 
 
 def loadDefaults():

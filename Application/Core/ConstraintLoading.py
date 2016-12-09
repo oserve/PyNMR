@@ -59,10 +59,10 @@ class ConstraintLoader(object):
         """
         aManager = ConstraintSetManager(self.managerName)
 
-        if self.constraintDefinition in ['XPLOR', 'CNS']:
+        if self.constraintDefinition in ('XPLOR', 'CNS'):
             aManager.format = "CNS"
             parser = CParsers.CNSParser(self.fileText)
-        elif self.constraintDefinition in ['DYANA', 'CYANA']:
+        elif self.constraintDefinition in ('DYANA', 'CYANA'):
             aManager.format = "XEASY"
             parser = CParsers.CYANAParser(self.fileText)
         else:

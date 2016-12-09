@@ -33,7 +33,7 @@ import tkFileDialog
 
 import Tkinter as Tk
 import ttk
-from ScrolledList import ScrolledList
+from ttkScrolledList import ScrolledList
 
 
 class FileSelectionPanel(ttk.LabelFrame):

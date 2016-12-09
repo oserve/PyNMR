@@ -1,56 +1,63 @@
 """Helper script
 
     Gathers all python files into one
-    the final file needs clean up
+    the final file still needs clean up
 """
-from os import chdir, listdir
+from os import listdir
+from os.path import basename, join
 from sys import stderr, stdout
 
-collection = ""
-importCollection = ""
+collection = list()
+importCollection = set()
 
-mainDirectory = "/Users/olivier/Pymol_scripts/PyNMR"
-directoriesList = ['/Application', '/Application/Core',
-                   '/Application/Core/Constraints',
-                   '/Application/GUI', '/Application/GUI/Panels']
+mainDirectory = '/Users/olivier/Pymol_scripts/PyNMR/'
+directoriesList = ('Application', 'Application/Core',
+                   'Application/Core/Constraints',
+                   'Application/GUI', 'Application/GUI/Panels',
+                   'Application/DataControllers')
 
-for directory in directoriesList:
-    chdir(mainDirectory+directory)
-    fileList = listdir('.')
-    for aFile in fileList:
-        fileComponents = aFile.split('.')
-        if len(fileComponents) == 2:
-            if fileComponents[1] == 'py':
-                if fileComponents[0] != '__init__':
-                    stderr.write('Parsing file : ' + aFile + '\n')
-                    fin = open(aFile, 'r')
-                    importException = False
-                    for line in fin:
-                        if line.find('try') > -1:
-                            importException = True
-                        if line.find('except') > -1:
-                            importException = False
-                        if line.find("import") == -1:
-                            if line.find('#') != 0:
-                                collection += line
+importAsException = set()
+
+projectFileList=[join(mainDirectory, directory, aFile) for directory in directoriesList for aFile in listdir(mainDirectory+directory) if aFile.endswith('py') and not '__init__' in aFile]
+
+moduleList = [basename(aFile).split('.')[0] for aFile in projectFileList]
+
+for aFile in projectFileList:
+    stderr.write('Parsing file : ' + aFile + '\n')
+    with open(aFile, 'r') as fin:
+        importException = False
+        for line in fin:
+            if not 'try' in line:
+                importException = True
+            if not 'except' in line:
+                importException = False
+            if not "import" in line:
+                if not line.startswith('#'):
+                    for importAs in importAsException:
+                        if importAs in line:
+                            line.replace(importAs+'.', '')
+                    collection += line
+            else:
+                if not importException:
+                    if not '"""' in line:
+                        for aModuleName in moduleList:
+                            if aModuleName in line:
+                                if 'as' in line:
+                                    importAsException.add(line.split(' as ')[1])
+                            break
                         else:
-                            if not importException:
-                                if line.find('"""') == -1:
-                                    if importCollection.find(line) == -1:
-                                        importCollection += line
-                                else:
-                                    collection += line
-                            else:
-                                collection += line
-                    fin.close()
+                            importCollection.add(line)
+                    else:
+                        collection += line
+                else:
+                    collection += line
 
-fin = open(mainDirectory + "/pymolNMR.py", 'r')
-for line in fin:
-    if line.find("import") == -1:
-        collection += line
-    else:
-        importCollection += line
-fin.close()
+with open(mainDirectory + "/pymolNMR.py", 'r') as fin:
+    for line in fin:
+        if not "import" in line:
+            collection += line
+        else:
+            importCollection.add(line)
 
-stdout.write(importCollection)
-stdout.write(collection)
+stdout.write("".join(importCollection))
+stdout.write("".join(collection))

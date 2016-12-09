@@ -147,7 +147,7 @@ class Constraint(object):
     def getResisNumber(self):
         """Utility method
         """
-        return [atom.resi_number for atom in self.atoms]
+        return (atom.resi_number for atom in self.atoms)
 
     def setViolationState(self, cutOff=0):
         """Set violation state, with optional additional cutoff

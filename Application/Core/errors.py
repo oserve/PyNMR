@@ -34,7 +34,7 @@ import sys
 from contextlib import contextmanager
 
 
-error_messages = []
+error_messages = list()
 
 
 def add_error_message(message):

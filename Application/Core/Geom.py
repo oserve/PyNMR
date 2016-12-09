@@ -49,9 +49,9 @@ def centerOfMass(coords):
     if coords:
         sumCoords = (sum(coord) for coord in zip(*coords))
         numCoords = len(coords)
-        return [coord/numCoords for coord in sumCoords]
+        return tuple(coord/numCoords for coord in sumCoords)
     else:
-        return [0, 0, 0]
+        return (0, 0, 0)
 
 # Methods for distance constraints
 

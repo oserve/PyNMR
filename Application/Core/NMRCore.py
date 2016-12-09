@@ -120,22 +120,22 @@ class NMRCore(object):
             for resi_range in residuesList.split("+"):
                 aRange = resi_range.split("-")
                 if 1 <= len(aRange) <= 2:
-                    resList.update([str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1)])
+                    resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
                 else:
                     sys.stderr.write("Residues set definition error : " +
                                      residuesList + "\n")
 
-        if not isinstance(dist_range, list):
+        if not isinstance(dist_range, tuple):
             if dist_range == 'all':
-                dist_range = ['intra', 'sequential', 'medium', 'long']
+                dist_range = ('intra', 'sequential', 'medium', 'long')
             else:
-                dist_range = [dist_range]
+                dist_range = tuple(dist_range)
 
-        if not isinstance(violationState, list):
+        if not isinstance(violationState, tuple):
             if violationState == 'all':
-                violationState = ['unSatisfied', 'Satisfied']
+                violationState = ('unSatisfied', 'Satisfied')
             else:
-                violationState = [violationState]
+                violationState = tuple(violationState)
         self.constraintFilter = ConstraintFilter(structure, resList, dist_range,
                                                  violationState, violCutoff,
                                                  method, rangeCutOff)
