@@ -46,8 +46,7 @@ class atomTypeListController(object):
         """
         atomTypeList = OrderedDict()
         for atomType in sorted(set(atom.atoms for atom in self.selectedAtoms)):
-            resi = [atom for atom in self.selectedAtoms if atom.atoms == atomType]
-            atomTypeList[atomType] = resi
+            atomTypeList[atomType] = [atom for atom in self.selectedAtoms if atom.atoms == atomType]
         return atomTypeList
 
 

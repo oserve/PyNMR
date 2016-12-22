@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from math import sqrt
+from itertools import product
 import errors
 
 distance_method = ""
@@ -63,21 +64,18 @@ def calcDistance(coord_init, coord_final):
     """
     result = 0.0
 
-    if coord_init and coord_final:
-        distance_list = [sqrt(sum((coord[0] - coord[1]) ** 2 for coord in zip(AtomA, AtomB))) for AtomA in coord_init for AtomB in coord_final]
-        if len(distance_list) > 1:
-            try:
-                sum6 = sum(pow(distance, -6) for distance in distance_list)
-                if distance_method == 'ave6':
-                    result = pow(sum6/len(distance_list), -1./6)
-                elif distance_method == 'sum6':
-                    result = pow(sum6, -1./6)
-            except ValueError:
-                errors.add_error_message("Problem using coordinates : " +
-                                         str(coord_init) + " " +
-                                         str(coord_final) + "\n" +
-                                         " and distances list" +
-                                         str(distance_list) + "\n")
-        else:
-            result = distance_list[0]
+    if len(coord_init) and len(coord_final):
+        distance_list = (sqrt(sum((coord[0] - coord[1]) ** 2 for coord in zip(AtomA, AtomB))) for (AtomA, AtomB) in product(coord_init, coord_final))
+        try:
+            sum6 = sum(pow(distance, -6) for distance in distance_list)
+            if distance_method == 'ave6':
+                result = pow(sum6/len(distance_list), -1./6)
+            elif distance_method == 'sum6':
+                result = pow(sum6, -1./6)
+        except ValueError:
+            errors.add_error_message("Problem using coordinates : " +
+                                        str(coord_init) + " " +
+                                        str(coord_final) + "\n" +
+                                        " and distances list" +
+                                        str(distance_list) + "\n")
     return result

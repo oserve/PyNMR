@@ -57,7 +57,7 @@ class ConstraintFilter(object):
         """Filter the constraints to be drawn.
         """
         if aConstraint.getRange(self.rangeCutOff) in self.range:
-            if [aResiNumber for aResiNumber in aConstraint.getResisNumber() if aResiNumber in self.residuesList]:
+            if any(aResiNumber in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
                 if aConstraint.isValid():
                     if aConstraint.setValueFromStructure():
                         aConstraint.setViolationState(self.cutOff)

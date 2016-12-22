@@ -92,10 +92,10 @@ try:
 
 except ImportError:
     def select(selectionName, selection):
-        return []
+        return tuple()
 
     def get_model(model):
-        return []
+        return tuple()
 
     def alterBFactors(structure, bFactor):
         pass
@@ -177,7 +177,7 @@ def checkID(atomSet):
     if newName:
         return {'valid': check, 'NewData': {'atoms': newName}}
     else:
-        return {'valid': check, 'NewData': ''}
+        return {'valid': check, 'NewData': None}
 
 
 def get_coordinates(atomSet):
@@ -209,4 +209,4 @@ def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """
     """
     objectsLists = get_names()
-    return [name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0)]
+    return tuple(name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0))

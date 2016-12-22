@@ -58,7 +58,7 @@ class mainPanel(ttk.Frame):
     def getInfo(self):
         """
         """
-        infos = {}
+        infos = dict()
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos

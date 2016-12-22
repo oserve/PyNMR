@@ -72,21 +72,15 @@ class Constraint(object):
         """
         """
         if isinstance(anotherConstraint, self.__class__):
-            for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)):
-                if not AAtom == SAtom:
-                    break
-            else:
-                return True
-        return False
+            return any(AAtom == SAtom for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)))
+        else:
+            return False
 
     @classmethod
     def addAtoms(cls, parsingResult):
         """
         """
-        residues = list()
-        for aResult in parsingResult:
-            residues.append(Constraint.addAtom(aResult))
-        return residues
+        return [Constraint.addAtom(aResult) for aResult in parsingResult]
 
     @classmethod
     def addAtom(cls, aParsingResult):
@@ -127,7 +121,7 @@ class Constraint(object):
         for index, atomSet in enumerate(self.atoms):
             check = MVI.checkID(atomSet)
             if check['valid'] is True:
-                if check['NewData']:
+                if check['NewData'] is not None:
                     atom = dict(atomSet._asdict())
                     atom.update(check['NewData'])
                     atoms[index] = Constraint.addAtom(atom)
@@ -144,7 +138,8 @@ class Constraint(object):
         """
         raise NotImplementedError
 
-    def getResisNumber(self):
+    @property
+    def ResiNumbers(self):
         """Utility method
         """
         return (atom.resi_number for atom in self.atoms)

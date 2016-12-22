@@ -41,8 +41,8 @@ class SticksPreferencesPanel(ttk.LabelFrame):
     def __init__(self, master):
         """
         """
-        self.satisfactions = ["Satisfied", "tooFar", "tooClose"]
-        self.satisfactionColorButtons = {}
+        self.satisfactions = ("Satisfied", "tooFar", "tooClose")
+        self.satisfactionColorButtons = dict()
         ttk.LabelFrame.__init__(self, master, text=u"NOE Sticks Preferences")
         self.radius = Tk.DoubleVar(self)
         self.spinBox_Radius = Tk.Spinbox(self, textvariable=self.radius,
@@ -56,7 +56,7 @@ class SticksPreferencesPanel(ttk.LabelFrame):
         self.SatisfactionMarker = Tk.StringVar(self)
         self.UnSatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.UnSatisfactionMarker, width=6)
         self.SatisfactionMarkerEntry = ttk.Entry(self, textvariable=self.SatisfactionMarker, width=6)
-        self.colors = {}
+        self.colors = dict()
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -143,8 +143,8 @@ class PreferencesPanel(ttk.LabelFrame):
         """
         """
         ttk.LabelFrame.__init__(self, master, text=u"NOE Preferences")
-        self.panelsList = []
-        self.methodsList = [(u"\u03a3 r-6", "sum6"), (u"(\u03a3 r-6)/n", "ave6")]
+        self.panelsList = list()
+        self.methodsList = ((u"\u03a3 r-6", "sum6"), (u"(\u03a3 r-6)/n", "ave6"))
         self.selectedMethod = Tk.StringVar()
         self.sticksPanel = SticksPreferencesPanel(self)
         self.panelsList.append(self.sticksPanel)
@@ -166,11 +166,10 @@ class PreferencesPanel(ttk.LabelFrame):
         """
         ttk.Label(self, justify=Tk.CENTER, text=u'NOE Distance calculation :\n(> 2 atoms)').grid(
             row=0, column=0, rowspan=2)
-        position = 0
-        for methodName, method in self.methodsList:
+
+        for position, (methodName, method) in enumerate(self.methodsList):
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                             value=method).grid(row=position, column=1)
-            position += 1
 
         ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
 
@@ -179,9 +178,9 @@ class PreferencesPanel(ttk.LabelFrame):
         self.sticksPanel.grid(row=position, column=0, columnspan=2)
         position += 1
         self.densityPanel.grid(row=position, column=0, columnspan=2)
-        position += + 1
+        position += 1
         ttk.Label(self, text=u'PDB.org URL for download').grid(row=position, column=0, columnspan=2)
-        position += + 1
+        position += 1
         self.urlTextField.grid(row=position, column=0, columnspan=2)
         position += 1
         self.savePrefButton.grid(row=position, column=0)

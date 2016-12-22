@@ -166,18 +166,20 @@ class CNSParser(constraintParser):
         """
         for aCNSConstraint in self.validConstraints:
             try:
-                residuesList = CNSParser.RegResi.findall(aCNSConstraint, re.IGNORECASE)
-                segments = CNSParser.RegSeg.findall(aCNSConstraint, re.IGNORECASE)
-                for segment in segments:
-                    if segment not in self.segments:
-                        self.segments.append(segment)
-                numberOfSegments = len(segments)
+                segments = CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE)
+                numberOfSegments = 0
+                for numberOfSegments, segment in enumerate(segments):
+                    if segment.group(0) not in self.segments:
+                        self.segments.append(segment.group(0))
+                #numberOfSegments = len(segments)
+
+                residuesList = CNSParser.RegResi.finditer(aCNSConstraint, re.IGNORECASE)
 
                 constraintParsingResult = dict()
                 residues = list()
                 for (indice, aResidue) in enumerate(residuesList):
                     residueParsingResult = dict()
-                    for aDefinition in CNSParser.SharpReg.sub('*', aResidue).split("AND "):
+                    for aDefinition in CNSParser.SharpReg.sub('*', aResidue.group(0)).split("AND "):
                         definitionArray = aDefinition.split()
                         residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                     if numberOfSegments > 0:
@@ -193,7 +195,7 @@ class CNSParser(constraintParser):
                 constraintParsingResult["values"] = self.constraintValues(aCNSConstraint)
                 constraintParsingResult["definition"] = aCNSConstraint
 
-            except:
+            except ZeroDivisionError:
                 stderr.write('Can not parse : ' + aCNSConstraint + '\n')
                 constraintParsingResult = None
             yield constraintParsingResult
@@ -207,7 +209,7 @@ class CNSParser(constraintParser):
         else:
             indiceAmbiguous = 0
         constraintParsingResult[indiceAmbiguous]['name'] = constraintParsingResult[indiceAmbiguous]['name'][0:-1] + "*"
-        constraintParsingResult = [constraintParsingResult[0], constraintParsingResult[1]]
+        constraintParsingResult = (constraintParsingResult[0], constraintParsingResult[1])
 
     @staticmethod
     def constraintValues(aCNSConstraint):
@@ -218,7 +220,7 @@ class CNSParser(constraintParser):
             constraintValuesList = constraintValues[0].split()
         else:
             constraintValuesList = tuple()
-        return [float(aValue) for aValue in constraintValuesList]
+        return tuple(float(aValue) for aValue in constraintValuesList)
 
 
 class CYANAParser(constraintParser):
@@ -261,10 +263,10 @@ class CYANAParser(constraintParser):
         """
         Adapt xeasy nomenclature Q to pymol *
         """
-        if atType.count('Q'):
-            newType = atType.replace('Q', 'H', 1)
-            newType = newType + ('*')  # Q is replaced by H and a star at the end of the atom type
-            newType = newType.replace('Q', '')  # avoid QQ (QQD-> HD*)
-            return newType
+        if 'Q' in atType:
+            newType = atType.replace('Q', 'H', 1) + ('*')
+            # Q is replaced by H and a star at the end of the atom type
+            # avoid QQ (QQD-> HD*)
+            return newType.replace('Q', '')
         else:
             return atType

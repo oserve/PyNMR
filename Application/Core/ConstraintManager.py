@@ -99,7 +99,7 @@ class imConstraintSetManager(object):
         """
         resis = set()
         for constraint in self.constraints:
-            resis.update(number for number in constraint.getResisNumber())
+            resis.update(constraint.ResiNumbers)
         return resis
 
     def intersection(self, anotherManager):
@@ -128,10 +128,7 @@ class imConstraintSetManager(object):
     def areAtomsPartner(self, anAtom):
         """
         """
-        if anAtom in self.partnerManager.atomsList:
-            return True
-        else:
-            return False
+        return anAtom in self.partnerManager.atomsList
 
 
 class ConstraintSetManager(imConstraintSetManager):

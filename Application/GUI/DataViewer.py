@@ -83,7 +83,7 @@ class NOEDataViewer(Tk.Toplevel):
         """
         self.labelFrame.grid(row=0, column=0)
         self.labelConstraints.grid(row=0, column=0, columnspan=8)
-        for index, labelName in enumerate(['1st Residue', '1st Atom', '2nd Residue', '2nd Atom']):
+        for index, labelName in enumerate(('1st Residue', '1st Atom', '2nd Residue', '2nd Atom')):
             ttk.Label(self.labelFrame, text=labelName).grid(row=1, column=index * 2, columnspan=2)
         self.resiScrollListDisplayed.grid(row=2, column=0, columnspan=2)
         self.atomScrollListDisplayed.grid(row=2, column=2, columnspan=2)
@@ -123,7 +123,7 @@ class NOEDataViewer(Tk.Toplevel):
         """
         w = evt.widget
         selection = w.curselection()
-        residue_selection = [w.get(resi_number_index) for resi_number_index in selection]
+        residue_selection = (w.get(resi_number_index) for resi_number_index in selection)
 
         self.atomListVarDisplayed.set('')
         self.atomListVarPartner.set('')
@@ -154,7 +154,7 @@ class NOEDataViewer(Tk.Toplevel):
         self.switchLabelsState(['disabled'])
         w = evt.widget
         selection = w.curselection()
-        atomType_selection = [w.get(atom_number_index) for atom_number_index in selection]
+        atomType_selection = (w.get(atom_number_index) for atom_number_index in selection)
         self.resiListVarPartner.set('')
         self.atomListVarPartner.set('')
 
@@ -181,7 +181,7 @@ class NOEDataViewer(Tk.Toplevel):
 
             if len(self.atomScrollListDisplayed.curselection()) == 1:
 
-                partnerResidue_selection = [w.get(resi_number_index) for resi_number_index in selection]
+                partnerResidue_selection = (w.get(resi_number_index) for resi_number_index in selection)
 
                 selectedPartnerAtoms = [self.resiListPartnerController.resiNumberList[residue.replace(" ", "\ ")] for residue in partnerResidue_selection]
 
@@ -197,7 +197,7 @@ class NOEDataViewer(Tk.Toplevel):
         """
         w = evt.widget
         selection = w.curselection()
-        atomType_selection = [w.get(atom_number_index) for atom_number_index in selection]
+        atomType_selection = (w.get(atom_number_index) for atom_number_index in selection)
         selectedPartnerAtoms = [self.atomListPartnerController.atomTypeList[atomType] for atomType in atomType_selection]
 
         if len(selection) == 1:

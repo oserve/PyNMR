@@ -56,7 +56,7 @@ class ConstraintSelectionPanel(ttk.LabelFrame):
         self.structureManagement.grid(row=1, column=0, columnspan=2)
 
     def getInfo(self):
-        infos = {}
+        infos = dict()
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
@@ -70,9 +70,9 @@ class RangeSelectionPanel(ttk.LabelFrame):
         """
         ttk.LabelFrame.__init__(self, master, text=u"Range Selection")
 
-        self.RangesVars = {}
-        self.RangesCB = {}
-        self.RangesFunctions = {}
+        self.RangesVars = dict()
+        self.RangesCB = dict()
+        self.RangesFunctions = dict()
         self.ranges = ('intra', 'sequential', 'medium', 'long')
         self.widgetCreation()
 
@@ -118,8 +118,8 @@ class ViolationSelectionPanel(ttk.LabelFrame):
         """
         ttk.LabelFrame.__init__(self, master, text=u"Constraint state :")
 
-        self.ViolationsVars = {}
-        self.UnSatisfiedCB = {}
+        self.ViolationsVars = dict()
+        self.UnSatisfiedCB = dict()
         self.cutOff = Tk.DoubleVar(self)
         self.widgetCreation()
 

@@ -43,7 +43,7 @@ class NMRGUI(Tk.Toplevel):
         """
         Tk.Toplevel.__init__(self)
         self.title('PymolNMR')
-        self.resizable(0, 0)
+        self.resizable(width=False, height=False)
         self.noteBook = ttk.Notebook(self)
         self.mainPanel = mainPanel(self.noteBook)
         self.preferencesPanel = PreferencesPanel(self.noteBook)
@@ -80,7 +80,7 @@ class NMRGUI(Tk.Toplevel):
     def getInfo(self):
         """
         """
-        infos = {}
+        infos = dict()
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos

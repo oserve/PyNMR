@@ -58,7 +58,7 @@ class NOE(Constraint):
                 return 'intra'
             elif resi_diff == 1:
                 return 'sequential'
-            elif resi_diff > 1 and resi_diff <= RangeCutOff:
+            elif RangeCutOff >= resi_diff > 1:
                 return 'medium'
             else:
                 return 'long'
@@ -77,7 +77,4 @@ class NOE(Constraint):
 
         self.constraintValues['actual'] = calcDistance(MVI.get_coordinates(self.atoms[0]),
                                                        MVI.get_coordinates(self.atoms[1]))
-        if self.constraintValues['actual'] <= 0.0:
-            return False
-        else:
-            return True
+        return self.constraintValues['actual'] > 0.0

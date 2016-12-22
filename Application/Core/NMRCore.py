@@ -54,7 +54,7 @@ class NMRCore(object):
     for loading and displaying constraints
     """
     def __init__(self):
-        self.ManagersList = {}
+        self.ManagersList = dict()
         self.constraintFilter = ""
         self.displayedConstraints = ConstraintSetManager('displayed')
 
@@ -125,13 +125,13 @@ class NMRCore(object):
                     sys.stderr.write("Residues set definition error : " +
                                      residuesList + "\n")
 
-        if not isinstance(dist_range, tuple):
+        if isinstance(dist_range, str):
             if dist_range == 'all':
                 dist_range = ('intra', 'sequential', 'medium', 'long')
             else:
                 dist_range = tuple(dist_range)
 
-        if not isinstance(violationState, tuple):
+        if isinstance(violationState, str):
             if violationState == 'all':
                 violationState = ('unSatisfied', 'Satisfied')
             else:
