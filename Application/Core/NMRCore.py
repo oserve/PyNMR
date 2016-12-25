@@ -55,7 +55,7 @@ class NMRCore(object):
     """
     def __init__(self):
         self.ManagersList = dict()
-        self.constraintFilter = ""
+        self.constraintFilter = None
         self.displayedConstraints = ConstraintSetManager('displayed')
 
     def loadNOE(self, filename):
@@ -75,9 +75,13 @@ class NMRCore(object):
             drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
+                    for aConstraint in self.ManagersList[managerName]:
+                        if aConstraint in self.displayedConstraints:
+                            self.displayedConstraints.removeConstraint(aConstraint)
+                            MVI.delete(drawer.IDConstraint(aConstraint))
                     filteredConstraints = self.constraintFilter.constraints(
                         self.ManagersList[managerName])
-                    selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
+                    selectedConstraints = [constraint for constraint in filteredConstraints]
                     drawer.drC(selectedConstraints, radius, colors)
                     self.displayedConstraints.extend(selectedConstraints)
                     if len(selectedConstraints) > 0:

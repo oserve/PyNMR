@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
+from sys import stderr
 
 import MolecularViewerInterface as MVI
 
@@ -165,10 +166,10 @@ class ConstraintSetManager(imConstraintSetManager):
         for constraint in constraints:
             self.append(constraint)
 
-    def removeConstraint(self, aConstraintNumber):
+    def removeConstraint(self, aConstraint):
         """
         """
-        if 0 <= int(aConstraintNumber) < len(self.constraints):
-            del self.constraints[int(aConstraintNumber)]
-        else:
-            raise IndexError("Constraint {} is unknown".format(aConstraintNumber))
+        try:
+            self.constraints.remove(aConstraint)
+        except ValueError:
+            stderr.write("Constraint " + str(aConstraint) +" is unknown")

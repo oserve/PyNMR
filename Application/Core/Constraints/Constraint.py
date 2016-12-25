@@ -72,7 +72,7 @@ class Constraint(object):
         """
         """
         if isinstance(anotherConstraint, self.__class__):
-            return any(AAtom == SAtom for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)))
+            return all(AAtom == SAtom for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)))
         else:
             return False
 
@@ -88,9 +88,7 @@ class Constraint(object):
         should limits future memory issues
         """
         residueKey = ''.join(str(value) for value in aParsingResult.values())
-        if residueKey not in Constraint.atoms:
-            Constraint.atoms[residueKey] = Atoms(**aParsingResult)
-        return Constraint.atoms[residueKey]
+        return Constraint.atoms.setdefault(residueKey, Atoms(**aParsingResult))
 
     def setName(self, aName):
         """Utility method to set constraint name
