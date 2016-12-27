@@ -108,7 +108,7 @@ class imConstraintSetManager(object):
         """
         newManager = imConstraintSetManager("")
         if isinstance(anotherManager, imConstraintSetManager):
-            newManager.constraints = tuple(constraint for constraint in self.constraints if constraint in anotherManager)
+            newManager.constraints = tuple(set(self.constraints) & set(anotherManager.constraints))
             newManager.name = self.name + anotherManager.name
         return newManager
 
@@ -141,7 +141,7 @@ class ConstraintSetManager(imConstraintSetManager):
 
     def __init__(self, managerName):
         super(ConstraintSetManager, self).__init__(managerName)
-        self.constraints = []
+        self.constraints = list()
         self.structure = ''
         self.format = ""
         self.fileText = ""
@@ -158,7 +158,8 @@ class ConstraintSetManager(imConstraintSetManager):
         update the list of residues
         """
         self.constraints.append(aConstraint)
-        aConstraint.setName(self.name)
+        if aConstraint.name == "":
+            aConstraint.name = self.name
 
     def extend(self, constraints):
         """

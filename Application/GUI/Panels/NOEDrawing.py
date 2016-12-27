@@ -31,6 +31,7 @@
 import ttk
 from ..DataViewer import NOEDataViewer
 from Application.DataControllers import NOEDataController
+from decoprofile import do_cprofile
 
 
 class NOEDrawingPanel(ttk.LabelFrame):
@@ -58,7 +59,8 @@ class NOEDrawingPanel(ttk.LabelFrame):
         self.sticksButton.grid(row=0, column=0)
         self.densityButton.grid(row=0, column=1)
         self.cleanButton.grid(row=0, column=2)
-
+    
+    @do_cprofile
     def showSticks(self):
         """
         """

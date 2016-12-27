@@ -32,11 +32,12 @@ import re
 import pickle
 import os
 from sys import stdout
+from collections import defaultdict
 import errors
 
 lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
 
-pdb = {}
+pdb = defaultdict(list)
 
 try:
     from pymol import cmd as PymolCmd
@@ -51,9 +52,9 @@ try:
 
         for atom in list_atoms.atom:
             signature = atom.get_signature().split(":")
-            pdb.setdefault(signature[3], []).append({'name': signature[5],
-                                                     'coord': atom.coord,
-                                                     'segi': atom.chain})
+            pdb[signature[3]].append({'name': signature[5],
+                                     'coord': atom.coord,
+                                     'segi': atom.chain})
 
         #with open(structure+".pyn", 'w') as fout:
         #    pickle.dump(pdb, fout)
@@ -135,7 +136,6 @@ def setBfactor(structure, residu, bFactor):
 
 def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
-
 
 def checkID(atomSet):
     """

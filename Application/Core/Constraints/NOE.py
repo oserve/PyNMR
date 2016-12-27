@@ -73,8 +73,8 @@ class NOE(Constraint):
     def setDistance(self):
         """Set actual distance of the constraint in the current structure file
         """
-        self.points = tuple(centerOfMass(MVI.get_coordinates(atom)) for atom in self.atoms)
+        coordinates = tuple(MVI.get_coordinates(atom) for atom in self.atoms)
+        self.points = tuple(centerOfMass(coordinate) for coordinate in coordinates)
 
-        self.constraintValues['actual'] = calcDistance(MVI.get_coordinates(self.atoms[0]),
-                                                       MVI.get_coordinates(self.atoms[1]))
+        self.constraintValues['actual'] = calcDistance(coordinates[0], coordinates[1])
         return self.constraintValues['actual'] > 0.0

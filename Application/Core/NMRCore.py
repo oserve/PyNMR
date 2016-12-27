@@ -101,6 +101,9 @@ class NMRCore(object):
             drawer = ConstraintDrawer()
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
+                    for aConstraint in self.ManagersList[managerName]:
+                        if aConstraint in self.displayedConstraints:
+                            self.displayedConstraints.removeConstraint(aConstraint)
                     filteredConstraints = self.constraintFilter.constraints(
                         self.ManagersList[managerName])
                     selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]

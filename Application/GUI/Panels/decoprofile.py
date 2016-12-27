@@ -2,7 +2,11 @@ import cProfile
 
 
 def do_cprofile(func):
+    """
+    """
     def profiled_func(*args, **kwargs):
+        """
+        """
         profile = cProfile.Profile()
         try:
             profile.enable()
@@ -10,5 +14,5 @@ def do_cprofile(func):
             profile.disable()
             return result
         finally:
-            profile.dump_stats('profileaftergenerators.cprof')
+            profile.dump_stats('profile.cprof')
     return profiled_func

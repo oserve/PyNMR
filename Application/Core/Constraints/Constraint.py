@@ -90,7 +90,14 @@ class Constraint(object):
         residueKey = ''.join(str(value) for value in aParsingResult.values())
         return Constraint.atoms.setdefault(residueKey, Atoms(**aParsingResult))
 
-    def setName(self, aName):
+    @property
+    def name(self):
+        """Utility method to set constraint name
+        """
+        return self.id.get('name', "")
+
+    @name.setter
+    def name(self, aName):
         """Utility method to set constraint name
         """
         self.id['name'] = aName

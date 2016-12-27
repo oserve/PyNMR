@@ -50,7 +50,6 @@ class ConstraintFilter(object):
         self.structure = structure
         self.method = method
         self.rangeCutOff = RangeCutOff
-        MVI.setPDB(self.structure)
         set_method(self.method)
 
     def filterAConstraint(self, aConstraint):
