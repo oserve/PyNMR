@@ -71,9 +71,8 @@ class imConstraintSetManager(object):
         """
         if self.structure != '':
             MVI.setPDB(self.structure)
-            if self.constraints:
-                return 1
-        return 0
+            return len(self.constraints) > 0
+        return False
 
     def constraintsManagerForDataType(self, dataType):
         """

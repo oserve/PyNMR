@@ -166,12 +166,11 @@ class CNSParser(constraintParser):
         """
         for aCNSConstraint in self.validConstraints:
             try:
-                segments = CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE)
+                segments = [segment.group(0).split()[1] for segment in CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE)]
                 numberOfSegments = 0
                 for numberOfSegments, segment in enumerate(segments):
-                    if segment.group(0) not in self.segments:
-                        self.segments.append(segment.group(0))
-                #numberOfSegments = len(segments)
+                    if segment not in self.segments:
+                        self.segments.append(segment)
 
                 residuesList = CNSParser.RegResi.finditer(aCNSConstraint, re.IGNORECASE)
 
