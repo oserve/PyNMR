@@ -32,7 +32,7 @@ from math import sqrt
 from itertools import product
 import errors
 
-distance_method = ""
+distance_method = None
 
 
 def set_method(newMethod):

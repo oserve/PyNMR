@@ -60,8 +60,7 @@ class ConstraintFilter(object):
                 if aConstraint.isValid():
                     if aConstraint.setValueFromStructure():
                         aConstraint.setViolationState(self.cutOff)
-                        if aConstraint.isSatisfied() in self.violationState:
-                            return True
+                        return aConstraint.isSatisfied() in self.violationState
                     else:
                         errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
                 else:

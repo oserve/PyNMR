@@ -30,18 +30,19 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 import re
+from collections import Iterator
 from Constraints.NOE import NOE
 
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
-class constraintParser(object):
+class constraintParser(Iterator):
     """
     """
 
     XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
-    AtTypeReg = re.compile('[CHON][A-Z]*')
+    AtTypeReg = re.compile(r'[CHON][A-Z]*')
 
     def __init__(self, text):
         """
@@ -49,12 +50,15 @@ class constraintParser(object):
         self.text = (aLine.strip() for aLine in text.split('\n'))
         self.inFileTab = list()
         self.segments = list()
-
-    def parseConstraints(self, aManager):
-        """
-        """
         self.prepareFile()
-        constraint_number = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        """
+        """
+
         for parsingResult in self.parseAConstraint():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
@@ -64,18 +68,16 @@ class constraintParser(object):
                     else:
                         aConstraint = NOE()
                         # No other constraint type supported ... for now !
-                        aConstraint.id["number"] = constraint_number
                         aConstraint.definition = parsingResult["definition"]
                         aConstraint.atoms = NOE.addAtoms(constraintParser.parseAtoms(parsingResult["residues"]))
                         aConstraint.setConstraintValues(parsingResult["values"][0],
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
-
-                        aManager.append(aConstraint)
-                        constraint_number += 1
-
+                        return aConstraint
             else:
                 stderr.write("Error while loading : " + parsingResult["definition"])
+                continue
+        raise StopIteration
 
     def prepareFile(self):
         """
@@ -120,7 +122,7 @@ class constraintParser(object):
 class CNSParser(constraintParser):
     """
     """
-    ParReg = re.compile('[()]')  # used in cns constraints loading. Suppression of ()
+    ParReg = re.compile(r'[()]')  # used in cns constraints loading. Suppression of ()
     SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
     RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
     SharpReg = re.compile('[#]')  # used in cns constraints loading. Replace # by *
@@ -130,8 +132,8 @@ class CNSParser(constraintParser):
     def __init__(self, text):
         """
         """
-        constraintParser.__init__(self, text)
         self.validConstraints = list()
+        constraintParser.__init__(self, text)
 
     def prepareFile(self):
         """
@@ -156,7 +158,7 @@ class CNSParser(constraintParser):
                 self.validConstraints.append(line.replace("ASSI", ""))
             elif CNSParser.RegResi.search(line) is not None:
                 self.validConstraints[-1] = self.validConstraints[-1] + line
-        self.validConstraints = [constraint for constraint in self.validConstraints if re.search(r'\d', constraint)]
+        self.validConstraints = (constraint for constraint in self.validConstraints if re.search(r'\d', constraint))
 
     def parseAConstraint(self):
         """Split CNS/XPLOR type constraint into an array, contening the name of

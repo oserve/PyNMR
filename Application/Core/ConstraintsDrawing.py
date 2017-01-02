@@ -56,7 +56,8 @@ class ConstraintDrawer(object):
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
 
-    def constraintsDensity(self, selectedConstraints):
+    @staticmethod
+    def constraintsDensity(selectedConstraints):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
@@ -81,7 +82,6 @@ class ConstraintDrawer(object):
         MVI.paintDensity(color_gradient, structure)
         return densityList.keys()
 
-    #@staticmethod
     def IDConstraint(self, aConstraint):#, UnSatisfactionMarker, SatisfactionMarker):
         """Returns name of constraints :
         Name_(constraint number)_(structureName)_(violation_state)
@@ -91,11 +91,11 @@ class ConstraintDrawer(object):
                 marker = self.UnSatisfactionMarker
             else:
                 marker = self.SatisfactionMarker
-            return aConstraint.id['name'] + str(aConstraint.id['number']) + marker + aConstraint.structureName
+            return aConstraint.name + str(aConstraint.id['number']) + marker + aConstraint.structureName
         else:
             stderr.write("Can not give ID : Violation state not defined for constraint : " +
                          aConstraint.structureName + "_" +
-                         aConstraint.id['name'] +
+                         aConstraint.name +
                          str(aConstraint.id['number']) + "\n" +
                          str(aConstraint) +
                          "\n")

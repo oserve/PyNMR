@@ -30,19 +30,19 @@
 # ----------------------------------------------------------------------
 import re
 from sys import stderr
+from collections import Sequence
 
 import MolecularViewerInterface as MVI
 
 
-class imConstraintSetManager(object):
+class imConstraintSetManager(Sequence):
     """Class to manage an immutable set of constraints
-    Usable as an iterator
     """
 
     AtTypeReg = re.compile('[CHON][A-Z]*')
 
     def __init__(self, managerName):
-        self.constraints = ()
+        self.constraints = tuple()
         self.name = managerName
 
     def __str__(self):
@@ -53,8 +53,12 @@ class imConstraintSetManager(object):
 
     __repr__ = __str__
 
-    def __iter__(self):
-        return self.constraints.__iter__()
+    def __getitem__(self, constraintIndex):
+        if constraintIndex < len(self.constraints):
+            self.constraints[constraintIndex].id['number'] = constraintIndex
+            return self.constraints[constraintIndex]
+        else:
+            raise IndexError("No constraint at index " + str(constraintIndex) + ".\n")
 
     # Constraints management methods
 
@@ -157,6 +161,7 @@ class ConstraintSetManager(imConstraintSetManager):
         update the list of residues
         """
         self.constraints.append(aConstraint)
+        aConstraint.id['number'] = len(self)
         if aConstraint.name == "":
             aConstraint.name = self.name
 
@@ -173,7 +178,7 @@ class ConstraintSetManager(imConstraintSetManager):
             self.constraints.remove(aConstraint)
         except ValueError:
             stderr.write("Constraint " + str(aConstraint) +" is unknown")
-    
+
     def removeConstraints(self, Constraints):
         """
         """

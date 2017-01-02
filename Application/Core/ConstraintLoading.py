@@ -31,7 +31,7 @@
 
 # DistanceConstraints loading functions
 from sys import stderr
-from ConstraintManager import ConstraintSetManager
+from ConstraintManager import imConstraintSetManager
 import constraintParsers as CParsers
 
 
@@ -57,7 +57,7 @@ class ConstraintLoader(object):
         """Starts constraints loading, uses appropriate function
         depending on file type
         """
-        aManager = ConstraintSetManager(self.managerName)
+        aManager = imConstraintSetManager(self.managerName)
 
         if self.constraintDefinition in ('XPLOR', 'CNS'):
             aManager.format = "CNS"
@@ -69,7 +69,7 @@ class ConstraintLoader(object):
             stderr.write("Incorrect or unsupported constraint type.\n")
         if parser is not None:
             aManager.fileText = self.fileText
-            parser.parseConstraints(aManager)
+            aManager.constraints = tuple(constraint for constraint in parser)
 
         return aManager
 
