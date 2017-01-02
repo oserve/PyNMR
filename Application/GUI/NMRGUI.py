@@ -48,7 +48,7 @@ class NMRGUI(Tk.Toplevel):
         self.mainPanel = mainPanel(self.noteBook)
         self.preferencesPanel = PreferencesPanel(self.noteBook)
         self.About = About(self.noteBook)
-        self.panelsList = []
+        self.panelsList = list()
 
     def createPanels(self):
         """Main Frames (not IBM ;-)

@@ -173,3 +173,9 @@ class ConstraintSetManager(imConstraintSetManager):
             self.constraints.remove(aConstraint)
         except ValueError:
             stderr.write("Constraint " + str(aConstraint) +" is unknown")
+    
+    def removeConstraints(self, Constraints):
+        """
+        """
+        for Constraint in Constraints:
+            self.removeConstraint(Constraint)

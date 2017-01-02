@@ -61,22 +61,25 @@ class ConstraintDrawer(object):
         by the filter
         """
         densityStep = 10
-        constraintList = dict()
+        densityList = dict()
         for aConstraint in selectedConstraints:
-            for resi in aConstraint.resis:
-                constraintList[resi['number']] = constraintList.get(resi['number'], 0) + densityStep
+            for atom in aConstraint.atoms:
+                densityList[atom] = densityList.get(atom, 0) + densityStep
 
-        return constraintList
+        return densityList
 
     def paD(self, selectedConstraints, structure, color_gradient):
         """Uses b-factors to simulate constraint density on structure
         """
         densityList = self.constraintsDensity(selectedConstraints)
+        bFactors = dict()
+        for atom in densityList:
+            bFactors[atom.resi_number] = bFactors.get(atom.resi_number, 0) + densityList[atom]
         MVI.zeroBFactors(structure)
-        for residu, density in densityList.iteritems():
+        for residu, density in bFactors.iteritems():
             MVI.setBfactor(structure, residu, density)
         MVI.paintDensity(color_gradient, structure)
-        return densityList
+        return densityList.keys()
 
     #@staticmethod
     def IDConstraint(self, aConstraint):#, UnSatisfactionMarker, SatisfactionMarker):

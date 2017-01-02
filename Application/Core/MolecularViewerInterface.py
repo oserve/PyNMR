@@ -99,7 +99,7 @@ except ImportError:
         return tuple()
 
     def alterBFactors(structure, bFactor):
-        pass
+        stdout.write("Set BFactor " + str(bFactor) + " to " + structure + ".\n")
 
     def spectrum(color_gradient, structure):
         pass
@@ -131,7 +131,7 @@ def zeroBFactors(structure):
 
 
 def setBfactor(structure, residu, bFactor):
-    alterBFactors(structure + " & i. " + residu, bFactor)
+    alterBFactors(structure + " & i. " + str(residu), bFactor)
 
 
 def paintDensity(color_gradient, structure):

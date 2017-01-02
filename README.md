@@ -65,11 +65,11 @@ Possible future features :
 * Text list of constraints with real-time edit
 * Import other formats (CCPNMR, ...)
 
-Any help would be welcome to develop those features. I am definetly not a professional developper, this is done on my spare time and those would require a lot of time and probably competencies I do not have.
+Any help would be welcome to develop those features. I am definitly not a professional developper, this is done on my spare time and those would require a lot of time and probably competencies I do not have.
 
 Known difficulties :
 ------------------
-* When displaying a large number of constraints as sticks, Pymol performances decrease rapidly (Depends strongly on the performance of your computer):
+* When displaying a large number (> 1000's) of constraints as sticks, Pymol performances decrease rapidly (Depends strongly on the performance of your computer):
     * Avoid to draw all constraints if not necessary
     * Remove them before any other action if you can
-* Since this is a continuous work in progress, there might be some bugs I am not aware of. I am learning Python while coding this piece of sofware.
+* Since this is a continuous work in progress, there might be some bugs I am not aware of. I am learning Python while coding this piece of sofware. Please report them in the issue section of github.

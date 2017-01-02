@@ -62,7 +62,7 @@ def calcDistance(coord_init, coord_final):
     ((sum of all distances^-6)/number of distances)^-1/6
     or (sum of all distances^-6)^-1/6
     """
-    result = 0.0
+    result = None
 
     if len(coord_init) and len(coord_final):
         distance_list = (sqrt(sum((coord[0] - coord[1]) ** 2 for coord in zip(AtomA, AtomB))) for (AtomA, AtomB) in product(coord_init, coord_final))

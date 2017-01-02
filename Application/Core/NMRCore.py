@@ -101,18 +101,16 @@ class NMRCore(object):
             drawer = ConstraintDrawer()
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
-                    for aConstraint in self.ManagersList[managerName]:
-                        if aConstraint in self.displayedConstraints:
-                            self.displayedConstraints.removeConstraint(aConstraint)
+                    self.displayedConstraints.removeConstraints(self.ManagersList[managerName])
                     filteredConstraints = self.constraintFilter.constraints(
                         self.ManagersList[managerName])
-                    selectedConstraints = [constraint for constraint in filteredConstraints if constraint not in self.displayedConstraints]
+                    selectedConstraints = [constraint for constraint in filteredConstraints]
                     self.displayedConstraints.extend(selectedConstraints)
                     densityList = drawer.paD(selectedConstraints,
                                             self.ManagersList[managerName].structure,
                                             gradient)
                     if densityList:
-                        zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList.keys())
+                        zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList)
                         MVI.zoom(zoomSelection)
                         MVI.select('involRes', zoomSelection)
 
