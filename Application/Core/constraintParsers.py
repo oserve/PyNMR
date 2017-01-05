@@ -59,7 +59,7 @@ class constraintParser(Iterator):
         """
         """
 
-        for parsingResult in self.parseAConstraint():
+        for parsingResult in self.parseConstraints():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
                     for residue in parsingResult["residues"]: # filters H-Bonds
@@ -84,7 +84,7 @@ class constraintParser(Iterator):
         """
         raise NotImplementedError
 
-    def parseAConstraint(self):
+    def parseConstraints(self):
         """
         """
         raise NotImplementedError
@@ -105,7 +105,6 @@ class constraintParser(Iterator):
     def parseAtoms(parsingResult):
         """
         """
-        residues = list()
         for aResult in parsingResult:
             currentResidue = dict()
             if "resid" in aResult:
@@ -114,9 +113,7 @@ class constraintParser(Iterator):
                 currentResidue["resi_number"] = int(aResult["resi"])
             currentResidue["atoms"] = aResult["name"]
             currentResidue["segid"] = aResult.get("segid", 'A')
-
-            residues.append(currentResidue)
-        return residues
+            yield currentResidue
 
 
 class CNSParser(constraintParser):
@@ -160,8 +157,8 @@ class CNSParser(constraintParser):
                 self.validConstraints[-1] = self.validConstraints[-1] + line
         self.validConstraints = (constraint for constraint in self.validConstraints if re.search(r'\d', constraint))
 
-    def parseAConstraint(self):
-        """Split CNS/XPLOR type constraint into an array, contening the name of
+    def parseConstraints(self):
+        """Split CNS/XPLOR type constraint into an array, containing the name of
         the residues (as arrays), and the values of the parameter associated to
         the constraint. It should be independant from the type of constraint
         (dihedral, distance, ...)
@@ -234,7 +231,7 @@ class CYANAParser(constraintParser):
         """
         self.inFileTab = self.text
 
-    def parseAConstraint(self):
+    def parseConstraints(self):
         """
         """
         for aConstraintLine in self.inFileTab:

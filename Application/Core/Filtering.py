@@ -28,13 +28,14 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+from collections import Iterable
 
 import errors
 import MolecularViewerInterface as MVI
 from Geom import set_method
 
 
-class ConstraintFilter(object):
+class ConstraintFilter(Iterable):
     """
 
     """
@@ -48,28 +49,22 @@ class ConstraintFilter(object):
         self.violationState = violationState
         self.cutOff = violCutoff
         self.structure = structure
-        self.method = method
         self.rangeCutOff = RangeCutOff
-        set_method(self.method)
+        self.constraints = None
+        set_method(method)
 
-    def filterAConstraint(self, aConstraint):
+    def __iter__(self):
         """Filter the constraints to be drawn.
         """
-        if aConstraint.getRange(self.rangeCutOff) in self.range:
-            if any(aResiNumber in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
-                if aConstraint.isValid():
-                    if aConstraint.setValueFromStructure():
-                        aConstraint.setViolationState(self.cutOff)
-                        return aConstraint.isSatisfied() in self.violationState
+        for aConstraint in self.constraints:
+            if aConstraint.getRange(self.rangeCutOff) in self.range:
+                if any(aResiNumber in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
+                    if aConstraint.isValid():
+                        if aConstraint.setValueFromStructure():
+                            aConstraint.setViolationState(self.cutOff)
+                            if aConstraint.isSatisfied() in self.violationState:
+                                yield aConstraint
+                        else:
+                            errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
                     else:
-                        errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
-                else:
-                    errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
-        return False
-
-    def constraints(self, constraintList):
-        for aConstraint in constraintList:
-            if self.filterAConstraint(aConstraint):
-                yield aConstraint
-            else:
-                pass
+                        errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)

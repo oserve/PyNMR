@@ -79,9 +79,8 @@ class NMRCore(object):
                         if aConstraint in self.displayedConstraints:
                             self.displayedConstraints.removeConstraint(aConstraint)
                             MVI.delete(drawer.IDConstraint(aConstraint))
-                    filteredConstraints = self.constraintFilter.constraints(
-                        self.ManagersList[managerName])
-                    selectedConstraints = [constraint for constraint in filteredConstraints]
+                    self.constraintFilter.constraints = self.ManagersList[managerName]
+                    selectedConstraints = [constraint for constraint in self.constraintFilter]
                     drawer.drC(selectedConstraints, radius, colors)
                     self.displayedConstraints.extend(selectedConstraints)
                     if len(selectedConstraints) > 0:
@@ -102,9 +101,8 @@ class NMRCore(object):
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
                     self.displayedConstraints.removeConstraints(self.ManagersList[managerName])
-                    filteredConstraints = self.constraintFilter.constraints(
-                        self.ManagersList[managerName])
-                    selectedConstraints = [constraint for constraint in filteredConstraints]
+                    self.constraintFilter.constraints = self.ManagersList[managerName]
+                    selectedConstraints = [constraint for constraint in self.constraintFilter]
                     self.displayedConstraints.extend(selectedConstraints)
                     densityList = drawer.paD(selectedConstraints,
                                             self.ManagersList[managerName].structure,

@@ -46,7 +46,7 @@ class imConstraintSetManager(Sequence):
         self.name = managerName
 
     def __str__(self):
-        return self.name + " contains " + str(len(self.constraints)) + " constraints.\n"
+        return "\n".join(str(constraint) for constraint in self)
 
     def __len__(self):
         return len(self.constraints)
@@ -177,7 +177,7 @@ class ConstraintSetManager(imConstraintSetManager):
         try:
             self.constraints.remove(aConstraint)
         except ValueError:
-            stderr.write("Constraint " + str(aConstraint) +" is unknown")
+            stderr.write("Constraint " + str(aConstraint) +" is unknown\n")
 
     def removeConstraints(self, Constraints):
         """
