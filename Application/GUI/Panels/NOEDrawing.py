@@ -73,6 +73,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                                     infos["cutOff"],
                                                     infos["method"],
                                                     infos["rangeCutOff"])
+
             self.NMRCommands.showSticks(infos["constraintFile"],
                                         infos["structure"],
                                         infos["colors"],

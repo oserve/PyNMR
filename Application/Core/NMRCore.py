@@ -38,7 +38,7 @@ import urllib2
 import shutil
 import gzip
 import tempfile
-
+from collections import MutableMapping
 
 # Custom Classes
 from ConstraintLoading import ConstraintLoader
@@ -49,14 +49,51 @@ from ConstraintManager import ConstraintSetManager
 import errors
 
 
-class NMRCore(object):
+class NMRCore(MutableMapping):
     """Low Level Interface Class
     for loading and displaying constraints
     """
     def __init__(self):
         self.ManagersList = dict()
         self.constraintFilter = None
-        self.displayedConstraints = ConstraintSetManager('displayed')
+        self.displayedConstraintsSticks = ConstraintSetManager('Sticks')
+        self.displayedConstraintsDensity = ConstraintSetManager('Density')
+
+    def __getitem__(self, key):
+        """Return a constraint Manager
+        """
+        if key in self.ManagersList:
+            return self.ManagersList[key]
+        else:
+            raise ValueError("No constraintManager named " + str(key) + "\n")
+
+    def __setitem__(self, key, item):
+        self.ManagersList[key] = item
+
+    def __delitem__(self, key):
+        if key in self.ManagersList:
+            del self.ManagersList[key]
+        else:
+            raise ValueError("No constraintManager named " + str(key) + "\n")
+
+    def __iter__(self):
+        return self.ManagersList.__iter__()
+
+    def __len__(self):
+        return len(self.ManagersList)
+
+    def get(self, key, alternative):
+        """
+        """
+        if key in self.ManagersList:
+            return self.ManagersList[key]
+        else:
+            return alternative
+
+    def keys(self):
+        """
+        """
+        return self.ManagersList.keys()
 
     def loadNOE(self, filename):
         """load NMR distance constraints, call for the correct file format
@@ -76,15 +113,15 @@ class NMRCore(object):
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
                     for aConstraint in self.ManagersList[managerName]:
-                        if aConstraint in self.displayedConstraints:
-                            self.displayedConstraints.removeConstraint(aConstraint)
+                        if aConstraint in self.displayedConstraintsSticks:
+                            self.displayedConstraintsSticks.removeConstraint(aConstraint)
                             MVI.delete(drawer.IDConstraint(aConstraint))
                     self.constraintFilter.constraints = self.ManagersList[managerName]
                     selectedConstraints = [constraint for constraint in self.constraintFilter]
                     drawer.drC(selectedConstraints, radius, colors)
-                    self.displayedConstraints.extend(selectedConstraints)
+                    self.displayedConstraintsSticks.extend(selectedConstraints)
                     if len(selectedConstraints) > 0:
-                        selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraints.atomsList)
+                        selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraintsSticks.atomsList)
                         MVI.select('involRes', selection)
                         MVI.zoom(selection)
             else:
@@ -100,10 +137,10 @@ class NMRCore(object):
             drawer = ConstraintDrawer()
             if self.ManagersList[managerName]:
                 if self.ManagersList[managerName].associateToPDB():
-                    self.displayedConstraints.removeConstraints(self.ManagersList[managerName])
+                    self.displayedConstraintsDensity.removeConstraints(self.ManagersList[managerName])
                     self.constraintFilter.constraints = self.ManagersList[managerName]
                     selectedConstraints = [constraint for constraint in self.constraintFilter]
-                    self.displayedConstraints.extend(selectedConstraints)
+                    self.displayedConstraintsDensity.extend(selectedConstraints)
                     densityList = drawer.paD(selectedConstraints,
                                             self.ManagersList[managerName].structure,
                                             gradient)
@@ -113,40 +150,19 @@ class NMRCore(object):
                         MVI.select('involRes', zoomSelection)
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
-                               violationState, violCutoff, method, rangeCutOff):
+                                violationState, violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
-        if residuesList == 'all':
-            resList = self.ManagersList[managerName].residuesList
-        else:
-            resList = set()
-            for resi_range in residuesList.split("+"):
-                aRange = resi_range.split("-")
-                if 1 <= len(aRange) <= 2:
-                    resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
-                else:
-                    sys.stderr.write("Residues set definition error : " +
-                                     residuesList + "\n")
+        if len(residuesList) == 0:
+            residuesList = self.ManagersList[managerName].residuesList
 
-        if isinstance(dist_range, str):
-            if dist_range == 'all':
-                dist_range = ('intra', 'sequential', 'medium', 'long')
-            else:
-                dist_range = tuple(dist_range)
-
-        if isinstance(violationState, str):
-            if violationState == 'all':
-                violationState = ('unSatisfied', 'Satisfied')
-            else:
-                violationState = tuple(violationState)
-        self.constraintFilter = ConstraintFilter(structure, resList, dist_range,
-                                                 violationState, violCutoff,
-                                                 method, rangeCutOff)
+        self.constraintFilter = ConstraintFilter(structure, residuesList, dist_range, violationState,
+                                                 violCutoff, method, rangeCutOff)
 
     def cleanScreen(self, managerName):
-        """Remove all sticks from pymol
+        """Remove all sticks
         """
-        self.displayedConstraints.removeAllConstraints()
+        self.displayedConstraintsSticks.removeAllConstraints()
         MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):

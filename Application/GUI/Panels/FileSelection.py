@@ -86,7 +86,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def updateFilelist(self):
         """
         """
-        managerList = " ".join(self.NMRCommands.ManagersList.keys()).strip()
+        managerList = " ".join(self.NMRCommands.keys()).strip()
         self.constraintsFileList.set(managerList)
         if len(managerList) == 0:
             self.infoLabelString.set('')
@@ -98,7 +98,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         toRemove = self.selectedFile
         if toRemove:
-            del self.NMRCommands.ManagersList[toRemove]
+            del self.NMRCommands[toRemove]
         self.updateFilelist()
 
     def saveFile(self):
@@ -132,8 +132,8 @@ class FileSelectionPanel(ttk.LabelFrame):
             index = int(selection[0])
             self.selectedFile = w.get(index)
             self.infoLabelString.set("Contains " +
-                                     str(len(self.NMRCommands.ManagersList[self.selectedFile])) +
-                                     " Constraints (" + self.NMRCommands.ManagersList[self.selectedFile].format + ")")
+                                     str(len(self.NMRCommands[self.selectedFile])) +
+                                     " Constraints (" + self.NMRCommands[self.selectedFile].format + ")")
 
     def getInfo(self):
         """

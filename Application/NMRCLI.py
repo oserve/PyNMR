@@ -30,8 +30,10 @@
 # ----------------------------------------------------------------------
 from sys import stderr, stdout
 from os.path import exists, basename
+import re
 from DataControllers import NOEDataController
 
+regInput = re.compile(r'[^09+-\,]')
 
 class NMRCLI(object):
     """
@@ -51,12 +53,13 @@ class NMRCLI(object):
         options
         """
         if structure != '':
-            if managerName == '' and len(self.Core.ManagersList) == 0:
+            if managerName == '' and len(self.Core) == 0:
                 stderr.write("No constraints loaded.\n")
             else:
                 if managerName == '':
-                    managerName = self.Core.ManagersList.keys()[0]
-                if managerName in self.Core.ManagersList:
+                    managerName = self.Core.keys()[0]
+                if managerName in self.Core:
+                    dist_range, violationState = interpret(dist_range, violationState)
                     self.Core.commandsInterpretation(structure, managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
@@ -80,7 +83,7 @@ class NMRCLI(object):
         """
         if exists(filename):
             self.Core.loadNOE(filename)
-            stdout.write(str(len(self.Core.ManagersList[basename(filename)])) + " constraints loaded.\n")
+            stdout.write(str(len(self.Core[basename(filename)])) + " constraints loaded.\n")
 
         else:
             stderr.write("File : " + filename + " has not been found.\n")
@@ -92,12 +95,14 @@ class NMRCLI(object):
         options
         """
         if structure != '':
-            if managerName == '' and len(self.Core.ManagersList) == 0:
+            if managerName == '' and len(self.Core) == 0:
                 stderr.write("No constraints loaded.\n")
             else:
                 if managerName == '':
-                    managerName = self.Core.ManagersList.keys()[0]
-                if managerName in self.Core.ManagersList:
+                    managerName = self.Core.keys()[0]
+                if managerName in self.Core:
+                    dist_range, violationState, residuesList = interpret(dist_range, violationState, residuesList)
+
                     self.Core.commandsInterpretation(structure, managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
@@ -132,6 +137,30 @@ class NMRCLI(object):
         """Call the command to clear the screen from all NMR
         restraints
         """
-        if filename in self.Core.ManagersList:
+        if filename in self.Core:
             self.Core.cleanScreen(filename)
             del self.dataControllers[filename]
+
+def interpret(dist_range, violationState, residuesList):
+    """
+    """
+    resList = set()
+    if len(regInput.findall(residuesList)) == 0:
+        for resi_range in residuesList.split("+"):
+            aRange = resi_range.split("-")
+            if 1 <= len(aRange) <= 2:
+                resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
+            else:
+                stderr.write("Residues set definition error : " +
+                                    residuesList + "\n")
+    if dist_range == 'all':
+        dist_range = ('intra', 'sequential', 'medium', 'long')
+    else:
+        dist_range = tuple(dist_range)
+
+    if violationState == 'all':
+        violationState = ('unSatisfied', 'Satisfied')
+    else:
+        violationState = tuple(violationState)
+
+    return (dist_range, violationState, resList)

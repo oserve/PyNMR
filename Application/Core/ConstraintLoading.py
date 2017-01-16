@@ -45,7 +45,7 @@ class ConstraintLoader(object):
         """
         self.fileName = fileName
         self.managerName = managerName
-        self.fileText = ""
+        self.fileText = None
 
     def loadConstraintsFromFile(self):
         """

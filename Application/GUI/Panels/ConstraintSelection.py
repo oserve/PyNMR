@@ -31,7 +31,11 @@
 
 import Tkinter as Tk
 import ttk
+import re
+from sys import stderr
 from ...Core import MolecularViewerInterface as MVI
+
+regInput = re.compile(r'[^09+-\,]')
 
 
 class ConstraintSelectionPanel(ttk.LabelFrame):
@@ -179,10 +183,23 @@ class StructureSelectionPanel(ttk.LabelFrame):
         """
         """
         return {"structure": self.structureList.get(),
-                "ranges": self.residueRanges.get()}
+                "ranges": interpret(self.residueRanges.get())}
 
     def updatePdbList(self, event):
         """
         """
         infos = self.mainApp.NMRInterface.getInfo()
         self.comboPDB['values'] = MVI.getModelsNames(infos['SatisfactionMarker'], infos['UnSatisfactionMarker'])
+
+def interpret(residuesList):
+    """
+    """
+    resList = set()
+    if len(regInput.findall(residuesList)) == 0:
+        for resi_range in residuesList.split("+"):
+            aRange = resi_range.split("-")
+            if 1 <= len(aRange) <= 2:
+                resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
+            else:
+                stderr.write("Residues set definition error : " + residuesList + "\n")
+    return resList
