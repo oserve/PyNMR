@@ -35,49 +35,27 @@ from ConstraintManager import imConstraintSetManager
 import constraintParsers as CParsers
 
 
-class ConstraintLoader(object):
-    """Classes used to lad constraints from
-    files and returns a constraintSetManager filled
-    with constraints
+def loadConstraintsFromFile(fileName, managerName):
+    """Starts constraints loading, uses appropriate function
+    depending on file type
     """
-    def __init__(self, fileName, managerName):
-        """
-        """
-        self.fileName = fileName
-        self.managerName = managerName
-        self.fileText = None
+    aManager = imConstraintSetManager(managerName)
 
-    def loadConstraintsFromFile(self):
-        """
-        """
-        self.constraintDefinition = self.loadFile()
-        return self.loadConstraints()
+    with open(fileName, 'r') as file_in:
+        fileText = file_in.read().upper()
 
-    def loadConstraints(self):
-        """Starts constraints loading, uses appropriate function
-        depending on file type
-        """
-        aManager = imConstraintSetManager(self.managerName)
+        constraintDefinition = CParsers.constraintParser.findConstraintType(fileText)
 
-        if self.constraintDefinition in ('XPLOR', 'CNS'):
+        if constraintDefinition in ('XPLOR', 'CNS'):
             aManager.format = "CNS"
-            parser = CParsers.CNSParser(self.fileText)
-        elif self.constraintDefinition in ('DYANA', 'CYANA'):
+            parser = CParsers.CNSParser(fileText)
+        elif constraintDefinition in ('DYANA', 'CYANA'):
             aManager.format = "XEASY"
-            parser = CParsers.CYANAParser(self.fileText)
+            parser = CParsers.CYANAParser(fileText)
         else:
             stderr.write("Incorrect or unsupported constraint type.\n")
         if parser is not None:
-            aManager.fileText = self.fileText
+            aManager.fileText = fileText
             aManager.constraints = tuple(constraint for constraint in parser)
 
         return aManager
-
-    def loadFile(self):
-        """
-        """
-
-        with open(self.fileName, 'r') as file_in:
-            self.fileText = file_in.read().upper()
-
-        return CParsers.constraintParser.findConstraintType(self.fileText)

@@ -41,7 +41,7 @@ import tempfile
 from collections import MutableMapping
 
 # Custom Classes
-from ConstraintLoading import ConstraintLoader
+from ConstraintLoading import loadConstraintsFromFile
 from Filtering import ConstraintFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
@@ -100,8 +100,7 @@ class NMRCore(MutableMapping):
         (CNS/CYANA),
         """
         managerName = path.basename(filename)
-        loader = ConstraintLoader(filename, managerName)
-        self.ManagersList[managerName] = loader.loadConstraintsFromFile()
+        self.ManagersList[managerName] = loadConstraintsFromFile(filename, managerName)
 
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
