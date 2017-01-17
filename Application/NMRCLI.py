@@ -33,7 +33,7 @@ from os.path import exists, basename
 import re
 from DataControllers import NOEDataController
 
-regInput = re.compile(r'[^09+-\,]')
+regInput = re.compile(r'[^0-9\+\-\,]')
 
 class NMRCLI(object):
     """
@@ -46,8 +46,8 @@ class NMRCLI(object):
         self.dataControllers = dict()
 
     def showNOE(self, structure, managerName, residuesList, dist_range,
-                     violationState, violCutoff, method, radius, colors,
-                     rangeCutOff, UnSatisfactionMarker, SatisfactionMarker):
+                violationState, violCutoff, method, radius, colors,
+                rangeCutOff, UnSatisfactionMarker, SatisfactionMarker):
         """Command to display NMR restraints as sticks on protein structure with
         different parameters : filtering according to distance, restraints display
         options
@@ -59,7 +59,7 @@ class NMRCLI(object):
                 if managerName == '':
                     managerName = self.Core.keys()[0]
                 if managerName in self.Core:
-                    dist_range, violationState = interpret(dist_range, violationState)
+                    residuesList, dist_range, violationState = interpret(dist_range, violationState, residuesList)
                     self.Core.commandsInterpretation(structure, managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
@@ -69,7 +69,7 @@ class NMRCLI(object):
                     self.dataControllers[managerName] = NOEDataController(self.Core, managerName, structure)
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
-                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getResiduesList()])) +
+                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].residuesList])) +
                                  " residues involved.\n")
 
                 else:
@@ -111,7 +111,7 @@ class NMRCLI(object):
 
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
-                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].getResiduesList()])) +
+                    stdout.write(str(len([residue for residue in self.dataControllers[managerName].residuesList])) +
                                  " residues involved.\n")
                 else:
                     stderr.write("Please check constraints filename.\n")
@@ -151,8 +151,7 @@ def interpret(dist_range, violationState, residuesList):
             if 1 <= len(aRange) <= 2:
                 resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
             else:
-                stderr.write("Residues set definition error : " +
-                                    residuesList + "\n")
+                stderr.write("Residues set definition error : " + residuesList + "\n")
     if dist_range == 'all':
         dist_range = ('intra', 'sequential', 'medium', 'long')
     else:

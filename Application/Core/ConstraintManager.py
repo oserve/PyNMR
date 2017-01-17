@@ -39,7 +39,7 @@ class imConstraintSetManager(Sequence):
     """Class to manage an immutable set of constraints
     """
 
-    AtTypeReg = re.compile('[CHON][A-Z]*')
+    AtTypeReg = re.compile(r'[CHON][A-Z]*')
 
     def __init__(self, managerName):
         self.constraints = tuple()
@@ -140,7 +140,7 @@ class ConstraintSetManager(imConstraintSetManager):
     Usable as an iterator
     """
 
-    AtTypeReg = re.compile('[CHON][A-Z]*')
+    AtTypeReg = re.compile(r'[CHON][A-Z]*')
 
     def __init__(self, managerName):
         super(ConstraintSetManager, self).__init__(managerName)

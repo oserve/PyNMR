@@ -100,27 +100,27 @@ class NMRCore(MutableMapping):
         (CNS/CYANA),
         """
         managerName = path.basename(filename)
-        self.ManagersList[managerName] = loadConstraintsFromFile(filename, managerName)
+        self[managerName] = loadConstraintsFromFile(filename, managerName)
 
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
         """Seeks for constraints that fit some criteria.
         """
         with errors.errorLog():
-            self.ManagersList[managerName].setPDB(structure)
+            self[managerName].setPDB(structure)
             drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
-            if self.ManagersList[managerName]:
-                if self.ManagersList[managerName].associateToPDB():
-                    for aConstraint in self.ManagersList[managerName]:
+            if self[managerName]:
+                if self[managerName].associateToPDB():
+                    for aConstraint in self[managerName]:
                         if aConstraint in self.displayedConstraintsSticks:
                             self.displayedConstraintsSticks.removeConstraint(aConstraint)
                             MVI.delete(drawer.IDConstraint(aConstraint))
-                    self.constraintFilter.constraints = self.ManagersList[managerName]
+                    self.constraintFilter.constraints = self[managerName]
                     selectedConstraints = [constraint for constraint in self.constraintFilter]
                     drawer.drC(selectedConstraints, radius, colors)
                     self.displayedConstraintsSticks.extend(selectedConstraints)
                     if len(selectedConstraints) > 0:
-                        selection = MVI.createSelection(self.ManagersList[managerName].structure, self.displayedConstraintsSticks.atomsList)
+                        selection = MVI.createSelection(self[managerName].structure, self.displayedConstraintsSticks.atomsList)
                         MVI.select('involRes', selection)
                         MVI.zoom(selection)
             else:
@@ -132,19 +132,18 @@ class NMRCore(MutableMapping):
         which is then paint on the model according to a color gradient
         """
         with errors.errorLog():
-            self.ManagersList[managerName].setPDB(structure)
+            self[managerName].setPDB(structure)
             drawer = ConstraintDrawer()
-            if self.ManagersList[managerName]:
-                if self.ManagersList[managerName].associateToPDB():
-                    self.displayedConstraintsDensity.removeConstraints(self.ManagersList[managerName])
-                    self.constraintFilter.constraints = self.ManagersList[managerName]
+            if self[managerName]:
+                if self[managerName].associateToPDB():
+                    self.displayedConstraintsDensity.removeConstraints(self[managerName])
+                    self.constraintFilter.constraints = self[managerName]
                     selectedConstraints = [constraint for constraint in self.constraintFilter]
                     self.displayedConstraintsDensity.extend(selectedConstraints)
-                    densityList = drawer.paD(selectedConstraints,
-                                            self.ManagersList[managerName].structure,
-                                            gradient)
+                    densityList = drawer.paD(selectedConstraints, self[managerName].structure,
+                                             gradient)
                     if densityList:
-                        zoomSelection = MVI.createSelection(self.ManagersList[managerName].structure, densityList)
+                        zoomSelection = MVI.createSelection(self[managerName].structure, densityList)
                         MVI.zoom(zoomSelection)
                         MVI.select('involRes', zoomSelection)
 
@@ -153,7 +152,7 @@ class NMRCore(MutableMapping):
         """Setup Filter for constraints
         """
         if len(residuesList) == 0:
-            residuesList = self.ManagersList[managerName].residuesList
+            residuesList = self[managerName].residuesList
 
         self.constraintFilter = ConstraintFilter(structure, residuesList, dist_range, violationState,
                                                  violCutoff, method, rangeCutOff)
@@ -169,7 +168,7 @@ class NMRCore(MutableMapping):
         it has been loaded.
         """
         with open(fileName, 'w') as fout:
-            fout.write(self.ManagersList[aManagerName].fileText)
+            fout.write(self[aManagerName].fileText)
 
     def downloadFromPDB(self, pdbCode, url):
         """Download constraint file from wwwPDB

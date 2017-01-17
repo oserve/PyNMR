@@ -46,7 +46,7 @@ class Constraint(object):
     or to determine if the constraints is unSatisfied or not
     """
 
-    AtTypeReg = re.compile('[CHON][A-Z]*')
+    AtTypeReg = re.compile(r'[CHON][A-Z]*')
     atoms = dict()
 
     def __init__(self):
