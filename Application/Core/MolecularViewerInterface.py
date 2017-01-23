@@ -33,6 +33,7 @@ import pickle
 import os
 from sys import stdout
 from collections import defaultdict
+from memoization import lru_cache
 import errors
 
 lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
@@ -58,6 +59,8 @@ try:
 
         #with open(structure+".pyn", 'w') as fout:
         #    pickle.dump(pdb, fout)
+        checkID.clear()
+        get_coordinates.clear()
 
     def select(selectionName, selection):
         if selectionName == "":
@@ -119,11 +122,15 @@ except ImportError:
     def getID(atomSet):
         return ""
 
+    @lru_cache(maxsize=8)
     def setPDB(structure):
         """
         """
         with open(structure + ".pyn", 'r') as fin:
             pdb.update(pickle.load(fin))
+        checkID.clear()
+        get_coordinates.clear()
+
 
 
 def zeroBFactors(structure):
@@ -137,6 +144,7 @@ def setBfactor(structure, residu, bFactor):
 def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
 
+@lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others
 def checkID(atomSet):
     """
     """
@@ -179,7 +187,7 @@ def checkID(atomSet):
     else:
         return {'valid': check, 'NewData': None}
 
-
+@lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others
 def get_coordinates(atomSet):
     """
     """
