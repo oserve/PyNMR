@@ -77,12 +77,12 @@ class NMRCLI(object):
         else:
             stderr.write("Please enter a structure name.\n")
 
-    def loadNOE(self, filename):
+    def LoadConstraints(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
         """
         if exists(filename):
-            self.Core.loadNOE(filename)
+            self.Core.LoadConstraints(filename)
             stdout.write(str(len(self.Core[basename(filename)])) + " constraints loaded.\n")
 
         else:
@@ -122,7 +122,7 @@ class NMRCLI(object):
                     violationState, violCutoff, method, rangeCutOff,
                     radius, colors, UnSatisfactionMarker, SatisfactionMarker):
         """Combine two previous defined functions : load and display"""
-        self.loadNOE(filename)
+        self.LoadConstraints(filename)
         self.showNOE(structure, basename(filename), residuesList, dist_range,
                      violationState, violCutoff, method, radius, colors,
                      rangeCutOff, UnSatisfactionMarker, SatisfactionMarker)

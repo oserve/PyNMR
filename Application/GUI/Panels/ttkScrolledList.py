@@ -177,3 +177,15 @@ class ScrolledList(ttk.Frame):
         """
         """
         self.listbox.bind(sequence, func, add)
+
+    @property
+    def exportselection(self):
+        """Utility method to set constraint name
+        """
+        return self.listbox.exportselection
+
+    @exportselection.setter
+    def exportselection(self, exportSetting):
+        """Utility method to set constraint name
+        """
+        self.listbox.exportselection = exportSetting

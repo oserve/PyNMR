@@ -95,7 +95,7 @@ class NMRCore(MutableMapping):
         """
         return self.ManagersList.keys()
 
-    def loadNOE(self, filename):
+    def LoadConstraints(self, filename):
         """load NMR distance constraints, call for the correct file format
         (CNS/CYANA),
         """
@@ -174,8 +174,8 @@ class NMRCore(MutableMapping):
         """Download constraint file from wwwPDB
         if available.
         """
-        PDBfileName = pdbCode.lower() + ".mr"
-        zippedFileName = PDBfileName + ".gz"
+        PDBConstraintsFileName = pdbCode.lower() + ".mr"
+        zippedFileName = PDBConstraintsFileName + ".gz"
         workdir = os.getcwd()
         tempDownloadDir = tempfile.mkdtemp()
         os.chdir(tempDownloadDir)
@@ -187,12 +187,12 @@ class NMRCore(MutableMapping):
             restraintFileRequest.close()
             with gzip.open(zippedFileName, 'rb') as zippedFile:
                 decodedFile = zippedFile.read()
-                with open(PDBfileName, 'w') as restraintFile:
+                with open(PDBConstraintsFileName, 'w') as restraintFile:
                     restraintFile.write(decodedFile)
             if path.exists(zippedFileName):
                 os.remove(zippedFileName)
-                self.loadNOE(PDBfileName)
-                os.remove(PDBfileName)
+                self.LoadConstraints(PDBConstraintsFileName)
+                os.remove(PDBConstraintsFileName)
                 os.chdir(workdir)
                 os.removedirs(tempDownloadDir)
         except IOError:

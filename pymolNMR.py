@@ -75,10 +75,10 @@ def showNOE(structure='', managerName="", residuesList='all',
                      violationState, violCutoff, method, radius, colors,
                      rangeCutOff, UnSatisfactionMarker, SatisfactionMarker)
 
-def loadNOE(filename=""):
+def LoadConstraints(filename=""):
     """
     """
-    PyNMRCLI.loadNOE(filename)
+    PyNMRCLI.LoadConstraints(filename)
 
 def showNOEDensity(structure='', managerName="", residuesList='all',
                    dist_range='all', violationState='all',
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
 try:
     from pymol.cmd import extend
-    extend("loadNOE", loadNOE)
+    extend("LoadConstraints", LoadConstraints)
     extend("showNOE", showNOE)
     extend("showNOEDensity", showNOEDensity)
     extend("loadAndShow", loadAndShow)

@@ -63,7 +63,7 @@ class FileSelectionPanel(ttk.LabelFrame):
     def widgetCreation(self):
         """
         """
-        self.constraintsList.listbox.exportselection = 0
+        self.constraintsList.exportselection = 0
         self.constraintsList.grid(row=0, column=1, rowspan=4)
         self.loadFileButton.grid(row=0, column=0)
         self.removeFileButton.grid(row=1, column=0)
@@ -80,18 +80,18 @@ class FileSelectionPanel(ttk.LabelFrame):
         filename = tkFileDialog.askopenfilename(
             title="Open a constraint file")
         if len(filename):
-            self.NMRCommands.loadNOE(filename)
+            self.NMRCommands.LoadConstraints(filename)
             self.updateFilelist()
 
     def updateFilelist(self):
         """
         """
-        managerList = " ".join(self.NMRCommands.keys()).strip()
-        self.constraintsFileList.set(managerList)
-        if len(managerList) == 0:
+        fileList = " ".join(self.NMRCommands.keys()).strip()
+        self.constraintsFileList.set(fileList)
+        if len(fileList) == 0:
             self.infoLabelString.set('')
         else:
-            self.constraintsList.listbox.activate(len(managerList) - 1)
+            self.constraintsList.listbox.activate(len(fileList) - 1)
 
     def removeFile(self):
         """
