@@ -59,7 +59,6 @@ try:
 
         #with open(structure+".pyn", 'w') as fout:
         #    pickle.dump(pdb, fout)
-        checkID.clear()
         get_coordinates.clear()
 
     def select(selectionName, selection):
@@ -128,7 +127,6 @@ except ImportError:
         """
         with open(structure + ".pyn", 'r') as fin:
             pdb.update(pickle.load(fin))
-        checkID.clear()
         get_coordinates.clear()
 
 
@@ -144,7 +142,6 @@ def setBfactor(structure, residu, bFactor):
 def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
 
-@lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others
 def checkID(atomSet):
     """
     """

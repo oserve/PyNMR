@@ -102,10 +102,8 @@ class RangeSelectionPanel(ttk.LabelFrame):
         """
         """
         self.RangesVars["all"].set(1)
-        for aRange in self.ranges:
-            if self.RangesVars[aRange].get() == 0:
-                self.RangesVars["all"].set(0)
-                break
+        if any(self.RangesVars[aRange].get() == 0 for aRange in self.ranges):
+            self.RangesVars["all"].set(0)
 
     def getInfo(self):
         """

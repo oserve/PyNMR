@@ -53,7 +53,7 @@ def loadConstraintsFromFile(fileName, managerName):
             aManager.format = "XEASY"
             parser = CParsers.CYANAParser(fileText)
         else:
-            stderr.write("Incorrect or unsupported constraint type.\n")
+            stderr.write("Incorrect or unsupported constraint type : " + constraintDefinition + ".\n")
         if parser is not None:
             aManager.fileText = fileText
             aManager.constraints = tuple(constraint for constraint in parser)
