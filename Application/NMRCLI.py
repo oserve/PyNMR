@@ -33,7 +33,7 @@ from os.path import exists, basename
 import re
 from DataControllers import NOEDataController
 
-regInput = re.compile(r'[^0-9\+\-\,]')
+regInput = re.compile(r'[^0-9+\-\,\s]')
 
 class NMRCLI(object):
     """

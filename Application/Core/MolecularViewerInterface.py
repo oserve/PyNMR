@@ -79,12 +79,12 @@ try:
     def zoom(selection):
         PymolCmd.zoom(selection)
 
-    def drawConstraint(points, color, aRadius, ID):
+    def drawConstraint(points, color, aRadius, IDNumber):
         """used to draw a NOE constraint between two sets of atoms
                 using cgo from Pymol
         """
         cons = [CYLINDER] + list(points[0]) + list(points[1]) + [aRadius] + color
-        PymolCmd.load_cgo(cons, ID)
+        PymolCmd.load_cgo(cons, IDNumber)
 
     def delete(selectionName):
         PymolCmd.delete(selectionName)

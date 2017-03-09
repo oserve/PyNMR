@@ -35,7 +35,7 @@ import re
 from sys import stderr
 from ...Core import MolecularViewerInterface as MVI
 
-regInput = re.compile(r'[^09+-\,]')
+regInput = re.compile(r'[^0-9+\-\,\s]')
 
 
 class ConstraintSelectionPanel(ttk.LabelFrame):
@@ -200,4 +200,5 @@ def interpret(residuesList):
                 resList.update(str(residueNumber) for residueNumber in xrange(int(aRange[0]), int(aRange[-1]) + 1))
             else:
                 stderr.write("Residues set definition error : " + residuesList + "\n")
+
     return resList

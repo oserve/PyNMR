@@ -58,7 +58,7 @@ class ConstraintFilter(Iterable):
         """
         for aConstraint in self.constraints:
             if aConstraint.getRange(self.rangeCutOff) in self.range:
-                if any(aResiNumber in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
+                if any(str(aResiNumber) in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
                     if aConstraint.isValid():
                         if aConstraint.setValueFromStructure():
                             aConstraint.setViolationState(self.cutOff)
