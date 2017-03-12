@@ -56,8 +56,7 @@ class NMRCore(MutableMapping):
     def __init__(self):
         self.ManagersList = dict()
         self.constraintFilter = None
-        self.displayedConstraintsSticks = ConstraintSetManager('Sticks')
-        self.displayedConstraintsDensity = ConstraintSetManager('Density')
+        self.drawer = ConstraintDrawer()
 
     def __getitem__(self, key):
         """Return a constraint Manager
@@ -108,23 +107,19 @@ class NMRCore(MutableMapping):
         """
         with errors.errorLog():
             self[managerName].setPDB(structure)
-            drawer = ConstraintDrawer(UnSatisfactionMarker, SatisfactionMarker)
+            self.drawer.UnSatisfactionMarker, self.drawer.SatisfactionMarker = UnSatisfactionMarker, SatisfactionMarker
             if self[managerName]:
                 if self[managerName].associateToPDB():
-                    for aConstraint in self[managerName]:
-                        if aConstraint in self.displayedConstraintsSticks:
-                            self.displayedConstraintsSticks.removeConstraint(aConstraint)
-                            MVI.delete(drawer.IDConstraint(aConstraint))
                     self.constraintFilter.constraints = self[managerName]
-                    selectedConstraints = [constraint for constraint in self.constraintFilter]
-                    drawer.drC(selectedConstraints, radius, colors)
-                    self.displayedConstraintsSticks.extend(selectedConstraints)
-                    if len(selectedConstraints) > 0:
-                        selection = MVI.createSelection(self[managerName].structure, self.displayedConstraintsSticks.atomsList)
-                        MVI.select('involRes', selection)
+                    selectedAtoms = self.drawer.drC(self.constraintFilter, radius, colors)
+                    if len(selectedAtoms) > 0:
+                        selection = MVI.createSelection(self[managerName].structure, selectedAtoms)
+                        MVI.select('involvedRes', selection)
                         MVI.zoom(selection)
+                else:
+                    errors.add_error_message("No structure selected.")
             else:
-                errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...\n")
+                errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
     def showNOEDensity(self, managerName, structure, gradient):
         """Seeks for constraints that fit criteria, increases a counter for
@@ -133,26 +128,27 @@ class NMRCore(MutableMapping):
         """
         with errors.errorLog():
             self[managerName].setPDB(structure)
-            drawer = ConstraintDrawer()
             if self[managerName]:
                 if self[managerName].associateToPDB():
-                    self.displayedConstraintsDensity.removeConstraints(self[managerName])
                     self.constraintFilter.constraints = self[managerName]
-                    selectedConstraints = [constraint for constraint in self.constraintFilter]
-                    self.displayedConstraintsDensity.extend(selectedConstraints)
-                    densityList = drawer.paD(selectedConstraints, self[managerName].structure,
-                                             gradient)
-                    if densityList:
+                    densityList = self.drawer.paD(self.constraintFilter,
+                                                  self[managerName].structure,
+                                                  gradient)
+                    if len(densityList) > 0:
                         zoomSelection = MVI.createSelection(self[managerName].structure, densityList)
                         MVI.zoom(zoomSelection)
-                        MVI.select('involRes', zoomSelection)
+                        MVI.select('involvedRes', zoomSelection)
+                else:
+                    errors.add_error_message("No structure selected.")
+            else:
+                errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
                                 violationState, violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
         if len(residuesList) == 0:
-            residuesList = self[managerName].residuesList
+            residuesList = set(str(aResidueNumber) for aResidueNumber in self[managerName].residuesList)
 
         self.constraintFilter = ConstraintFilter(structure, residuesList, dist_range, violationState,
                                                  violCutoff, method, rangeCutOff)
@@ -160,7 +156,7 @@ class NMRCore(MutableMapping):
     def cleanScreen(self, managerName):
         """Remove all sticks
         """
-        self.displayedConstraintsSticks.removeAllConstraints()
+        self.drawer.displayedConstraintsSticks.removeAllConstraints()
         MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):

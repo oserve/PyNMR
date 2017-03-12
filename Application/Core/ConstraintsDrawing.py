@@ -31,6 +31,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
+from ConstraintManager import  ConstraintSetManager
 import MolecularViewerInterface as MVI
 
 
@@ -43,29 +44,55 @@ class ConstraintDrawer(object):
         """
         self.UnSatisfactionMarker = UnSatisfactionMarker
         self.SatisfactionMarker = SatisfactionMarker
+        self.displayedConstraintsSticks = ConstraintSetManager("")
+        self.displayedConstraintsDensity = ConstraintSetManager("")
 
     def drC(self, selectedConstraints, radius, colors):
         """
         Draw an array of constraints according to the filter defined by user,
         using the drawConstraint function
         """
-        for aConstraint in selectedConstraints:
+        tempList = list()
+        for number, aConstraint in enumerate(selectedConstraints):
+            if len(self.displayedConstraintsSticks) > number:
+                try:
+                    self.displayedConstraintsSticks.removeConstraint(aConstraint)
+                    MVI.delete(self.IDConstraint(aConstraint))
+                except ValueError:
+                    pass
+            tempList.append(aConstraint)
+        # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
+        for aConstraint in tempList:
             if aConstraint.satisfaction == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction == 'Satisfied':
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
+            self.displayedConstraintsSticks.append(aConstraint)
 
-    @staticmethod
-    def constraintsDensity(selectedConstraints):
+        return self.displayedConstraintsSticks.atomsList
+
+    def constraintsDensity(self, selectedConstraints):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
         densityStep = 10
         densityList = dict()
-        for aConstraint in selectedConstraints:
+
+        tempList = list()
+        for number, aConstraint in enumerate(selectedConstraints):
+            if len(self.displayedConstraintsDensity) > number:
+                try:
+                    self.displayedConstraintsDensity.removeConstraint(aConstraint)
+                    #MVI.delete(self.IDConstraint(aConstraint))
+                except ValueError:
+                    pass
+            tempList.append(aConstraint)
+        # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
+        for aConstraint in tempList:
             for atom in aConstraint.atoms:
                 densityList[atom] = densityList.get(atom, 0) + densityStep
+            self.displayedConstraintsDensity.append(aConstraint)
 
         return densityList
 
@@ -82,7 +109,7 @@ class ConstraintDrawer(object):
         MVI.paintDensity(color_gradient, structure)
         return densityList.keys()
 
-    def IDConstraint(self, aConstraint):#, UnSatisfactionMarker, SatisfactionMarker):
+    def IDConstraint(self, aConstraint): # UnSatisfactionMarker, SatisfactionMarker):
         """Returns name of constraints :
         Name_(constraint number)_(structureName)_(violation_state)
         """

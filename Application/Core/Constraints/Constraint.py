@@ -71,16 +71,13 @@ class Constraint(object):
     def __eq__(self, anotherConstraint):
         """
         """
-        if isinstance(anotherConstraint, self.__class__):
-            return all(AAtom == SAtom for AAtom, SAtom in zip(sorted(anotherConstraint.atoms), sorted(self.atoms)))
-        else:
-            return False
+        return isinstance(anotherConstraint, self.__class__) and all(AAtom == SAtom for AAtom, SAtom in zip(anotherConstraint.atoms, self.atoms)) # assume sorted
 
     @classmethod
     def addAtoms(cls, parsingResult):
         """
         """
-        return [Constraint.addAtom(aResult) for aResult in parsingResult]
+        return sorted([Constraint.addAtom(aResult) for aResult in parsingResult])
 
     @classmethod
     def addAtom(cls, aParsingResult):

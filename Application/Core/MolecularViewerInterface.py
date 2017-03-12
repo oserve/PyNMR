@@ -121,7 +121,6 @@ except ImportError:
     def getID(atomSet):
         return ""
 
-    @lru_cache(maxsize=8)
     def setPDB(structure):
         """
         """
