@@ -28,8 +28,8 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from math import sqrt
-from itertools import product
+from math import sqrt, fsum
+from itertools import product, izip
 import errors
 
 distance_method = None
@@ -47,11 +47,11 @@ def centerOfMass(coords):
     assumes equal weights for atoms (usually protons)
     """
 
-    if coords:
+    try:
         sumCoords = (sum(coord) for coord in zip(*coords))
         numCoords = len(coords)
         return tuple(coord/numCoords for coord in sumCoords)
-    else:
+    except ValueError:
         return (0, 0, 0)
 
 # Methods for distance constraints
@@ -64,18 +64,19 @@ def calcDistance(coord_init, coord_final):
     """
     result = None
 
-    if len(coord_init) and len(coord_final):
-        distance_list = (sqrt(sum((coord[0] - coord[1]) ** 2 for coord in zip(AtomA, AtomB))) for (AtomA, AtomB) in product(coord_init, coord_final))
-        try:
-            sum6 = sum(pow(distance, -6) for distance in distance_list)
-            if distance_method == 'ave6':
-                result = pow(sum6/len(distance_list), -1./6)
-            elif distance_method == 'sum6':
-                result = pow(sum6, -1./6)
-        except ValueError:
-            errors.add_error_message("Problem using coordinates : " +
-                                        str(coord_init) + " " +
-                                        str(coord_final) + "\n" +
-                                        " and distances list" +
-                                        str(distance_list) + "\n")
+    try:
+        distance_list = (sqrt(fsum((coord[0] - coord[1]) ** 2 for coord in izip(AtomA, AtomB))) for (AtomA, AtomB) in product(coord_init, coord_final))
+        number_of_distances = len(coord_init) * len(coord_final)
+        sum6 = fsum(pow(distance, -6) for distance in distance_list)
+        if distance_method == 'ave6':
+            result = pow(sum6/number_of_distances, -1./6)
+        elif distance_method == 'sum6':
+            result = pow(sum6, -1./6)
+    except (ValueError, TypeError):
+        errors.add_error_message("Problem using coordinates : " +
+                                 str(coord_init) + " " +
+                                 str(coord_final) + "\n" +
+                                 " and distances list : " +
+                                 str(distance_list) + "\n")
+
     return result
