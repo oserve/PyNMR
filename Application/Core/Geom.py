@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from math import sqrt, fsum
+from operator import mul, sub
 from itertools import product, izip
 import errors
 
@@ -48,7 +49,7 @@ def centerOfMass(coords):
     """
 
     try:
-        sumCoords = (sum(coord) for coord in zip(*coords))
+        sumCoords = (sum(coord) for coord in izip(*coords))
         numCoords = len(coords)
         return tuple(coord/numCoords for coord in sumCoords)
     except ValueError:
@@ -57,7 +58,7 @@ def centerOfMass(coords):
 # Methods for distance constraints
 
 
-def calcDistance(coord_init, coord_final):
+def calcDistance(*coords):
     """    Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
     or (sum of all distances^-6)^-1/6
@@ -65,18 +66,17 @@ def calcDistance(coord_init, coord_final):
     result = None
 
     try:
-        distance_list = (sqrt(fsum((coord[0] - coord[1]) ** 2 for coord in izip(AtomA, AtomB))) for (AtomA, AtomB) in product(coord_init, coord_final))
-        number_of_distances = len(coord_init) * len(coord_final)
+        distance_list = (sqrt(fsum(sub(*coord) ** 2 for coord in izip(*atoms))) for atoms in product(*coords))
         sum6 = fsum(pow(distance, -6) for distance in distance_list)
         if distance_method == 'ave6':
+            number_of_distances = reduce(mul, (len(coord) for coord in coords))
             result = pow(sum6/number_of_distances, -1./6)
         elif distance_method == 'sum6':
             result = pow(sum6, -1./6)
-    except (ValueError, TypeError):
+    except(ValueError, TypeError):
         errors.add_error_message("Problem using coordinates : " +
-                                 str(coord_init) + " " +
-                                 str(coord_final) + "\n" +
+                                 str(coords) + "\n" +
                                  " and distances list : " +
-                                 str(distance_list) + "\n")
+                                 str([distance for distance in distance_list]) + "\n")
 
     return result

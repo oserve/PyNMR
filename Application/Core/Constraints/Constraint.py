@@ -30,6 +30,7 @@
 # ----------------------------------------------------------------------
 import re
 from collections import namedtuple
+from itertools import izip
 
 from .. import MolecularViewerInterface as MVI
 
@@ -71,7 +72,7 @@ class Constraint(object):
     def __eq__(self, anotherConstraint):
         """
         """
-        return isinstance(anotherConstraint, self.__class__) and all(AAtom == SAtom for AAtom, SAtom in zip(anotherConstraint.atoms, self.atoms)) # assume sorted
+        return isinstance(anotherConstraint, self.__class__) and all(AAtom == SAtom for AAtom, SAtom in izip(anotherConstraint.atoms, self.atoms)) # assume sorted
 
     @classmethod
     def addAtoms(cls, parsingResult):
