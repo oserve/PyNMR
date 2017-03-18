@@ -54,7 +54,7 @@ class imConstraintSetManager(Sequence):
     __repr__ = __str__
 
     def __getitem__(self, constraintIndex):
-        if constraintIndex < len(self.constraints):
+        if 0 <= constraintIndex < len(self.constraints):
             self.constraints[constraintIndex].id['number'] = constraintIndex
             return self.constraints[constraintIndex]
         else:
@@ -113,6 +113,8 @@ class imConstraintSetManager(Sequence):
         if isinstance(anotherManager, imConstraintSetManager):
             newManager.constraints = tuple(set(self.constraints) & set(anotherManager.constraints))
             newManager.name = self.name + anotherManager.name
+        else:
+            raise TypeError(str(anotherManager) + " is not a " + str(type(self)) + "\n")
         return newManager
 
     @property
@@ -145,7 +147,7 @@ class ConstraintSetManager(imConstraintSetManager):
     def __init__(self, managerName):
         super(ConstraintSetManager, self).__init__(managerName)
         self.constraints = list()
-        self.structure = ''
+        self.structure = ""
         self.format = ""
         self.fileText = ""
 

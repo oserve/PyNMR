@@ -100,7 +100,7 @@ class NMRCLI(object):
             else:
                 if managerName == '':
                     managerName = self.Core.keys()[0]
-                if managerName in self.Core:
+                try:
                     dist_range, violationState, residuesList = interpret(dist_range, violationState, residuesList)
 
                     self.Core.commandsInterpretation(structure, managerName, residuesList,
@@ -113,7 +113,7 @@ class NMRCLI(object):
                                  " constraints used.\n")
                     stdout.write(str(len([residue for residue in self.dataControllers[managerName].residuesList])) +
                                  " residues involved.\n")
-                else:
+                except ValueError:
                     stderr.write("Please check constraints filename.\n")
         else:
             stderr.write("Please enter a structure name.\n")

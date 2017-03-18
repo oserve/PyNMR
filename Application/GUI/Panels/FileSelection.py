@@ -46,12 +46,12 @@ class FileSelectionPanel(ttk.LabelFrame):
         self.constraintsFileList = Tk.StringVar()
         self.infoLabelString = Tk.StringVar()
         self.loadFileButton = ttk.Button(self, text=u"Load file",
-                                        command=self.loadFile)
+                                         command=self.loadFile)
         self.removeFileButton = ttk.Button(self, text=u"Remove file",
-                                          command=self.removeFile)
+                                           command=self.removeFile)
         self.constraintsList = ScrolledList(self, listvariable=self.constraintsFileList)
         self.downloadButton = ttk.Button(self, text=u"Download \nfrom PDB",
-                                        command=self.downloadRestraintFileWin)
+                                         command=self.downloadRestraintFileWin)
         self.saveButton = ttk.Button(self, text=u'Save File',
                                      command=self.saveFile)
         self.infoLabel = ttk.Label(self, textvariable=self.infoLabelString)

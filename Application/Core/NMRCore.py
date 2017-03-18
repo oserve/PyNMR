@@ -81,13 +81,13 @@ class NMRCore(MutableMapping):
     def __len__(self):
         return len(self.ManagersList)
 
-    def get(self, key, alternative):
+    def get(self, key, default=None):
         """
         """
-        if key in self.ManagersList:
+        try:
             return self.ManagersList[key]
-        else:
-            return alternative
+        except ValueError:
+            return default
 
     def keys(self):
         """
@@ -108,7 +108,7 @@ class NMRCore(MutableMapping):
         with errors.errorLog():
             self[managerName].setPDB(structure)
             self.drawer.UnSatisfactionMarker, self.drawer.SatisfactionMarker = UnSatisfactionMarker, SatisfactionMarker
-            if self[managerName]:
+            try:
                 if self[managerName].associateToPDB():
                     self.constraintFilter.constraints = self[managerName]
                     selectedAtoms = self.drawer.drC(self.constraintFilter, radius, colors)
@@ -118,7 +118,7 @@ class NMRCore(MutableMapping):
                         MVI.zoom(selection)
                 else:
                     errors.add_error_message("No structure selected.")
-            else:
+            except ValueError:
                 errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
     def showNOEDensity(self, managerName, structure, gradient):
@@ -128,7 +128,7 @@ class NMRCore(MutableMapping):
         """
         with errors.errorLog():
             self[managerName].setPDB(structure)
-            if self[managerName]:
+            try:
                 if self[managerName].associateToPDB():
                     self.constraintFilter.constraints = self[managerName]
                     densityList = self.drawer.paD(self.constraintFilter,
@@ -140,7 +140,7 @@ class NMRCore(MutableMapping):
                         MVI.select('involvedRes', zoomSelection)
                 else:
                     errors.add_error_message("No structure selected.")
-            else:
+            except ValueError:
                 errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
     def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
