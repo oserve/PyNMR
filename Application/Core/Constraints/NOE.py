@@ -76,5 +76,5 @@ class NOE(Constraint):
         coordinates = tuple(MVI.get_coordinates(atom) for atom in self.atoms)
         self.points = tuple(centerOfMass(coordinate) for coordinate in coordinates)
 
-        self.constraintValues['actual'] = calcDistance(coordinates[0], coordinates[1])
+        self.constraintValues['actual'] = calcDistance(*coordinates)
         return self.constraintValues['actual'] > 0.0

@@ -56,15 +56,17 @@ class ConstraintFilter(Iterable):
     def __iter__(self):
         """Filter the constraints to be drawn.
         """
-        for aConstraint in self.constraints:
-            if aConstraint.getRange(self.rangeCutOff) in self.range:
-                if any(str(aResiNumber) in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
-                    if aConstraint.isValid():
-                        if aConstraint.setValueFromStructure():
-                            aConstraint.setViolationState(self.cutOff)
-                            if aConstraint.isSatisfied() in self.violationState:
-                                yield aConstraint
+        if isinstance(self.constraints, Iterable):
+            for aConstraint in self.constraints:
+                if aConstraint.getRange(self.rangeCutOff) in self.range:
+                    if any(str(aResiNumber) in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
+                        if aConstraint.isValid():
+                            if aConstraint.setValueFromStructure():
+                                if aConstraint.satisfaction(self.cutOff) in self.violationState:
+                                    yield aConstraint
+                            else:
+                                errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
                         else:
-                            errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
-                    else:
-                        errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
+                            errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
+        else:
+            raise UnboundLocalError("No constraints loaded in the constraints filter.\n")

@@ -54,7 +54,7 @@ class Constraint(object):
         """
         """
         self.id = dict()
-        self.satisfaction = ''
+        self.cutOff = 0
         self.definition = ''
         self.atoms = list()
         self.constraintValues = dict()
@@ -109,12 +109,6 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isSatisfied(self):
-        """
-        Returns yes or no according to the violation state
-        """
-        return self.satisfaction
-
     def isValid(self):
         """Return false if one of the atomsets is not valid
         calls checkid to check this assertion and modify
@@ -147,14 +141,16 @@ class Constraint(object):
         """
         return (atom.resi_number for atom in self.atoms)
 
-    def setViolationState(self, cutOff=0):
+    def satisfaction(self, cutOff=-1):
         """Set violation state, with optional additional cutoff
         """
-        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - cutOff):
-            self.satisfaction = 'unSatisfied'
+        if cutOff >= 0:
+            self.cutOff = cutOff
+        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - self.cutOff):
             self.constraintValues['closeness'] = 'tooClose'
-        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + cutOff):
-            self.satisfaction = 'unSatisfied'
+            return 'unSatisfied'
+        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + self.cutOff):
             self.constraintValues['closeness'] = 'tooFar'
+            return 'unSatisfied'
         else:
-            self.satisfaction = 'Satisfied'
+            return 'Satisfied'

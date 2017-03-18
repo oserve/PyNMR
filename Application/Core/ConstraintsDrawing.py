@@ -31,7 +31,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
-from ConstraintManager import  ConstraintSetManager
+from ConstraintManager import ConstraintSetManager
 import MolecularViewerInterface as MVI
 
 
@@ -63,9 +63,9 @@ class ConstraintDrawer(object):
             tempList.append(aConstraint)
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
-            if aConstraint.satisfaction == 'unSatisfied':
+            if aConstraint.satisfaction() == 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
-            elif aConstraint.satisfaction == 'Satisfied':
+            elif aConstraint.satisfaction() == 'Satisfied':
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
             self.displayedConstraintsSticks.append(aConstraint)
@@ -84,7 +84,7 @@ class ConstraintDrawer(object):
             if len(self.displayedConstraintsDensity) > number:
                 try:
                     self.displayedConstraintsDensity.removeConstraint(aConstraint)
-                    #MVI.delete(self.IDConstraint(aConstraint))
+                    MVI.delete(self.IDConstraint(aConstraint))
                 except ValueError:
                     pass
             tempList.append(aConstraint)
