@@ -31,10 +31,8 @@
 from sys import stderr
 import re
 from collections import Iterator
+import string
 from Constraints.NOE import NOE
-
-
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 class constraintParser(Iterator):
@@ -162,12 +160,13 @@ class CNSParser(constraintParser):
         the residues (as arrays), and the values of the parameter associated to
         the constraint. It should be independant from the type of constraint
         (dihedral, distance, ...)
+        It returns a dictionnary
         """
         for aCNSConstraint in self.validConstraints:
             try:
-                segments = [segment.group(0).split()[1] for segment in CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE)]
-                numberOfSegments = 0
-                for numberOfSegments, segment in enumerate(segments):
+                segments = tuple(segment.group(0).split()[1] for segment in CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE))
+                numberOfSegments = len(segments)
+                for segment in segments:
                     if segment not in self.segments:
                         self.segments.append(segment)
 
@@ -181,13 +180,13 @@ class CNSParser(constraintParser):
                         definitionArray = aDefinition.split()
                         residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                     if numberOfSegments > 0:
-                        residueParsingResult["segid"] = alphabet[self.segments.index(segments[indice])]
+                        residueParsingResult["segid"] = string.ascii_uppercase[self.segments.index(segments[indice])]
                     else:
                         residueParsingResult["segid"] = "A"
                     residues.append(residueParsingResult)
                 constraintParsingResult["residues"] = residues
 
-                if 'OR ' in aCNSConstraint:
+                if 'OR ' in aCNSConstraint: # only for NOE
                     self.constraintAmbiguity(constraintParsingResult["residues"])
 
                 constraintParsingResult["values"] = self.constraintValues(aCNSConstraint)
@@ -199,15 +198,15 @@ class CNSParser(constraintParser):
             yield constraintParsingResult
 
     @staticmethod
-    def constraintAmbiguity(constraintParsingResult):
+    def constraintAmbiguity(constraintResidues):
         """
         """
-        if constraintParsingResult[0] == constraintParsingResult[2] or constraintParsingResult[0] == constraintParsingResult[3]:
+        if constraintResidues[0] == constraintResidues[2] or constraintResidues[0] == constraintResidues[3]:
             indiceAmbiguous = 1
         else:
             indiceAmbiguous = 0
-        constraintParsingResult[indiceAmbiguous]['name'] = constraintParsingResult[indiceAmbiguous]['name'][0:-1] + "*"
-        constraintParsingResult = (constraintParsingResult[0], constraintParsingResult[1])
+        constraintResidues[indiceAmbiguous]['name'] = constraintResidues[indiceAmbiguous]['name'][0:-1] + "*"
+        constraintResidues = (constraintResidues[0], constraintResidues[1])
 
     @staticmethod
     def constraintValues(aCNSConstraint):

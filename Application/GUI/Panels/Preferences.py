@@ -170,7 +170,7 @@ class PreferencesPanel(ttk.LabelFrame):
         for position, (methodName, method) in enumerate(self.methodsList):
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
                             value=method).grid(row=position, column=1)
-
+        position += 1
         ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
 
         self.rangeCutOffEntry.grid(row=position, column=1)
