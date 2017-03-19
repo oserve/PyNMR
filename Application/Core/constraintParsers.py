@@ -119,8 +119,8 @@ class CNSParser(constraintParser):
     """
     ParReg = re.compile(r'[()]')  # used in cns constraints loading. Suppression of ()
     SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
-    RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#]*")  # match CNS Residue definition
-    SharpReg = re.compile(r'[#]')  # used in cns constraints loading. Replace # by *
+    RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*")  # match CNS Residue definition
+    SharpPlusReg = re.compile(r'[\+#]')  # used in cns constraints loading. Replace # by *
     RegSeg = re.compile(r'SEGI\w*\s+[\w\d]*')  # match CNS segid definition
     RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
 
@@ -176,7 +176,7 @@ class CNSParser(constraintParser):
                 residues = list()
                 for (indice, aResidue) in enumerate(residuesList):
                     residueParsingResult = dict()
-                    for aDefinition in CNSParser.SharpReg.sub('*', aResidue.group(0)).split("AND "):
+                    for aDefinition in CNSParser.SharpPlusReg.sub('*', aResidue.group(0)).split("AND "):
                         definitionArray = aDefinition.split()
                         residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
                     if numberOfSegments > 0:
