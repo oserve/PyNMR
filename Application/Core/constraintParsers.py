@@ -120,7 +120,7 @@ class CNSParser(constraintParser):
     ParReg = re.compile(r'[()]')  # used in cns constraints loading. Suppression of ()
     SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
     RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*")  # match CNS Residue definition
-    SharpPlusReg = re.compile(r'[\+#]')  # used in cns constraints loading. Replace # by *
+    SharpPlusReg = re.compile(r'[#]')  # used in cns constraints loading. Replace # by *
     RegSeg = re.compile(r'SEGI\w*\s+[\w\d]*')  # match CNS segid definition
     RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
 

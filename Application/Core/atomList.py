@@ -1,0 +1,141 @@
+# Copyright Notice
+# ================
+#
+# The PyMOL Plugin source code in this file is copyrighted, but you can
+# freely use and copy it as long as you don't change or remove any of
+# the copyright notices.
+#
+# ----------------------------------------------------------------------
+#               This PyMOL Plugin is Copyright (C) 2013 by
+#                 olivier serve <olivier dot serve at gmail dot com>
+#
+#                        All Rights Reserved
+#
+# Permission to use, copy, modify, distribute, and distribute modified
+# versions of this software and its documentation for any purpose and
+# without fee is hereby granted, provided that the above copyright
+# notice appear in all copies and that both the copyright notice and
+# this permission notice appear in supporting documentation, and that
+# the name(s) of the author(s) not be used in advertising or publicity
+# pertaining to distribution of the software without specific, written
+# prior permission.
+#
+# THE AUTHOR(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+# INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.  IN
+# NO EVENT SHALL THE AUTHOR(S) BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+# CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
+# USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+# ----------------------------------------------------------------------
+from collections import namedtuple
+from sys import stderr
+
+PDBAtom = namedtuple("PDBAtom", ['segid', 'resi_number', 'name', 'coord'])
+
+
+class atomList(object): # used as singleton
+    """
+    """
+    def __init__(self, name=""):
+        """
+        """
+        self.name = name
+        self.atoms = list()
+
+    def append(self, anAtom):
+        """
+        """
+        if isinstance(anAtom, PDBAtom):
+            self.atoms.append(anAtom)
+        else:
+            raise TypeError(str(anAtom) + " is not atom.\n")
+
+    def clear(self):
+        """
+        """
+        del self.atoms[:]
+        self.name = ""
+
+    def __len__(self):
+        """
+        """
+        return len(self.atoms)
+
+    def __getitem__(self, index):
+        """
+        """
+        if 0 <= index < len(self.atoms):
+            return self.atoms[index]
+        else:
+            raise IndexError("No atom at index " + str(index) + ".\n")
+
+    def __iter__(self):
+        return self.atoms.__iter__()
+
+    def atomsForSegid(self, aSegid=None):
+        """
+        """
+        selectedAtoms = atomList(self.name)
+        if aSegid is not None or "":
+            selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == aSegid]
+            return selectedAtoms
+        else:
+            return self
+
+    def atomsForResidueNumber(self, aNumber=None):
+        """
+        """
+        selectedAtoms = atomList(self.name)
+        if aNumber is not None or "":
+            selectedAtoms.atoms = [atom for atom in self.atoms if atom.resi_number == aNumber]
+            return selectedAtoms
+        else:
+            return self
+
+    def atomsForAtomName(self, aName=None):
+        """
+        """
+        selectedAtoms = atomList(self.name)
+        if aName is not None or "":
+            selectedAtoms.atoms = [atom for atom in self.atoms if atom.name == aName]
+            return selectedAtoms
+        else:
+            return self
+
+    def coordinatesForAtom(self, anAtom):
+        """
+        """
+        try:
+            selectedSeg = self.atomsForSegid(anAtom.segid)
+            selectedResi = selectedSeg.atomsForResidueNumber(anAtom.resi_number)
+            selectedAtom = selectedResi.atomsForAtomName(anAtom.atoms)
+        except AttributeError:
+            stderr.write(str(anAtom) + " is not an atom.\n")
+        if len(selectedAtom) > 0:
+            return tuple(atom.coord for atom in selectedAtom)
+        else:
+            raise ValueError
+
+    def atomsLikeAtom(self, anAtom):
+        """
+        """
+        try:
+            selectedSeg = self.atomsForSegid(anAtom.segid)
+            selectedResi = selectedSeg.atomsForResidueNumber(anAtom.resi_number)
+            selectedAtoms = atomList(self.name)
+            selectedAtoms.atoms = [atom for atom in selectedResi if anAtom.atoms in atom.name]
+            return selectedAtoms
+        except AttributeError:
+            stderr.write(str(anAtom) + " is not an atom.\n")
+
+    @property
+    def segids(self):
+        """
+        """
+        segids = list()
+        for atom in self.atoms:
+            if atom.segid not in segids:
+                segids.append(atom.segid)
+        return segids
+

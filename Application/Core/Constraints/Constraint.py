@@ -109,27 +109,6 @@ class Constraint(object):
         self.constraintValues['min'] = float(Vmin)
         self.constraintValues['plus'] = float(Vplus)
 
-    def isValid(self):
-        """Return false if one of the atomsets is not valid
-        calls checkid to check this assertion and modify
-        atoms data if it can
-        """
-        atoms = dict()
-        for index, atomSet in enumerate(self.atoms):
-            check = MVI.checkID(atomSet)
-            if check['valid'] is True:
-                if check['NewData'] is not None:
-                    atom = dict(atomSet._asdict())
-                    atom.update(check['NewData'])
-                    atoms[index] = Constraint.addAtom(atom)
-            else:
-                break
-        else:
-            for index, value in atoms.items():
-                self.atoms[index] = value
-            return True
-        return False
-
     def setValueFromStructure(self):
         """
         """

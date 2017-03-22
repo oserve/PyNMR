@@ -32,13 +32,13 @@ import re
 import pickle
 import os
 from sys import stdout
-from collections import defaultdict
+from atomList import atomList, PDBAtom
 from memoization import lru_cache
 import errors
 
-lastDigit = re.compile(r'\d(\b|\Z)')  # look for last digit of atom type (used in AtomSet)
+lastDigitsRE = re.compile(r'\d+\b')  # look for last digit of atom type (used in AtomSet)
 
-pdb = defaultdict(list)
+currentPDB = atomList()
 
 try:
     from pymol import cmd as PymolCmd
@@ -48,17 +48,18 @@ try:
         """
         """
         list_atoms = PymolCmd.get_model(str(structure))
-        pdb.clear()
-        pdb['name'] = str(structure)
+        currentPDB.clear()
+        currentPDB.name = str(structure)
+        PDBList = list()
 
         for atom in list_atoms.atom:
             signature = atom.get_signature().split(":")
-            pdb[signature[3]].append({'name': signature[5],
-                                     'coord': atom.coord,
-                                     'segi': atom.chain})
+            currentPDB.append(PDBAtom(atom.chain, int(signature[3]), signature[5], tuple(atom.coord)))
+            # PDBList.append(PDBAtom(atom.chain, int(signature[3]), signature[5], tuple(atom.coord)))
 
-        #with open(structure+".pyn", 'w') as fout:
-        #    pickle.dump(pdb, fout)
+
+        # with open(structure+".pyn", 'w') as fout:
+        #     pickle.dump(PDBList, fout)
         get_coordinates.clear()
 
     def select(selectionName, selection):
@@ -125,7 +126,7 @@ except ImportError:
         """
         """
         with open(structure + ".pyn", 'r') as fin:
-            pdb.update(pickle.load(fin))
+            currentPDB.atoms = pickle.load(fin)
         get_coordinates.clear()
 
 
@@ -141,66 +142,38 @@ def setBfactor(structure, residu, bFactor):
 def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
 
-def checkID(atomSet):
-    """
-    """
-    check = False
-    newName = ""
-    error_message = ""
-    if str(atomSet.resi_number) in pdb:
-        if atomSet.segid in (atom['segi'] for atom in pdb[str(atomSet.resi_number)]):
-            if atomSet.atoms in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
-                check = True
-            else:
-                if '*' not in atomSet.atoms:
-                    if atomSet.atoms == 'HN':
-                        newName = 'H'
-                    elif atomSet.atoms == 'H':
-                        newName = 'HN'
-                    elif lastDigit.search(atomSet.atoms):
-                        digit = lastDigit.search(atomSet.atoms).group()[0]
-                        newName = digit + lastDigit.sub('', atomSet.atoms)  # put final digit at the beginning
-                    if newName in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
-                        check = True
-                    else:
-                        error_message = "Atom name not found"
-                else:
-                    nameRoot = atomSet.atoms.replace('*', '')
-                    for aName in (atom['name'] for atom in pdb[str(atomSet.resi_number)]):
-                        if nameRoot in aName:
-                            check = True
-                            break
-                    if check is False:
-                        error_message = "Atom name not found"
-        else:
-            error_message = "Wrong segment / chain"
-    else:
-        error_message = "Residue number not found"
-    if check is False:
-        errors.add_error_message("Can't find " + str(atomSet.atoms) + " in structure " + pdb['name'] + " because : " + error_message)
-    if newName:
-        return {'valid': check, 'NewData': {'atoms': newName}}
-    else:
-        return {'valid': check, 'NewData': None}
 
 @lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others
 def get_coordinates(atomSet):
     """
     """
-    coordinates = list()
-    if '*' in atomSet.atoms:
-        nameRoot = atomSet.atoms.replace('*', '')
-        for atom in pdb[str(atomSet.resi_number)]:
-            if atomSet.segid == atom['segi']:
-                if nameRoot in atom['name']:
-                    coordinates.append(atom['coord'])
+    if '*' not in atomSet.atoms and '%' not in atomSet.atoms and '+' not in atomSet.atoms and '#' not in atomSet.atoms:
+        try:
+            return currentPDB.coordinatesForAtom(atomSet)
+        except ValueError:
+            errors.add_error_message( "Atom not found in structure : " + str(atomSet) + ", please check nomenclature.")
+            return tuple()
     else:
-        for atom in pdb[str(atomSet.resi_number)]:
-            if atomSet.segid == atom['segi']:
-                if atomSet.atoms == atom['name']:
-                    coordinates = [atom['coord']]
-                    break
-    return coordinates
+        if atomSet.atoms[-1] is '*':
+            try:
+                selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=atomSet.atoms.replace('*', '')))
+                return tuple(atom.coord for atom in selectedAtoms)
+            except ValueError:
+                errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+                return tuple()
+        if '+' in atomSet.atoms:
+            try:
+                complyingAtomsCoordinates = list()
+                selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=atomSet.atoms.replace('+', '')))
+                numberOfPlusMark = atomSet.atoms.count('+')
+                for atom in selectedAtoms:
+                    if len(*lastDigitsRE.findall(atom.name)) == numberOfPlusMark:
+                        complyingAtomsCoordinates.append(atom.coord)
+                return complyingAtomsCoordinates
+
+            except ValueError:
+                errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+                return tuple()
 
 def createSelection(structure, Atoms):
     """
