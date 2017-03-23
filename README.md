@@ -69,6 +69,7 @@ Any help would be welcome to develop those features. I am definitly not a profes
 
 Known difficulties :
 ------------------
+* They are often discrepancies between pdb structure file nomenclature and pdb constraints file. Especially, with amide (H/HN) and pro-chiral protons (HB1/HB2), please check those otherwise you'll get error-messages and not all constraints will displayed. I might provide an automatic conversion tool in the future I can find the time.
 * When displaying a large number (> 1000's) of constraints as sticks, Pymol performances decrease rapidly (Depends strongly on the performance of your computer):
     * Avoid to draw all constraints if not necessary
     * Remove them before any other action if you can
