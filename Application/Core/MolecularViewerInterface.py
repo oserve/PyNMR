@@ -168,6 +168,18 @@ def get_coordinates(atomSet):
             except ValueError:
                 errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
                 return tuple()
+        if '#' in atomSet.atoms:
+            try:
+                complyingAtomsCoordinates = list()
+                nameRoot = atomSet.atoms.replace('#', '')
+                selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=nameRoot))
+                for atom in selectedAtoms:
+                    if len(*lastDigitsRE.findall(atom.name)) > 0:
+                        complyingAtomsCoordinates.append(atom.coord)
+                return complyingAtomsCoordinates
+            except ValueError:
+                errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+                return tuple()
     else:
         try:
             return currentPDB.coordinatesForAtom(atomSet)
