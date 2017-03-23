@@ -78,5 +78,5 @@ class NOE(Constraint):
             self.points = tuple(centerOfMass(coordinate) for coordinate in coordinates)
             self.constraintValues['actual'] = calcDistance(*coordinates)
             return self.constraintValues['actual'] > 0.0
-        except ZeroDivisionError:
+        except (ZeroDivisionError, TypeError):
             return False

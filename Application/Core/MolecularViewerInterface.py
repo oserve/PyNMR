@@ -50,7 +50,7 @@ try:
         list_atoms = PymolCmd.get_model(str(structure))
         currentPDB.clear()
         currentPDB.name = str(structure)
-        PDBList = list()
+        # PDBList = list()
 
         for atom in list_atoms.atom:
             signature = atom.get_signature().split(":")
@@ -147,13 +147,7 @@ def paintDensity(color_gradient, structure):
 def get_coordinates(atomSet):
     """
     """
-    if '*' not in atomSet.atoms and '%' not in atomSet.atoms and '+' not in atomSet.atoms and '#' not in atomSet.atoms:
-        try:
-            return currentPDB.coordinatesForAtom(atomSet)
-        except ValueError:
-            errors.add_error_message( "Atom not found in structure : " + str(atomSet) + ", please check nomenclature.")
-            return tuple()
-    else:
+    if any(wildcard in atomSet.atoms for wildcard in "*+#%"):
         if atomSet.atoms[-1] is '*':
             try:
                 selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=atomSet.atoms.replace('*', '')))
@@ -174,6 +168,13 @@ def get_coordinates(atomSet):
             except ValueError:
                 errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
                 return tuple()
+    else:
+        try:
+            return currentPDB.coordinatesForAtom(atomSet)
+        except ValueError:
+            errors.add_error_message( "Atom not found in structure : " + str(atomSet) + ", please check nomenclature.")
+            return tuple()
+
 
 def createSelection(structure, Atoms):
     """

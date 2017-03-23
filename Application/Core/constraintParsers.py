@@ -31,7 +31,6 @@
 from sys import stderr
 import re
 from collections import Iterator
-import string
 from Constraints.NOE import NOE
 
 
@@ -117,11 +116,7 @@ class constraintParser(Iterator):
 class CNSParser(constraintParser):
     """
     """
-    ParReg = re.compile(r'[()]')  # used in cns constraints loading. Suppression of ()
-    SParReg = re.compile(r"\(.*\)")  # used in cns constraint loading.
-    RegResi = re.compile(r"RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*")  # match CNS Residue definition
-    SharpPlusReg = re.compile(r'[#]')  # used in cns constraints loading. Replace # by *
-    RegSeg = re.compile(r'SEGI\w*\s+[\w\d]*')  # match CNS segid definition
+    SegResiReg = re.compile(r"(SEGI\w*\s+[\w\d]+\s+AND\s+)?(RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*)")
     RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
 
     def __init__(self, text):
@@ -151,38 +146,34 @@ class CNSParser(constraintParser):
             if "ASSI" in line:
                 line = line.replace("GN", "")
                 self.validConstraints.append(line.replace("ASSI", ""))
-            elif CNSParser.RegResi.search(line) is not None:
+            elif CNSParser.SegResiReg.search(line) is not None:
                 self.validConstraints[-1] = self.validConstraints[-1] + line
         self.validConstraints = (constraint for constraint in self.validConstraints if re.search(r'\d', constraint))
 
     def parseConstraints(self):
-        """Split CNS/XPLOR type constraint into an array, containing the name of
+        """Split CNS/XPLOR type constraint into a dictionnary, containing the name of
         the residues (as arrays), and the values of the parameter associated to
         the constraint. It should be independant from the type of constraint
         (dihedral, distance, ...)
-        It returns a dictionnary
         """
         for aCNSConstraint in self.validConstraints:
             try:
-                segments = tuple(segment.group(0).split()[1] for segment in CNSParser.RegSeg.finditer(aCNSConstraint, re.IGNORECASE))
-                numberOfSegments = len(segments)
-                for segment in segments:
-                    if segment not in self.segments:
-                        self.segments.append(segment)
-
-                residuesList = CNSParser.RegResi.finditer(aCNSConstraint, re.IGNORECASE)
+                residuesList = CNSParser.SegResiReg.finditer(aCNSConstraint, re.IGNORECASE)
 
                 constraintParsingResult = dict()
                 residues = list()
-                for (indice, aResidue) in enumerate(residuesList):
+                for aResidue in residuesList:
                     residueParsingResult = dict()
-                    for aDefinition in CNSParser.SharpPlusReg.sub('*', aResidue.group(0)).split("AND "):
+                    try:
+                        segid = aResidue.group(1).split()[1]
+                    except AttributeError:
+                        segid = ''
+                    residueParsingResult["segid"] = segid
+
+                    for aDefinition in aResidue.group(2).split(" AND "):
                         definitionArray = aDefinition.split()
                         residueParsingResult[definitionArray[0].strip().lower()] = definitionArray[1].strip()
-                    if numberOfSegments > 0:
-                        residueParsingResult["segid"] = string.ascii_uppercase[self.segments.index(segments[indice])]
-                    else:
-                        residueParsingResult["segid"] = "A"
+
                     residues.append(residueParsingResult)
                 constraintParsingResult["residues"] = residues
 

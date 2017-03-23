@@ -42,6 +42,7 @@ class atomList(object): # used as singleton
         """
         self.name = name
         self.atoms = list()
+        self.ConstraintsSegid = list()
 
     def append(self, anAtom):
         """
@@ -77,8 +78,16 @@ class atomList(object): # used as singleton
         """
         """
         selectedAtoms = atomList(self.name)
-        if aSegid is not None or "":
-            selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == aSegid]
+        if aSegid is not None and len(aSegid) > 0:
+            if aSegid in self.segids:
+                selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == aSegid]
+            else:
+                try:
+                    newSegid = self.segids[self.ConstraintsSegid.index(aSegid)]
+                except ValueError:
+                    self.ConstraintsSegid.append(aSegid)
+                    newSegid = self.segids[self.ConstraintsSegid.index(aSegid)]
+                selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == newSegid]
             return selectedAtoms
         else:
             return self
