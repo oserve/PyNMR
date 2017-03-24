@@ -31,6 +31,8 @@
 from collections import namedtuple
 from sys import stderr
 
+from memoization import lru_cache
+
 PDBAtom = namedtuple("PDBAtom", ['segid', 'resi_number', 'name', 'coord'])
 
 
@@ -43,12 +45,15 @@ class atomList(object): # used as singleton
         self.name = name
         self.atoms = list()
         self.ConstraintsSegid = list()
+        self.segidList = list()
+        self.segidSet = False
 
     def append(self, anAtom):
         """
         """
         if isinstance(anAtom, PDBAtom):
             self.atoms.append(anAtom)
+            self.segidSet = False
         else:
             raise TypeError(str(anAtom) + " is not atom.\n")
 
@@ -74,6 +79,7 @@ class atomList(object): # used as singleton
     def __iter__(self):
         return self.atoms.__iter__()
 
+    @lru_cache(maxsize=10) # Most expensive loop with lowest probability of changes
     def atomsForSegid(self, aSegid=None):
         """
         """
@@ -82,9 +88,9 @@ class atomList(object): # used as singleton
             if aSegid in self.segids:
                 selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == aSegid]
             else:
-                try:
+                if aSegid in self.ConstraintsSegid:
                     newSegid = self.segids[self.ConstraintsSegid.index(aSegid)]
-                except ValueError:
+                else:
                     self.ConstraintsSegid.append(aSegid)
                     newSegid = self.segids[self.ConstraintsSegid.index(aSegid)]
                 selectedAtoms.atoms = [atom for atom in self.atoms if atom.segid == newSegid]
@@ -142,9 +148,10 @@ class atomList(object): # used as singleton
     def segids(self):
         """
         """
-        segids = list()
-        for atom in self.atoms:
-            if atom.segid not in segids:
-                segids.append(atom.segid)
-        return segids
+        if self.segidSet is False: # Expensive, and mostly useless, to calculate it everytime
+            for atom in self.atoms:
+                if atom.segid not in self.segidList:
+                    self.segidList.append(atom.segid)
+            self.segidSet = True
+        return self.segidList
 

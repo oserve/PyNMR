@@ -143,8 +143,8 @@ def paintDensity(color_gradient, structure):
     spectrum(color_gradient, structure)
 
 
-@lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others
-def get_coordinates(atomSet):
+@lru_cache(maxsize=2048) # It's probable than some atoms are used more often than others 
+def get_coordinates(atomSet): # and there are typically thousans of atoms in structure
     """
     """
     if any(wildcard in atomSet.atoms for wildcard in "*+#%"):
@@ -177,6 +177,20 @@ def get_coordinates(atomSet):
                     if len(*lastDigitsRE.findall(atom.name)) > 0:
                         complyingAtomsCoordinates.append(atom.coord)
                 return complyingAtomsCoordinates
+            except ValueError:
+                errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+                return tuple()
+        if '%' in atomSet.atoms:
+            try:
+                complyingAtomsCoordinates = list()
+                nameRoot = atomSet.atoms.replace('#', '')
+                selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=nameRoot))
+                numberOfPercentMark = atomSet.atoms.count('%')
+                for atom in selectedAtoms:
+                    if len(atom.name.replace(nameRoot,'')) == numberOfPercentMark:
+                        complyingAtomsCoordinates.append(atom.coord)
+                return complyingAtomsCoordinates
+
             except ValueError:
                 errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
                 return tuple()
