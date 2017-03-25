@@ -63,9 +63,9 @@ class ConstraintDrawer(object):
             tempList.append(aConstraint)
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
-            if aConstraint.satisfaction() == 'unSatisfied':
+            if aConstraint.satisfaction() is 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
-            elif aConstraint.satisfaction() == 'Satisfied':
+            elif aConstraint.satisfaction() is 'Satisfied':
                 color = colors['Satisfied']
             MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
             self.displayedConstraintsSticks.append(aConstraint)
@@ -114,7 +114,7 @@ class ConstraintDrawer(object):
         Name_(constraint number)_(structureName)_(violation_state)
         """
         if aConstraint.satisfaction != '':
-            if aConstraint.satisfaction == 'unSatisfied':
+            if aConstraint.satisfaction() is 'unSatisfied':
                 marker = self.UnSatisfactionMarker
             else:
                 marker = self.SatisfactionMarker

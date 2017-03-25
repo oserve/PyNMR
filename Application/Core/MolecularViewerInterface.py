@@ -216,4 +216,4 @@ def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """
     """
     objectsLists = get_names()
-    return tuple(name for name in objectsLists if not (name.find(unSatisfactionMarker) >= 0 or name.find(satisfactionMarker) >= 0))
+    return tuple(name for name in objectsLists if not (unSatisfactionMarker in name or satisfactionMarker in name))
