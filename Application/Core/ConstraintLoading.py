@@ -32,7 +32,7 @@
 # DistanceConstraints loading functions
 from sys import stderr
 from ConstraintManager import imConstraintSetManager
-import constraintParsers as CParsers
+from ConstraintParsers import BaseConstraintParser, CNSParser, CYANAParser
 
 
 def loadConstraintsFromFile(fileName, managerName):
@@ -44,14 +44,14 @@ def loadConstraintsFromFile(fileName, managerName):
     with open(fileName, 'r') as file_in:
         fileText = file_in.read().upper()
 
-        constraintDefinition = CParsers.constraintParser.findConstraintType(fileText)
+        constraintDefinition = BaseConstraintParser.findConstraintType(fileText)
 
         if constraintDefinition in ('XPLOR', 'CNS'):
             aManager.format = "CNS"
-            parser = CParsers.CNSParser(fileText)
+            parser = CNSParser(fileText)
         elif constraintDefinition in ('DYANA', 'CYANA'):
             aManager.format = "XEASY"
-            parser = CParsers.CYANAParser(fileText)
+            parser = CYANAParser(fileText)
         else:
             stderr.write("Incorrect or unsupported constraint type : " + constraintDefinition + ".\n")
         if parser is not None:

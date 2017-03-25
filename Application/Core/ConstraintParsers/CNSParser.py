@@ -30,90 +30,10 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 import re
-from collections import Iterator
-from Constraints.NOE import NOE
 
+from BaseConstraintParser import BaseConstraintParser
 
-class constraintParser(Iterator):
-    """
-    """
-
-    XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
-    AtTypeReg = re.compile(r'[CHON][A-Z]*')
-
-    def __init__(self, text):
-        """
-        """
-        self.text = (aLine.strip() for aLine in text.split('\n'))
-        self.inFileTab = list()
-        self.segments = list()
-        self.prepareFile()
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        """
-        """
-
-        for parsingResult in self.parseConstraints():
-            if parsingResult is not None:
-                if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
-                    for residue in parsingResult["residues"]: # filters H-Bonds
-                        if residue['name'] == "O":
-                            break
-                    else:
-                        aConstraint = NOE()
-                        # No other constraint type supported ... for now !
-                        aConstraint.definition = parsingResult["definition"]
-                        aConstraint.atoms = NOE.addAtoms(constraintParser.parseAtoms(parsingResult["residues"]))
-                        aConstraint.setConstraintValues(parsingResult["values"][0],
-                                                        parsingResult["values"][1],
-                                                        parsingResult["values"][2])
-                        return aConstraint
-            else:
-                stderr.write("Error while loading : " + parsingResult["definition"])
-                continue
-        raise StopIteration
-
-    def prepareFile(self):
-        """
-        """
-        raise NotImplementedError
-
-    def parseConstraints(self):
-        """
-        """
-        raise NotImplementedError
-
-    @staticmethod
-    def findConstraintType(fileText):
-        """
-        """
-        if "ASSI" in fileText:
-            typeDefinition = 'CNS'
-        elif constraintParser.XEASYReg.search(fileText):
-            typeDefinition = 'CYANA'
-        else:
-            typeDefinition = None
-        return typeDefinition
-
-    @staticmethod
-    def parseAtoms(parsingResult):
-        """
-        """
-        for aResult in parsingResult:
-            currentResidue = dict()
-            if "resid" in aResult:
-                currentResidue["resi_number"] = int(aResult["resid"])
-            else:
-                currentResidue["resi_number"] = int(aResult["resi"])
-            currentResidue["atoms"] = aResult["name"]
-            currentResidue["segid"] = aResult.get("segid", 'A')
-            yield currentResidue
-
-
-class CNSParser(constraintParser):
+class CNSParser(BaseConstraintParser):
     """
     """
     SegResiReg = re.compile(r"(SEGI\w*\s+[\w\d]+\s+AND\s+)?(RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*)")
@@ -123,7 +43,7 @@ class CNSParser(constraintParser):
         """
         """
         self.validConstraints = list()
-        constraintParser.__init__(self, text)
+        BaseConstraintParser.__init__(self, text)
 
     def prepareFile(self):
         """
@@ -209,52 +129,3 @@ class CNSParser(constraintParser):
         else:
             constraintValuesList = tuple()
         return tuple(float(aValue) for aValue in constraintValuesList)
-
-
-class CYANAParser(constraintParser):
-    """
-    """
-    AtTypeReg = re.compile(r'[CHON][A-Z]*')
-
-    def prepareFile(self):
-        """
-        """
-        self.inFileTab = self.text
-
-    def parseConstraints(self):
-        """
-        """
-        for aConstraintLine in self.inFileTab:
-            if len(aConstraintLine) > 1:
-                if aConstraintLine.find('#') == 0:
-                    stderr.write(aConstraintLine + " skipped. Commented out.\n")
-                    parsed = None
-            cons_tab = aConstraintLine.split()
-            try:
-                parsed = {"residues":
-                    [{'resid': int(cons_tab[0]),
-                     'name': CYANAParser.AtTypeReg.match(
-                        self.convertTypeDyana(cons_tab[2])).group()},
-                    {'resid': int(cons_tab[3]),
-                     'name': CYANAParser.AtTypeReg.match(
-                        self.convertTypeDyana(cons_tab[5])).group()}]}
-                parsed["values"] = ([str(1.8 + (float(cons_tab[6]) - 1.8)/2), '1.8', cons_tab[6]])
-                parsed["definition"] = aConstraintLine
-            except:
-                stderr.write("Unknown error while loading constraint " + ":\n" +
-                             aConstraintLine + "\n")
-                parsed = None
-            yield parsed
-
-    @staticmethod
-    def convertTypeDyana(atType):
-        """
-        Adapt xeasy nomenclature Q to pymol *
-        """
-        if 'Q' in atType:
-            newType = atType.replace('Q', 'H', 1) + ('*')
-            # Q is replaced by H and a star at the end of the atom type
-            # avoid QQ (QQD-> HD*)
-            return newType.replace('Q', '')
-        else:
-            return atType
