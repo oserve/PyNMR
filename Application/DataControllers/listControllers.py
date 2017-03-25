@@ -67,5 +67,6 @@ class resiNumberListController(object):
         for segid in sorted(set(atom.segid for atom in self.atomsList)):
             for resi_number in sorted(set(atom[1] for atom in self.atomsList)):
                 resi = [atom for atom in self.atomsList if atom.resi_number == resi_number and atom.segid == segid]
-                resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
+                if len(resi) > 0:
+                    resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
         return resiNumberList
