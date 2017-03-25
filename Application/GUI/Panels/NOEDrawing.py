@@ -46,8 +46,8 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         command=self.showDensity)
         self.cleanButton = ttk.Button(self, text="Clean Sticks",
                                       command=self.cleanAll)
-        self.mainGUI = ""  # Must be set at run time
-        self.NMRCommands = ""  # Must be set by application at run time
+        self.mainGUI = None  # Must be set at run time
+        self.NMRCommands = None  # Must be set by application at run time
         self.dataControllers = dict()
         self.dataViewers = dict()
         self.widgetCreation()
@@ -120,10 +120,8 @@ class NOEDrawingPanel(ttk.LabelFrame):
             del self.dataViewers[self.mainGUI.getInfo()["constraintFile"]]
             del self.dataControllers[self.mainGUI.getInfo()["constraintFile"]]
 
-    def infoCheck(self, infos):
+    @staticmethod
+    def infoCheck(infos):
         """
         """
-        for item in infos.values():
-            if item == "":
-                return 0
-        return 1
+        return all(item != "" for item in infos.values())

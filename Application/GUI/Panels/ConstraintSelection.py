@@ -95,8 +95,9 @@ class RangeSelectionPanel(ttk.LabelFrame):
     def tickAll(self):
         """
         """
+        state_all = self.RangesVars["all"].get()
         for consRange in self.ranges:
-            self.RangesVars[consRange].set(self.RangesVars["all"].get())
+            self.RangesVars[consRange].set(state_all)
 
     def tick(self):
         """

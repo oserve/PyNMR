@@ -74,14 +74,14 @@ class Constraint(object):
         """
         return isinstance(anotherConstraint, self.__class__) and all(AAtom == SAtom for AAtom, SAtom in izip(anotherConstraint.atoms, self.atoms)) # assume sorted
 
-    @classmethod
-    def addAtoms(cls, parsingResult):
+    @staticmethod
+    def addAtoms(parsingResult):
         """
         """
         return sorted([Constraint.addAtom(aResult) for aResult in parsingResult])
 
-    @classmethod
-    def addAtom(cls, aParsingResult):
+    @staticmethod
+    def addAtom(aParsingResult):
         """Checks that atoms are not loaded several times
         should limits future memory issues
         """
