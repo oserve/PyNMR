@@ -59,7 +59,7 @@ try:
 
 
         # with open(structure+".pyn", 'w') as fout:
-        #     pickle.dump(PDBList, fout)
+            # pickle.dump(PDBList, fout)
         get_coordinates.clear()
 
     def select(selectionName, selection):
@@ -67,9 +67,6 @@ try:
             return PymolCmd.select(selection)
         else:
             return PymolCmd.select(selectionName, selection)
-
-    def get_model(model):
-        return PymolCmd.get_model(model)
 
     def alterBFactors(structure, bFactor):
         PymolCmd.alter(structure, "b=" + str(bFactor))
@@ -96,31 +93,26 @@ try:
 
 except ImportError:
     def select(selectionName, selection):
-        return tuple()
-
-    def get_model(model):
+        stdout.write("Selected " + selection + " with name " + selectionName + ".\n")
         return tuple()
 
     def alterBFactors(structure, bFactor):
         stdout.write("Set BFactor " + str(bFactor) + " to " + structure + ".\n")
 
     def spectrum(color_gradient, structure):
-        pass
+        stdout.write("Applied gradient " + color_gradient + " on structure " + structure + ".\n")
 
     def drawConstraint(points, color, aRadius, ID):
         stdout.write("Drawn " + ID + " between points " + str(points) + " with " + str(color) + " color and radius " + str(aRadius) +"\n")
 
     def zoom(selection):
-        pass
+        stdout.write("Zoom on " + selection+".\n")
 
     def delete(selectionName):
-        pass
+        stdout.write("Deleted "+selectionName+".\n")
 
     def get_names():
         return [fileName.split(".")[0] for fileName in os.listdir(os.getcwd()) if '.pyn' in fileName]
-
-    def getID(atomSet):
-        return ""
 
     def setPDB(structure):
         """
@@ -128,7 +120,6 @@ except ImportError:
         with open(structure + ".pyn", 'r') as fin:
             currentPDB.atoms = pickle.load(fin)
         get_coordinates.clear()
-
 
 
 def zeroBFactors(structure):
