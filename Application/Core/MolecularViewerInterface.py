@@ -206,7 +206,10 @@ def createSelection(structure, Atoms):
     """
     """
     selection = structure + " and ("
-    selection += " ".join("chain {} and resi {} and name {} +".format(currentPDB.segids[currentPDB.ConstraintsSegid.index(atom.segid)], atom.resi_number, atom.atoms) for atom in sorted(Atoms))
+    try:
+        selection += " ".join("chain {} and resi {} and name {} +".format(currentPDB.segids[currentPDB.ConstraintsSegid.index(atom.segid)], atom.resi_number, atom.atoms) for atom in sorted(Atoms))
+    except ValueError: # should be an absence of segid
+        selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.atoms) for atom in sorted(Atoms))
     return selection.rstrip("+") + ")"
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
