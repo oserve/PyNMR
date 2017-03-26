@@ -81,7 +81,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
-            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands,
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsSticks.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
             self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
@@ -104,7 +104,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                             infos["structure"],
                                             infos["gradient"])
 
-            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands,
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsDensity.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
             self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])

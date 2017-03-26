@@ -37,12 +37,11 @@ class NOEDataController(object):
     def __init__(self, dataSource, aManagerName, structure):
         """
         """
-        self.dataSource = dataSource
         self.structure = structure
         self.name = aManagerName
         self.dataType = 'NOE'
         self.selectedAtoms = list()
-        self.manager = dataSource.drawer.displayedConstraintsSticks.intersection(dataSource.get(aManagerName, "").constraintsManagerForDataType(self.dataType))
+        self.manager = dataSource
 
     def __len__(self):
         """
