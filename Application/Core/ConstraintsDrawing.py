@@ -56,8 +56,8 @@ class ConstraintDrawer(object):
         for number, aConstraint in enumerate(selectedConstraints):
             if len(self.displayedConstraintsSticks) > number:
                 try:
-                    self.displayedConstraintsSticks.removeConstraint(aConstraint)
                     MVI.delete(self.IDConstraint(aConstraint))
+                    self.displayedConstraintsSticks.removeConstraint(aConstraint)
                 except ValueError:
                     pass
             tempList.append(aConstraint)
@@ -67,8 +67,8 @@ class ConstraintDrawer(object):
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction() is 'Satisfied':
                 color = colors['Satisfied']
-            MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
             self.displayedConstraintsSticks.append(aConstraint)
+            MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
 
         return self.displayedConstraintsSticks.atomsList
 

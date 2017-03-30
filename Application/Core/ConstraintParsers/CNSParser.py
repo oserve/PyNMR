@@ -33,12 +33,13 @@ import re
 
 from BaseConstraintParser import BaseConstraintParser
 
+SegResiReg = re.compile(r"(SEGI\w*\s+[\w\d]+\s+AND\s+)?(RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*)")
+RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
+
+
 class CNSParser(BaseConstraintParser):
     """
     """
-    SegResiReg = re.compile(r"(SEGI\w*\s+[\w\d]+\s+AND\s+)?(RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*)")
-    RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)
-
     def __init__(self, text):
         """
         """
@@ -66,7 +67,7 @@ class CNSParser(BaseConstraintParser):
             if "ASSI" in line:
                 line = line.replace("GN", "")
                 self.validConstraints.append(line.replace("ASSI", ""))
-            elif CNSParser.SegResiReg.search(line) is not None:
+            elif SegResiReg.search(line) is not None:
                 self.validConstraints[-1] = self.validConstraints[-1] + line
         self.validConstraints = (constraint for constraint in self.validConstraints if re.search(r'\d', constraint))
 
@@ -78,7 +79,7 @@ class CNSParser(BaseConstraintParser):
         """
         for aCNSConstraint in self.validConstraints:
             try:
-                residuesList = CNSParser.SegResiReg.finditer(aCNSConstraint, re.IGNORECASE)
+                residuesList = SegResiReg.finditer(aCNSConstraint, re.IGNORECASE)
 
                 constraintParsingResult = dict()
                 residues = list()
@@ -98,9 +99,9 @@ class CNSParser(BaseConstraintParser):
                 constraintParsingResult["residues"] = residues
 
                 if 'OR ' in aCNSConstraint: # only for NOE
-                    self.constraintAmbiguity(constraintParsingResult["residues"])
+                    constraintAmbiguity(constraintParsingResult["residues"])
 
-                constraintParsingResult["values"] = self.constraintValues(aCNSConstraint)
+                constraintParsingResult["values"] = constraintValues(aCNSConstraint)
                 constraintParsingResult["definition"] = aCNSConstraint
 
             except ZeroDivisionError:
@@ -108,24 +109,24 @@ class CNSParser(BaseConstraintParser):
                 constraintParsingResult = None
             yield constraintParsingResult
 
-    @staticmethod
-    def constraintAmbiguity(constraintResidues):
-        """
-        """
-        if constraintResidues[0] == constraintResidues[2] or constraintResidues[0] == constraintResidues[3]:
-            indiceAmbiguous = 1
-        else:
-            indiceAmbiguous = 0
-        constraintResidues[indiceAmbiguous]['name'] = constraintResidues[indiceAmbiguous]['name'][0:-1] + "*"
-        constraintResidues = (constraintResidues[0], constraintResidues[1])
 
-    @staticmethod
-    def constraintValues(aCNSConstraint):
-        """
-        """
-        constraintValues = CNSParser.RegFloat.findall(aCNSConstraint)
-        if constraintValues:
-            constraintValuesList = constraintValues[0].split()
-        else:
-            constraintValuesList = tuple()
-        return tuple(float(aValue) for aValue in constraintValuesList)
+def constraintAmbiguity(constraintResidues):
+    """
+    """
+    if constraintResidues[0] == constraintResidues[2] or constraintResidues[0] == constraintResidues[3]:
+        indiceAmbiguous = 1
+    else:
+        indiceAmbiguous = 0
+    constraintResidues[indiceAmbiguous]['name'] = constraintResidues[indiceAmbiguous]['name'][0:-1] + "*"
+    constraintResidues = (constraintResidues[0], constraintResidues[1])
+
+
+def constraintValues(aCNSConstraint):
+    """
+    """
+    constraintValues = RegFloat.findall(aCNSConstraint)
+    if constraintValues:
+        constraintValuesList = constraintValues[0].split()
+    else:
+        constraintValuesList = tuple()
+    return tuple(float(aValue) for aValue in constraintValuesList)

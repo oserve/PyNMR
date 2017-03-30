@@ -35,7 +35,7 @@ import MolecularViewerInterface as MVI
 from Geom import set_method
 
 
-class ConstraintFilter(Iterable):
+class NOEFilter(Iterable):
     """
 
     """

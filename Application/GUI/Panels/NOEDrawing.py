@@ -115,7 +115,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
-            self.NMRCommands.cleanScreen(infos["constraintFile"])
+            self.NMRCommands.cleanScreen()
             self.dataViewers[self.mainGUI.getInfo()["constraintFile"]].destroy()
             del self.dataViewers[self.mainGUI.getInfo()["constraintFile"]]
             del self.dataControllers[self.mainGUI.getInfo()["constraintFile"]]

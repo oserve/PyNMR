@@ -162,8 +162,8 @@ class ConstraintSetManager(imConstraintSetManager):
         """Add a constraint to the constraint list of the manager and
         update the list of residues
         """
-        self.constraints.append(aConstraint)
         aConstraint.id['number'] = len(self)
+        self.constraints.append(aConstraint)
         if aConstraint.name == "":
             aConstraint.name = self.name
 

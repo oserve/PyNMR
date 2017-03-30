@@ -42,7 +42,7 @@ from collections import MutableMapping
 
 # Custom Classes
 from ConstraintLoading import loadConstraintsFromFile
-from Filtering import ConstraintFilter
+from Filtering import NOEFilter
 from ConstraintsDrawing import ConstraintDrawer
 import MolecularViewerInterface as MVI
 from ConstraintManager import ConstraintSetManager
@@ -150,14 +150,15 @@ class NMRCore(MutableMapping):
         if len(residuesList) == 0:
             residuesList = set(str(aResidueNumber) for aResidueNumber in self[managerName].residuesList)
 
-        self.constraintFilter = ConstraintFilter(structure, residuesList, dist_range, violationState,
-                                                 violCutoff, method, rangeCutOff)
+        self.constraintFilter = NOEFilter(structure, residuesList, dist_range, violationState,
+                                          violCutoff, method, rangeCutOff)
 
-    def cleanScreen(self, managerName):
+    def cleanScreen(self):
         """Remove all sticks
         """
+        for aConstraint in self.drawer.displayedConstraintsSticks:
+            MVI.delete(self.drawer.IDConstraint(aConstraint))
         self.drawer.displayedConstraintsSticks.removeAllConstraints()
-        MVI.delete(managerName + "*")
 
     def saveConstraintsFile(self, aManagerName, fileName):
         """Save the selected constraint file under the format
