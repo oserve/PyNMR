@@ -69,10 +69,14 @@ class NOEDataController(object):
     def partnerAtoms(self):
         """
         """
+        partners = set()
         if self.selectedAtoms:
-            return sorted(set(atom for atom in self.manager.atomsList if self.manager.areAtomsPartner(atom) and atom not in self.selectedAtoms))
+            for anAtom in self.selectedAtoms:
+                self.manager.setPartnerAtoms([anAtom])
+                partners.update(atom for atom in self.manager.atomsList if self.manager.areAtomsPartner(atom) and atom != anAtom)
+            return sorted(partners)
         else:
-            return list()
+            raise UnboundLocalError("Partner list not registered.\n")
 
     def constraintsForAtoms(self, atomsList):
         """
@@ -80,6 +84,8 @@ class NOEDataController(object):
         if len(atomsList) == 2:
             consManager = self.manager.constraintsManagerForAtoms([atomsList[0]]).intersection(self.manager.constraintsManagerForAtoms([atomsList[1]]))
             return consManager.constraints
+        else:
+            raise ValueError("There should be 2 items in the list, " + str(len(atomsList)) + " found.\n")
 
     def constraintValueForAtoms(self, atomsList):
         """
