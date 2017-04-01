@@ -196,11 +196,41 @@ def get_coordinates(atomSet): # and there are typically thousans of atoms in str
 def createSelection(structure, Atoms):
     """
     """
+    unAmbiguousAtomsList = list()
+    for atomSet in Atoms:
+        if any(wildcard in atomSet.atoms for wildcard in "+#%"):
+            if '+' in atomSet.atoms:
+                try:
+                    complyingAtomsCoordinates = list()
+                    selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=atomSet.atoms.replace('+', '')))
+                    numberOfPlusMark = atomSet.atoms.count('+')
+                    unAmbiguousAtomsList.extend(atom for atom in selectedAtoms if len(*lastDigitsRE.findall(atom.name)) == numberOfPlusMark)
+                except ValueError:
+                    errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+            if '#' in atomSet.atoms:
+                try:
+                    complyingAtomsCoordinates = list()
+                    nameRoot = atomSet.atoms.replace('#', '')
+                    selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=nameRoot))
+                    unAmbiguousAtomsList.extend(atom for atom in selectedAtoms if len(*lastDigitsRE.findall(atom.name)) > 0)
+                except ValueError:
+                    errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+            if '%' in atomSet.atoms:
+                try:
+                    complyingAtomsCoordinates = list()
+                    nameRoot = atomSet.atoms.replace('#', '')
+                    selectedAtoms = currentPDB.atomsLikeAtom(atomSet._replace(atoms=nameRoot))
+                    numberOfPercentMark = atomSet.atoms.count('%')
+                    unAmbiguousAtomsList.extend(atom for atom in selectedAtoms if len(atom.name.replace(nameRoot,'')) == numberOfPercentMark)
+                except ValueError:
+                    errors.add_error_message("Ambiguous atoms not found in structure : " + str(atomSet) + ", please check nomenclature.")
+        else:
+            unAmbiguousAtomsList.append(PDBAtom(*atomSet, coord=[0,0,0]))
     selection = structure + " and ("
     try:
-        selection += " ".join("chain {} and resi {} and name {} +".format(currentPDB.segids[currentPDB.ConstraintsSegid.index(atom.segid)], atom.resi_number, atom.atoms) for atom in sorted(Atoms))
-    except ValueError: # should be an absence of segid
-        selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.atoms) for atom in sorted(Atoms))
+        selection += " ".join("chain {} and resi {} and name {} +".format(currentPDB.segids[currentPDB.ConstraintsSegid.index(atom.segid)], atom.resi_number, atom.name) for atom in sorted(unAmbiguousAtomsList))
+    except ValueError: # should due to an absence of segid
+        selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in sorted(unAmbiguousAtomsList))
     return selection.rstrip("+") + ")"
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):

@@ -102,7 +102,7 @@ class NOEDataViewer(Tk.Toplevel):
         self.fillResListDisplayed()
         self.constraintSelectionText.set(str(len(self.NOEDataController)) +
                                          " constraints used, involving " +
-                                         str(len([residue for residue in self.NOEDataController.getResiduesList()])) +
+                                         str(len([residue for residue in self.NOEDataController.residuesList])) +
                                          " residues")
         self.atomScrollListPartner.bind('<<ListboxSelect>>', self.selectAtomPartner)
         self.resizable(width=False, height=False)

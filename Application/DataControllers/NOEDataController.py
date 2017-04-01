@@ -48,7 +48,8 @@ class NOEDataController(object):
         """
         return len(self.manager)
 
-    def getResiduesList(self):
+    @property
+    def residuesList(self):
         """
         """
         return (str(residue) for residue in sorted(int(number) for number in self.manager.residuesList))
