@@ -32,7 +32,7 @@ import re
 from collections import namedtuple
 from itertools import izip
 
-from .. import MolecularViewerInterface as MVI
+from .. import errors
 
 Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
 
@@ -125,11 +125,15 @@ class Constraint(object):
         """
         if cutOff >= 0:
             self.cutOff = cutOff
-        if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - self.cutOff):
-            self.constraintValues['closeness'] = 'tooClose'
-            return 'unSatisfied'
-        elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + self.cutOff):
-            self.constraintValues['closeness'] = 'tooFar'
-            return 'unSatisfied'
-        else:
-            return 'Satisfied'
+        self.setValueFromStructure()
+        try:
+            if self.constraintValues['actual'] <= (self.constraintValues['constraint'] - self.constraintValues['min'] - self.cutOff):
+                self.constraintValues['closeness'] = 'tooClose'
+                return 'unSatisfied'
+            elif self.constraintValues['actual'] >= (self.constraintValues['constraint'] + self.constraintValues['plus'] + self.cutOff):
+                self.constraintValues['closeness'] = 'tooFar'
+                return 'unSatisfied'
+            else:
+                return 'Satisfied'
+        except KeyError:
+            return None

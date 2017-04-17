@@ -127,10 +127,9 @@ class atomList(object): # used as singleton
             selectedAtom = selectedResi.atomsForAtomName(anAtom.atoms)
         except AttributeError:
             stderr.write(str(anAtom) + " is not an atom.\n")
-        if len(selectedAtom) > 0:
-            return tuple(atom.coord for atom in selectedAtom)
-        else:
-            raise ValueError
+
+        return tuple(atom.coord for atom in selectedAtom)
+
 
     def atomsLikeAtom(self, anAtom):
         """

@@ -60,14 +60,14 @@ class ConstraintDrawer(object):
                     self.displayedConstraintsSticks.removeConstraint(aConstraint)
                 except ValueError:
                     pass
-            tempList.append(aConstraint)
-        # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
-        for aConstraint in tempList:
             if aConstraint.satisfaction() is 'unSatisfied':
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction() is 'Satisfied':
                 color = colors['Satisfied']
+            tempList.append(aConstraint)
             self.displayedConstraintsSticks.append(aConstraint)
+        # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
+        for aConstraint in tempList:
             MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
 
         return self.displayedConstraintsSticks.atomsList

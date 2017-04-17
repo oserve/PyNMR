@@ -30,8 +30,6 @@
 # ----------------------------------------------------------------------
 from collections import Iterable
 
-import errors
-import MolecularViewerInterface as MVI
 from Geom import set_method
 
 
@@ -60,12 +58,7 @@ class NOEFilter(Iterable):
             for aConstraint in self.constraints:
                 if aConstraint.getRange(self.rangeCutOff) in self.range:
                     if any(str(aResiNumber) in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
-                        if aConstraint.setValueFromStructure():
-                            if aConstraint.satisfaction(self.cutOff) in self.violationState:
-                                yield aConstraint
-                            else:
-                                errors.add_error_message("Distance issue with constraint :\n" + aConstraint.definition)
-                        else:
-                            errors.add_error_message("Selection issue with constraint :\n" + aConstraint.definition)
+                        if aConstraint.satisfaction(self.cutOff) in self.violationState:
+                            yield aConstraint
         else:
             raise UnboundLocalError("No constraints loaded in the constraints filter.\n")
