@@ -64,11 +64,11 @@ class ConstraintDrawer(object):
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction() is 'Satisfied':
                 color = colors['Satisfied']
-            tempList.append(aConstraint)
+            tempList.append(tuple([aConstraint.points, color, radius, self.IDConstraint(aConstraint)]))
             self.displayedConstraintsSticks.append(aConstraint)
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
-            MVI.drawConstraint(aConstraint.points, color, radius, self.IDConstraint(aConstraint))
+            MVI.drawConstraint(*aConstraint)
 
         return self.displayedConstraintsSticks.atomsList
 
@@ -109,20 +109,15 @@ class ConstraintDrawer(object):
         MVI.paintDensity(color_gradient, structure)
         return densityList.keys()
 
-    def IDConstraint(self, aConstraint): # UnSatisfactionMarker, SatisfactionMarker):
+    def IDConstraint(self, aConstraint):
         """Returns name of constraints :
         Name_(constraint number)_(structureName)_(violation_state)
         """
-        if aConstraint.satisfaction != '':
-            if aConstraint.satisfaction() is 'unSatisfied':
-                marker = self.UnSatisfactionMarker
-            else:
-                marker = self.SatisfactionMarker
-            return aConstraint.name + str(aConstraint.id['number']) + marker + aConstraint.structureName
+        if aConstraint.satisfaction() is 'Satisfied':
+            marker = self.SatisfactionMarker
+        elif aConstraint.satisfaction() is 'unSatisfied':
+            marker = self.UnSatisfactionMarker
         else:
-            stderr.write("Can not give ID : Violation state not defined for constraint : " +
-                         aConstraint.structureName + "_" +
-                         aConstraint.name +
-                         str(aConstraint.id['number']) + "\n" +
-                         str(aConstraint) +
-                         "\n")
+            marker = ""
+
+        return aConstraint.name + str(aConstraint.id['number']) + marker + aConstraint.structureName
