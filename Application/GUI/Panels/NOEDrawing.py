@@ -65,8 +65,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
-            self.NMRCommands.commandsInterpretation(infos["structure"],
-                                                    infos["constraintFile"],
+            self.NMRCommands.commandsInterpretation(infos["constraintFile"],
                                                     infos["ranges"],
                                                     infos["residuesRange"],
                                                     infos["violationState"],
@@ -92,8 +91,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         infos = self.mainGUI.getInfo()
 
         if self.infoCheck(infos):
-            self.NMRCommands.commandsInterpretation(infos["structure"],
-                                                    infos["constraintFile"],
+            self.NMRCommands.commandsInterpretation(infos["constraintFile"],
                                                     infos["ranges"],
                                                     infos["residuesRange"],
                                                     infos["violationState"],

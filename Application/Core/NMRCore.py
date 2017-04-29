@@ -110,8 +110,8 @@ class NMRCore(MutableMapping):
             self.drawer.UnSatisfactionMarker, self.drawer.SatisfactionMarker = UnSatisfactionMarker, SatisfactionMarker
             try:
                 if self[managerName].associateToPDB():
-                    self.constraintFilter.constraints = self[managerName]
-                    selectedAtoms = self.drawer.drC(self.constraintFilter, radius, colors)
+                    selectedConstraints = (aConstraint for aConstraint in self[managerName] if self.constraintFilter(aConstraint))
+                    selectedAtoms = self.drawer.drC(selectedConstraints, radius, colors)
                     if len(selectedAtoms) > 0:
                         selection = MVI.createSelection(self[managerName].structure, selectedAtoms)
                         MVI.select('involvedRes', selection)
@@ -130,9 +130,8 @@ class NMRCore(MutableMapping):
             self[managerName].setPDB(structure)
             try:
                 if self[managerName].associateToPDB():
-                    self.constraintFilter.constraints = self[managerName]
-                    densityList = self.drawer.paD(self.constraintFilter,
-                                                  self[managerName].structure,
+                    selectedConstraints = (aConstraint for aConstraint in self[managerName] if self.constraintFilter(aConstraint))
+                    densityList = self.drawer.paD(selectedConstraints, self[managerName].structure,
                                                   gradient)
                     if len(densityList) > 0:
                         zoomSelection = MVI.createSelection(self[managerName].structure, densityList)
@@ -143,14 +142,14 @@ class NMRCore(MutableMapping):
             except ValueError:
                 errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
-    def commandsInterpretation(self, structure, managerName, residuesList, dist_range,
-                                violationState, violCutoff, method, rangeCutOff):
+    def commandsInterpretation(self, managerName, residuesList, dist_range,
+                               violationState, violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
         if len(residuesList) == 0:
             residuesList = set(str(aResidueNumber) for aResidueNumber in self[managerName].residuesList)
 
-        self.constraintFilter = NOEFilter(structure, residuesList, dist_range, violationState,
+        self.constraintFilter = NOEFilter(residuesList, dist_range, violationState,
                                           violCutoff, method, rangeCutOff)
 
     def cleanScreen(self):

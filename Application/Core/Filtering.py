@@ -28,37 +28,21 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from collections import Iterable
-
 from Geom import set_method
 
 
-class NOEFilter(Iterable):
+def NOEFilter(residuesList, dist_range, violationState, violCutoff, method, RangeCutOff):
     """
-
     """
-
-    def __init__(self, structure, residuesList, dist_range, violationState,
-                 violCutoff, method, RangeCutOff):
-        """Defines parameters for filtering the constraints
+    set_method(method)
+    def constraintFilter(aConstraint):
         """
-        self.residuesList = residuesList
-        self.range = dist_range
-        self.violationState = violationState
-        self.cutOff = violCutoff
-        self.structure = structure
-        self.rangeCutOff = RangeCutOff
-        self.constraints = None
-        set_method(method)
-
-    def __iter__(self):
-        """Filter the constraints to be drawn.
         """
-        if isinstance(self.constraints, Iterable):
-            for aConstraint in self.constraints:
-                if aConstraint.getRange(self.rangeCutOff) in self.range:
-                    if any(str(aResiNumber) in self.residuesList for aResiNumber in aConstraint.ResiNumbers):
-                        if aConstraint.satisfaction(self.cutOff) in self.violationState:
-                            yield aConstraint
-        else:
-            raise UnboundLocalError("No constraints loaded in the constraints filter.\n")
+        accepted = False
+        if aConstraint.getRange(RangeCutOff) in dist_range:
+            if any(str(aResiNumber) in residuesList for aResiNumber in aConstraint.ResiNumbers):
+                if aConstraint.satisfaction(violCutoff) in violationState:
+                    accepted = True
+        return accepted
+
+    return constraintFilter

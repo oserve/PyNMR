@@ -60,7 +60,7 @@ class NMRCLI(object):
                     managerName = self.Core.keys()[0]
                 if managerName in self.Core:
                     residuesList, dist_range, violationState = interpret(dist_range, violationState, residuesList)
-                    self.Core.commandsInterpretation(structure, managerName, residuesList,
+                    self.Core.commandsInterpretation(managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
                     self.Core.showSticks(managerName, structure, colors, radius,
@@ -103,7 +103,7 @@ class NMRCLI(object):
                 try:
                     dist_range, violationState, residuesList = interpret(dist_range, violationState, residuesList)
 
-                    self.Core.commandsInterpretation(structure, managerName, residuesList,
+                    self.Core.commandsInterpretation(managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
                     self.Core.showNOEDensity(managerName, structure, colors)

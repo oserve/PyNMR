@@ -30,7 +30,6 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from sys import stderr
 from ConstraintManager import ConstraintSetManager
 import MolecularViewerInterface as MVI
 
