@@ -41,8 +41,7 @@ def NOEFilter(residuesList, dist_range, violationState, violCutoff, method, Rang
         accepted = False
         if aConstraint.getRange(RangeCutOff) in dist_range:
             if any(str(aResiNumber) in residuesList for aResiNumber in aConstraint.ResiNumbers):
-                if aConstraint.satisfaction(violCutoff) in violationState:
-                    accepted = True
+                accepted = aConstraint.satisfaction(violCutoff) in violationState
         return accepted
 
     return constraintFilter

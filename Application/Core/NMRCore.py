@@ -103,38 +103,35 @@ class NMRCore(MutableMapping):
 
     def showSticks(self, managerName, structure, colors, radius,
                    UnSatisfactionMarker, SatisfactionMarker):
-        """Seeks for constraints that fit some criteria.
+        """Display distance constraints as sticks between groups of atoms.
         """
-        with errors.errorLog():
-            self[managerName].setPDB(structure)
-            self.drawer.UnSatisfactionMarker, self.drawer.SatisfactionMarker = UnSatisfactionMarker, SatisfactionMarker
-            try:
-                if self[managerName].associateToPDB():
-                    selectedConstraints = (aConstraint for aConstraint in self[managerName] if self.constraintFilter(aConstraint))
-                    selectedAtoms = self.drawer.drC(selectedConstraints, radius, colors)
-                    if len(selectedAtoms) > 0:
-                        selection = MVI.createSelection(self[managerName].structure, selectedAtoms)
-                        MVI.select('involvedRes', selection)
-                        MVI.zoom(selection)
-                else:
-                    errors.add_error_message("No structure selected.")
-            except ValueError:
-                errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
+        self.drawer.UnSatisfactionMarker, self.drawer.SatisfactionMarker = UnSatisfactionMarker, SatisfactionMarker
+        self.showConstraints(managerName, structure, colors=colors, radius=radius, displayFunction=self.drawer.drC)
 
     def showNOEDensity(self, managerName, structure, gradient):
-        """Seeks for constraints that fit criteria, increases a counter for
-        each residue which has a matching constraint. That simulates a density
+        """Display number of constraints per residue as a simulated density
         which is then paint on the model according to a color gradient
+        """
+        self.showConstraints(managerName, structure, gradient=gradient, displayFunction=self.drawer.paD)
+
+    def showConstraints(self, managerName, structure, displayFunction=None, colors=None,
+                        radius=None, gradient=None):
+        """Seeks for constraints that fit criteria and call the appropriate display function.
         """
         with errors.errorLog():
             self[managerName].setPDB(structure)
             try:
                 if self[managerName].associateToPDB():
                     selectedConstraints = (aConstraint for aConstraint in self[managerName] if self.constraintFilter(aConstraint))
-                    densityList = self.drawer.paD(selectedConstraints, self[managerName].structure,
-                                                  gradient)
-                    if len(densityList) > 0:
-                        zoomSelection = MVI.createSelection(self[managerName].structure, densityList)
+                    if colors:
+                        selectedAtoms = displayFunction(selectedConstraints,
+                                                        radius, colors)
+                    if gradient:
+                        selectedAtoms = displayFunction(selectedConstraints,
+                                                        self[managerName].structure,
+                                                        gradient)
+                    if len(selectedAtoms) > 0:
+                        zoomSelection = MVI.createSelection(self[managerName].structure, selectedAtoms)
                         MVI.zoom(zoomSelection)
                         MVI.select('involvedRes', zoomSelection)
                 else:
@@ -142,8 +139,8 @@ class NMRCore(MutableMapping):
             except ValueError:
                 errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
-    def commandsInterpretation(self, managerName, residuesList, dist_range,
-                               violationState, violCutoff, method, rangeCutOff):
+    def commandsInterpretation(self, managerName, residuesList, dist_range, violationState,
+                               violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
         if len(residuesList) == 0:

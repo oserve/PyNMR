@@ -63,8 +63,8 @@ class ConstraintDrawer(object):
                 color = colors[aConstraint.constraintValues['closeness']]
             elif aConstraint.satisfaction() is 'Satisfied':
                 color = colors['Satisfied']
-            tempList.append(tuple([aConstraint.points, color, radius, self.IDConstraint(aConstraint)]))
             self.displayedConstraintsSticks.append(aConstraint)
+            tempList.append(tuple([aConstraint.points, color, radius, self.IDConstraint(aConstraint)]))
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
             MVI.drawConstraint(*aConstraint)

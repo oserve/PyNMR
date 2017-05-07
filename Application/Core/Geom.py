@@ -49,7 +49,7 @@ def centerOfMass(coords):
     """
 
     try:
-        sumCoords = (sum(coord) for coord in izip(*coords))
+        sumCoords = (fsum(coord) for coord in izip(*coords))
         numCoords = len(coords)
         return tuple(coord/numCoords for coord in sumCoords)
     except ValueError:
@@ -70,9 +70,9 @@ def calcDistance(*coords):
         sum6 = fsum(pow(distance, -6) for distance in distance_list)
         if distance_method == 'ave6':
             number_of_distances = reduce(mul, (len(coord) for coord in coords))
-            result = pow(sum6/number_of_distances, -1./6)
         elif distance_method == 'sum6':
-            result = pow(sum6, -1./6)
+            number_of_distances = 1
+        result = pow(sum6/number_of_distances, -1./6)
     except(ValueError, TypeError):
         errors.add_error_message("Problem using coordinates : " +
                                  str(coords) + "\n" +
