@@ -197,12 +197,14 @@ def createSelection(structure, Atoms):
         else:
             unAmbiguousAtomsList.append(PDBAtom(*atomSet, coord=[0,0,0]))
 
-    selection = structure + " and ("
-    try:
-        selection += " ".join("chain {} and resi {} and name {} +".format(currentPDB.segids[currentPDB.ConstraintsSegid.index(atom.segid)], atom.resi_number, atom.name) for atom in unAmbiguousAtomsList)
-    except ValueError: # should due to an absence of segid
-        selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in unAmbiguousAtomsList)
-    return selection.rstrip("+") + ")"
+    selection = ""
+
+    for molChain in currentPDB.segids:
+        selection += structure + " and (chain " + molChain + " and ("
+        selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in unAmbiguousAtomsList if atom.segid == molChain)
+        selection = selection.rstrip("+ ")
+        selection += ")) + " 
+    return selection.rstrip("+ ) ") + "))"
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """

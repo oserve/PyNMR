@@ -64,8 +64,9 @@ class resiNumberListController(object):
         """
         """
         resiNumberList = OrderedDict()
+        totalResiNumberList = sorted(set(atom[1] for atom in self.atomsList))
         for segid in sorted(set(atom.segid for atom in self.atomsList)):
-            for resi_number in sorted(set(atom[1] for atom in self.atomsList)):
+            for resi_number in totalResiNumberList:
                 resi = [atom for atom in self.atomsList if atom.resi_number == resi_number and atom.segid == segid]
                 if len(resi) > 0:
                     resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
