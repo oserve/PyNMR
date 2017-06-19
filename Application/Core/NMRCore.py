@@ -44,7 +44,7 @@ from collections import MutableMapping
 from ConstraintLoading import loadConstraintsFromFile
 from Filtering import NOEFilter
 from ConstraintsDrawing import ConstraintDrawer
-import MolecularViewerInterface as MVI
+from MolecularViewerInterfaces import MolecularViewerInterface as MVI
 from ConstraintManager import ConstraintSetManager
 import errors
 

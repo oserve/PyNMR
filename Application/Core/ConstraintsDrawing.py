@@ -31,7 +31,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from ConstraintManager import ConstraintSetManager
-import MolecularViewerInterface as MVI
+from MolecularViewerInterfaces import MolecularViewerInterface as MVI
 
 
 class ConstraintDrawer(object):

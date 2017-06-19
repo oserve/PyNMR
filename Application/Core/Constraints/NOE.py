@@ -31,7 +31,7 @@
 from .. import errors
 from Constraint import Constraint
 from ..Geom import centerOfMass, calcDistance
-from .. import MolecularViewerInterface as MVI
+from ..MolecularViewerInterfaces import MolecularViewerInterface as MVI
 
 
 class NOE(Constraint):

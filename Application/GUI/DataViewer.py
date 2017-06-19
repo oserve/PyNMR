@@ -33,7 +33,7 @@ import ttk
 
 from Panels.ttkScrolledList import ScrolledList
 
-from ..Core import MolecularViewerInterface as MVI
+from ..Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
 from ..DataControllers import atomTypeListController, resiNumberListController
 
 

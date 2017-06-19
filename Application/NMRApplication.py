@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 from sys import stdout
 from GUI.NMRGUI import NMRGUI
-import Core.MolecularViewerInterface as MVI
+import Core.MolecularViewerInterfaces.MolecularViewerInterface as MVI
 from GUI.Panels.appDefaults import defaultForParameter
 from NMRCLI import NMRCLI
 
