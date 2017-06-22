@@ -33,15 +33,6 @@ from operator import mul, sub
 from itertools import product, izip
 import errors
 
-distance_method = None
-
-
-def set_method(newMethod):
-    """
-    """
-    global distance_method
-    distance_method = newMethod
-
 
 def centerOfMass(coords):
     """ Adapted from : Andreas Henschel 2006
@@ -68,9 +59,9 @@ def calcDistance(*coords):
     try:
         distance_list = (sqrt(fsum(sub(*coord) ** 2 for coord in izip(*atoms))) for atoms in product(*coords))
         sum6 = fsum(pow(distance, -6) for distance in distance_list)
-        if distance_method == 'ave6':
+        if calcDistance.method == 'ave6':
             number_of_distances = reduce(mul, (len(coord) for coord in coords))
-        elif distance_method == 'sum6':
+        elif calcDistance.method == 'sum6':
             number_of_distances = 1
         result = pow(sum6/number_of_distances, -1./6)
     except(ValueError, TypeError):

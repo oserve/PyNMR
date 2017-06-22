@@ -28,13 +28,13 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Geom import set_method
+from Geom import calcDistance
 
 
 def NOEFilter(residuesList, dist_range, violationState, violCutoff, method, RangeCutOff):
     """
     """
-    set_method(method)
+    calcDistance.method = method
     def constraintFilter(aConstraint):
         """
         """
