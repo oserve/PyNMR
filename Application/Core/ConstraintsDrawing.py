@@ -30,6 +30,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
+from collections import Counter
 from ConstraintManager import ConstraintSetManager
 from MolecularViewerInterfaces import MolecularViewerInterface as MVI
 
@@ -75,8 +76,7 @@ class ConstraintDrawer(object):
         """Calculate number of constraints per residue for selected constraints
         by the filter
         """
-        densityStep = 10
-        densityList = dict()
+        densityList = list()
 
         tempList = list()
         for number, aConstraint in enumerate(selectedConstraints):
@@ -89,8 +89,7 @@ class ConstraintDrawer(object):
             tempList.append(aConstraint)
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
-            for atom in aConstraint.atoms:
-                densityList[atom] = densityList.get(atom, 0) + densityStep
+            densityList.extend(atom for atom in aConstraint.atoms) #= densityList.get(atom, 0) + densityStep
             self.displayedConstraintsDensity.append(aConstraint)
 
         return densityList
@@ -99,14 +98,12 @@ class ConstraintDrawer(object):
         """Uses b-factors to simulate constraint density on structure
         """
         densityList = self.constraintsDensity(selectedConstraints)
-        bFactors = dict()
-        for atom in densityList:
-            bFactors[atom.resi_number] = bFactors.get(atom.resi_number, 0) + densityList[atom]
+        bFactors = Counter(densityList)
         MVI.zeroBFactors(structure)
-        for residu, density in bFactors.iteritems():
-            MVI.setBfactor(structure, residu, density)
+        for atom, density in bFactors.iteritems():
+            MVI.setBfactor(structure, [atom], density)
         MVI.paintDensity(color_gradient, structure)
-        return densityList.keys()
+        return bFactors.keys()
 
     def IDConstraint(self, aConstraint):
         """Returns name of constraints :

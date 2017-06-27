@@ -62,3 +62,17 @@ def getPDB(structure):
         atoms = pickle.load(fin)
 
     return atoms
+
+def selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel):
+    selection = ""
+    for molChain in currentPDB.segids:
+        resiList = [atom for atom in unAmbiguousAtomsList if atom.segid == molChain or atom.segid == '']
+        if len(resiList) > 0:
+            selection += structure + " and (chain " + molChain + " and ("
+            if not residueLevel:
+                selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in resiList)
+            else:
+                selection += " ".join("resi {} +".format(atom.resi_number) for atom in resiList)
+            selection = selection.rstrip("+ ")
+            selection += ")) + " 
+    return selection.rstrip("+ ) ") + "))"

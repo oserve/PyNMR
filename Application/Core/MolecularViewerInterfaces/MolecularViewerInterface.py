@@ -48,8 +48,8 @@ def zeroBFactors(structure):
     Interface.alterBFactors(structure, 0)
 
 
-def setBfactor(selection, bFactor):
-    Interface.alterBFactors(selection, bFactor)
+def setBfactor(structure, atoms, bFactor):
+    Interface.alterBFactors(createSelection(structure, atoms, residueLevel=True), bFactor)
 
 
 def paintDensity(color_gradient, structure):
@@ -73,7 +73,8 @@ def alterBFactors(structure, bFactor):
 def spectrum(color_gradient, structure):
     Interface.spectrum(color_gradient, structure)
 
-def zoom(selection):
+def zoom(structure, selectedAtoms):
+    selection = createSelection(structure, selectedAtoms)
     Interface.zoom(selection)
     Interface.delete('involvedRes')
     Interface.select('involvedRes', selection)
@@ -125,7 +126,7 @@ def get_coordinates(atomSet): # and there are typically thousands of atoms in st
 
     return tuple(complyingAtomsCoordinates)
 
-def createSelection(structure, Atoms):
+def createSelection(structure, Atoms, residueLevel=False):
     """
     """
     unAmbiguousAtomsList = list()
@@ -153,16 +154,7 @@ def createSelection(structure, Atoms):
         else:
             unAmbiguousAtomsList.append(PDBAtom(*atomSet, coord=[0,0,0]))
 
-    selection = ""
-
-    for molChain in currentPDB.segids:
-        resiList = [atom for atom in unAmbiguousAtomsList if atom.segid == molChain or atom.segid == '']
-        if len(resiList) > 0:
-            selection += structure + " and (chain " + molChain + " and ("
-            selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in resiList)
-            selection = selection.rstrip("+ ")
-            selection += ")) + " 
-    return selection.rstrip("+ ) ") + "))"
+    return Interface.selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel)
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """

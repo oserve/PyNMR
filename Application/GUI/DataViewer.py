@@ -143,8 +143,7 @@ class NOEDataViewer(Tk.Toplevel):
                 self.atomListDisplayedController.selectedAtoms = selectedAtoms
                 self.atomListVarDisplayed.set(" ".join(self.atomListDisplayedController.atomTypeList))
 
-            zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms)
-            MVI.zoom(zoomSelect)
+            MVI.zoom(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms)
 
     def selectAtomDisplayed(self, evt):
         """
@@ -162,8 +161,7 @@ class NOEDataViewer(Tk.Toplevel):
             self.NOEDataController.setSelectedAtoms(selectedAtoms[0])
             self.resiListPartnerController.atomsList = self.NOEDataController.partnerAtoms
             self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
-            zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms[0])
-            MVI.zoom(zoomSelect)
+            MVI.zoom(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms[0])
 
     def selectResiduePartner(self, evt):
         """
@@ -183,8 +181,7 @@ class NOEDataViewer(Tk.Toplevel):
 
                 self.atomListPartnerController.selectedAtoms = selectedPartnerAtoms[0]
                 self.atomListVarPartner.set(" ".join(self.atomListPartnerController.atomTypeList))
-                zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms[0])
-                MVI.zoom(zoomSelect)
+                MVI.zoom(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms[0])
 
     def selectAtomPartner(self, evt):
         """
@@ -195,8 +192,7 @@ class NOEDataViewer(Tk.Toplevel):
         selectedPartnerAtoms = [self.atomListPartnerController.atomTypeList[atomType] for atomType in atomType_selection]
 
         if len(selection) == 1:
-            zoomSelect = MVI.createSelection(self.NOEDataController.structure, selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
-            MVI.zoom(zoomSelect)
+            MVI.zoom(self.NOEDataController.structure, selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
 
             constraintValues = self.NOEDataController.constraintValueForAtoms(selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
             if constraintValues:

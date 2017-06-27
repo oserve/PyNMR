@@ -131,8 +131,7 @@ class NMRCore(MutableMapping):
                                                         self[managerName].structure,
                                                         gradient)
                     if len(selectedAtoms) > 0:
-                        zoomSelection = MVI.createSelection(self[managerName].structure, selectedAtoms)
-                        MVI.zoom(zoomSelection)
+                        MVI.zoom(self[managerName].structure, selectedAtoms)
                 else:
                     errors.add_error_message("No structure selected.")
             except ValueError:
