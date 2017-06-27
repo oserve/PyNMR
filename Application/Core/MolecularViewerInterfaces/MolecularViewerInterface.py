@@ -75,6 +75,8 @@ def spectrum(color_gradient, structure):
 
 def zoom(selection):
     Interface.zoom(selection)
+    Interface.delete('involvedRes')
+    Interface.select('involvedRes', selection)
 
 def drawConstraint(points, color, aRadius, IDNumber):
     """used to draw a NOE constraint between two sets of atoms

@@ -145,8 +145,6 @@ class NOEDataViewer(Tk.Toplevel):
 
             zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms)
             MVI.zoom(zoomSelect)
-            MVI.delete('involRes')
-            MVI.select('involRes', zoomSelect)
 
     def selectAtomDisplayed(self, evt):
         """
@@ -166,8 +164,6 @@ class NOEDataViewer(Tk.Toplevel):
             self.resiListVarPartner.set(" ".join(self.resiListPartnerController.resiNumberList))
             zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.resiListPartnerController.atomsList+selectedAtoms[0])
             MVI.zoom(zoomSelect)
-            MVI.delete('involRes')
-            MVI.select('involRes', zoomSelect)
 
     def selectResiduePartner(self, evt):
         """
@@ -189,8 +185,6 @@ class NOEDataViewer(Tk.Toplevel):
                 self.atomListVarPartner.set(" ".join(self.atomListPartnerController.atomTypeList))
                 zoomSelect = MVI.createSelection(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms[0])
                 MVI.zoom(zoomSelect)
-                MVI.delete('involRes')
-                MVI.select('involRes', zoomSelect)
 
     def selectAtomPartner(self, evt):
         """
@@ -203,8 +197,6 @@ class NOEDataViewer(Tk.Toplevel):
         if len(selection) == 1:
             zoomSelect = MVI.createSelection(self.NOEDataController.structure, selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
             MVI.zoom(zoomSelect)
-            MVI.delete('involRes')
-            MVI.select('involRes', zoomSelect)
 
             constraintValues = self.NOEDataController.constraintValueForAtoms(selectedPartnerAtoms[0]+self.NOEDataController.selectedAtoms)
             if constraintValues:

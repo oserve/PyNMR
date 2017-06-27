@@ -133,7 +133,6 @@ class NMRCore(MutableMapping):
                     if len(selectedAtoms) > 0:
                         zoomSelection = MVI.createSelection(self[managerName].structure, selectedAtoms)
                         MVI.zoom(zoomSelection)
-                        MVI.select('involvedRes', zoomSelection)
                 else:
                     errors.add_error_message("No structure selected.")
             except ValueError:

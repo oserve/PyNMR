@@ -53,6 +53,8 @@ def calcDistance(*coords):
     """    Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6
     or (sum of all distances^-6)^-1/6
+
+    calcDistance.method should be set before use
     """
     result = None
 
