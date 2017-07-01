@@ -89,7 +89,7 @@ class ConstraintDrawer(object):
             tempList.append(aConstraint)
         # do not merge previous and next loops ! It creates a thread race which severly slows down the display in pymol
         for aConstraint in tempList:
-            densityList.extend(atom for atom in aConstraint.atoms) #= densityList.get(atom, 0) + densityStep
+            densityList.extend(atom._replace(atoms="") for atom in aConstraint.atoms)
             self.displayedConstraintsDensity.append(aConstraint)
 
         return densityList
@@ -100,7 +100,7 @@ class ConstraintDrawer(object):
         densityList = self.constraintsDensity(selectedConstraints)
         bFactors = Counter(densityList)
         MVI.zeroBFactors(structure)
-        for atom, density in bFactors.iteritems():
+        for atom, density in Counter(atom._replace(atoms="") for atom in densityList).iteritems():
             MVI.setBfactor(structure, [atom], density)
         MVI.paintDensity(color_gradient, structure)
         return bFactors.keys()

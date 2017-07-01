@@ -152,9 +152,9 @@ def createSelection(structure, Atoms, residueLevel=False):
                     if len(atom.name.replace(nameRoot,'')) == numberOfPercentMark:
                         unAmbiguousAtomsList.append(atom)
         else:
-            unAmbiguousAtomsList.append(PDBAtom(*atomSet, coord=[0,0,0]))
+            unAmbiguousAtomsList.append(PDBAtom(*currentPDB.checkSegid(atomSet), coord=[0,0,0]))
 
-    return Interface.selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel)
+    return Interface.selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel=Atoms[0].atoms=="")
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """

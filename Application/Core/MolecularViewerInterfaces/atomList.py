@@ -98,6 +98,19 @@ class atomList(object): # used as singleton
         else:
             return self
 
+    def checkSegid(self, anAtom):
+        """
+        """
+        if anAtom.segid is not None and len(anAtom.segid) > 0:
+            if not anAtom.segid in self.segids:
+                if anAtom.segid in self.ConstraintsSegid:
+                    newSegid = self.segids[self.ConstraintsSegid.index(anAtom.segid)]
+                else:
+                    self.ConstraintsSegid.append(anAtom.segid)
+                    newSegid = self.segids[self.ConstraintsSegid.index(anAtom.segid)]
+            return anAtom._replace(segid=newSegid)
+        return anAtom
+
     def atomsForResidueNumber(self, aNumber=None):
         """
         """
