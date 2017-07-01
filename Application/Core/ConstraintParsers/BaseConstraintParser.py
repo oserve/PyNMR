@@ -59,9 +59,8 @@ class BaseConstraintParser(Iterator):
         for parsingResult in self.parseConstraints():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
-                    for residue in parsingResult["residues"]: # filters H-Bonds
-                        if residue['name'] == "O":
-                            break
+                    if any(residue['name'] == "O" for residue in parsingResult["residues"]): # filters H-Bonds
+                        stderr.write("Unsupported constraint type :" + parsingResult["definition"] + "\n")
                     else:
                         aConstraint = NOE()
                         # No other constraint type supported ... for now !
@@ -71,9 +70,10 @@ class BaseConstraintParser(Iterator):
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
                         return aConstraint
+                else:
+                    stderr.write("Unsupported constraint type :" + parsingResult["definition"] + "\n")
             else:
-                stderr.write("Error while loading : " + parsingResult["definition"])
-                continue
+                stderr.write("Error while loading : " + parsingResult["definition"] + "\n")
         raise StopIteration
 
     def prepareFile(self):
