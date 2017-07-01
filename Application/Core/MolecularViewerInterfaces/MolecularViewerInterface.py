@@ -154,7 +154,7 @@ def createSelection(structure, Atoms, residueLevel=False):
         else:
             unAmbiguousAtomsList.append(PDBAtom(*currentPDB.checkSegid(atomSet), coord=[0,0,0]))
 
-    return Interface.selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel=Atoms[0].atoms=="")
+    return Interface.selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel=unAmbiguousAtomsList[0].name=="")
 
 def getModelsNames(satisfactionMarker="", unSatisfactionMarker=""):
     """
