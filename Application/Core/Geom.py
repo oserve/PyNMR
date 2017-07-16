@@ -32,6 +32,7 @@ from math import sqrt, fsum
 from operator import mul, sub
 from itertools import product, izip
 import errors
+import sys
 
 
 def centerOfMass(coords):
@@ -71,5 +72,7 @@ def calcDistance(*coords):
                                  str(coords) + "\n" +
                                  " and distances list : " +
                                  str([distance for distance in distance_list]) + "\n")
+    except AttributeError:
+        sys.stderr.write("Please set calcDistance.method before using calcDistance()\n")
 
     return result
