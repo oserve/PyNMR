@@ -30,11 +30,11 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 import re
-from collections import Iterator
+from collections import Iterable
 from ..Constraints.NOE import NOE
 
 
-class BaseConstraintParser(Iterator):
+class BaseConstraintParser(Iterable):
     """
     """
 
@@ -47,20 +47,14 @@ class BaseConstraintParser(Iterator):
         self.text = (aLine.strip() for aLine in text.split('\n'))
         self.inFileTab = list()
         self.segments = list()
-        self.prepareFile()
 
     def __iter__(self):
-        return self
-
-    def next(self):
-        """
-        """
-
+        self.prepareFile()
         for parsingResult in self.parseConstraints():
             if parsingResult is not None:
                 if len(parsingResult["residues"]) == 2:  # 2 residues (matches also H-Bonds)
                     if any(residue['name'] == "O" for residue in parsingResult["residues"]): # filters H-Bonds
-                        stderr.write("Unsupported constraint type :" + parsingResult["definition"] + "\n")
+                        stderr.write("Unsupported constraint type : " + parsingResult["definition"] + "\n")
                     else:
                         aConstraint = NOE()
                         # No other constraint type supported ... for now !
@@ -69,12 +63,11 @@ class BaseConstraintParser(Iterator):
                         aConstraint.setConstraintValues(parsingResult["values"][0],
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
-                        return aConstraint
+                        yield aConstraint
                 else:
                     stderr.write("Unsupported constraint type :" + parsingResult["definition"] + "\n")
             else:
                 stderr.write("Error while loading : " + parsingResult["definition"] + "\n")
-        raise StopIteration
 
     def prepareFile(self):
         """
@@ -82,7 +75,7 @@ class BaseConstraintParser(Iterator):
         raise NotImplementedError
 
     def parseConstraints(self):
-        """
+        """Should return an iterator
         """
         raise NotImplementedError
 
