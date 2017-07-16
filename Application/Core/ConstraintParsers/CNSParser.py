@@ -29,6 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
+from itertools import izip
 import re
 
 from BaseConstraintParser import BaseConstraintParser
@@ -99,7 +100,7 @@ class CNSParser(BaseConstraintParser):
                 constraintParsingResult["residues"] = residues
 
                 if 'OR ' in aCNSConstraint: # only for NOE
-                    constraintAmbiguity(constraintParsingResult["residues"])
+                    constraintParsingResult["residues"] = constraintAmbiguity(constraintParsingResult["residues"])
 
                 constraintParsingResult["values"] = constraintValues(aCNSConstraint)
                 constraintParsingResult["definition"] = aCNSConstraint
@@ -113,13 +114,28 @@ class CNSParser(BaseConstraintParser):
 def constraintAmbiguity(constraintResidues):
     """
     """
-    if constraintResidues[0] == constraintResidues[2] or constraintResidues[0] == constraintResidues[3]:
-        indiceAmbiguous = 1
-    else:
-        indiceAmbiguous = 0
-    constraintResidues[indiceAmbiguous]['name'] = constraintResidues[indiceAmbiguous]['name'][0:-1] + "*"
-    constraintResidues = (constraintResidues[0], constraintResidues[1])
+    sortedResidues = [[constraintResidues[0]], []]
+    for residue in constraintResidues[1:]:
+        if residuesLooksLike(constraintResidues[0], residue):
+            sortedResidues[0].append(residue)
+        else:
+            sortedResidues[1].append(residue)
 
+    results = []
+    for resiList in sortedResidues:
+        names = [residue['name'] for residue in resiList]
+        if len(set(names)) == 1:
+            results.append(resiList[0])
+        else:
+            ambiguousResidue = resiList[0]
+            indexAmbiguity = 0
+            for index, letters in enumerate(izip(*names)):
+                if len(set(letters)) != 1:
+                    indexAmbiguity = index
+                    break
+            ambiguousResidue['name'] = resiList[0]['name'][:indexAmbiguity] + "*"
+            results.append(ambiguousResidue)
+    return results
 
 def constraintValues(aCNSConstraint):
     """
@@ -130,3 +146,12 @@ def constraintValues(aCNSConstraint):
     else:
         constraintValuesList = tuple()
     return tuple(float(aValue) for aValue in constraintValuesList)
+
+def residuesLooksLike(residueA, residueB):
+    if residueA.get("segid", "A") == residueA.get("segid", "A"):
+        if residueA["resid"] == residueB["resid"]:
+            if len(residueA["name"]) > 1:
+                if len(residueA["name"]) == len(residueB["name"]):
+                    if residueA["name"][0:2] == residueB["name"][0:2]:
+                        return True
+    return False
