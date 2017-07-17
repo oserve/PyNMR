@@ -124,17 +124,14 @@ def constraintAmbiguity(constraintResidues):
     results = []
     for resiList in sortedResidues:
         names = [residue['name'] for residue in resiList]
-        if len(set(names)) == 1:
-            results.append(resiList[0])
-        else:
+        ambiguousResidue = resiList[0]
+        if len(set(names)) != 1:
             ambiguousResidue = resiList[0]
-            indexAmbiguity = 0
             for index, letters in enumerate(izip(*names)):
                 if len(set(letters)) != 1:
-                    indexAmbiguity = index
-                    break
-            ambiguousResidue['name'] = resiList[0]['name'][:indexAmbiguity] + "*"
-            results.append(ambiguousResidue)
+                    ambiguousResidue['name'] = resiList[0]['name'][:index] + "*"
+                    break       
+        results.append(ambiguousResidue)
     return results
 
 def constraintValues(aCNSConstraint):
@@ -152,6 +149,6 @@ def residuesLooksLike(residueA, residueB):
         if residueA["resid"] == residueB["resid"]:
             if len(residueA["name"]) > 1:
                 if len(residueA["name"]) == len(residueB["name"]):
-                    if residueA["name"][0:2] == residueB["name"][0:2]:
+                    if residueA["name"][0:-1] == residueB["name"][0:-1]:
                         return True
     return False
