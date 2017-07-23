@@ -29,12 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
-from collections import namedtuple
 from itertools import izip
-
-from .. import errors
-
-Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
 
 
 class Constraint(object):
@@ -48,7 +43,6 @@ class Constraint(object):
     """
 
     AtTypeReg = re.compile(r'[CHON][A-Z]*')
-    atoms = dict()
 
     def __init__(self):
         """
@@ -74,23 +68,9 @@ class Constraint(object):
         """
         return isinstance(anotherConstraint, self.__class__) and all(AAtom == SAtom for AAtom, SAtom in izip(anotherConstraint.atoms, self.atoms)) # assume sorted
 
-    @staticmethod
-    def addAtoms(parsingResult):
-        """
-        """
-        return sorted([Constraint.addAtom(aResult) for aResult in parsingResult])
-
-    @staticmethod
-    def addAtom(aParsingResult):
-        """Checks that atoms are not loaded several times
-        should limits future memory issues
-        """
-        residueKey = ''.join(str(value) for value in aParsingResult.values())
-        return Constraint.atoms.setdefault(residueKey, Atoms(**aParsingResult))
-
     @property
     def name(self):
-        """Utility method to set constraint name
+        """Utility method to get constraint name
         """
         return self.id.get('name', "")
 

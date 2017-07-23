@@ -1,3 +1,3 @@
 __all__ = ["ConstraintLoading", "ConstraintManager", "ConstraintsDrawing",
-           "Geom", "MolecularViewerInterface", "NMRCore", "Filtering",
-           "Constraints"]
+           "Geom", "MolecularViewerInterfaces", "NMRCore", "Filtering",
+           "Constraints", "ConstraintParsers"]

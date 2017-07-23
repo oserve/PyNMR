@@ -30,8 +30,10 @@
 # ----------------------------------------------------------------------
 from sys import stderr
 import re
-from collections import Iterable
+from collections import Iterable, namedtuple, defaultdict
 from ..Constraints.NOE import NOE
+
+Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
 
 
 class BaseConstraintParser(Iterable):
@@ -40,6 +42,7 @@ class BaseConstraintParser(Iterable):
 
     XEASYReg = re.compile(r'\d+\s+\w+\s+\w+\s+\d+\s+\w+\s+\w+\s+\d+')
     AtTypeReg = re.compile(r'[CHON][A-Z]*')
+    atoms = defaultdict(lambda: Atoms)
 
     def __init__(self, text):
         """
@@ -59,7 +62,7 @@ class BaseConstraintParser(Iterable):
                         aConstraint = NOE()
                         # No other constraint type supported ... for now !
                         aConstraint.definition = parsingResult["definition"]
-                        aConstraint.atoms = NOE.addAtoms(BaseConstraintParser.parseAtoms(parsingResult["residues"]))
+                        aConstraint.atoms = BaseConstraintParser.parseAtoms(parsingResult["residues"])
                         aConstraint.setConstraintValues(parsingResult["values"][0],
                                                         parsingResult["values"][1],
                                                         parsingResult["values"][2])
@@ -95,6 +98,7 @@ class BaseConstraintParser(Iterable):
     def parseAtoms(parsingResult):
         """
         """
+        atomList = list()
         for aResult in parsingResult:
             currentResidue = dict()
             if "resid" in aResult:
@@ -103,4 +107,6 @@ class BaseConstraintParser(Iterable):
                 currentResidue["resi_number"] = int(aResult["resi"])
             currentResidue["atoms"] = aResult["name"]
             currentResidue["segid"] = aResult.get("segid", 'A')
-            yield currentResidue
+            residueKey = ''.join(str(value) for value in currentResidue.values()) 
+            atomList.append(BaseConstraintParser.atoms[residueKey](**currentResidue))
+        return atomList
