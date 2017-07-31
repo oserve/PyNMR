@@ -34,6 +34,7 @@ import ttk
 import re
 from sys import stderr
 from ...Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
+from appDefaults import defaultForParameter
 
 regInput = re.compile(r'[^0-9+\-\,\s]')
 
@@ -64,6 +65,10 @@ class ConstraintSelectionPanel(ttk.LabelFrame):
         for panel in self.panelsList:
             infos.update(panel.getInfo())
         return infos
+
+    def setDefaults(self):
+        self.violationsFrame.cutOff.set(defaultForParameter("cutOff"))
+        self.structureManagement.comboPDB.values = MVI.getModelsNames(defaultForParameter('SatisfactionMarker'), defaultForParameter('UnSatisfactionMarker'))
 
 
 class RangeSelectionPanel(ttk.LabelFrame):

@@ -189,3 +189,6 @@ class NMRCore(MutableMapping):
         except IOError:
             sys.stderr.write("Error while downloading or opening " +
                              pdbCode + " NMR Restraints file from PDB.\n")
+
+    def getModelsNames(self, satisfactionMarker="", unSatisfactionMarker=""):
+        return MVI.getModelsNames(satisfactionMarker, unSatisfactionMarker)

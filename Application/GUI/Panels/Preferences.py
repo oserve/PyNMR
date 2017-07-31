@@ -205,6 +205,7 @@ class PreferencesPanel(ttk.LabelFrame):
         self.selectedMethod.set(appDefaults.defaultForParameter("method"))
         self.url.set(appDefaults.defaultForParameter("urlPDB"))
         self.rangeCutOff.set(appDefaults.defaultForParameter("rangeCutOff"))
+        self.densityPanel.gradientSelection['values'] = appDefaults.defaultForParameter('gradientColorList')
         self.sticksPanel.setDefaults()
 
     def getInfo(self):

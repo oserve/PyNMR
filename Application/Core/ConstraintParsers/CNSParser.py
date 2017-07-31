@@ -149,6 +149,5 @@ def residuesLooksLike(residueA, residueB):
         if residueA["resid"] == residueB["resid"]:
             if len(residueA["name"]) > 1:
                 if len(residueA["name"]) == len(residueB["name"]):
-                    if residueA["name"][0:-1] == residueB["name"][0:-1]:
-                        return True
+                    return residueA["name"][0:-1] == residueB["name"][0:-1]
     return False

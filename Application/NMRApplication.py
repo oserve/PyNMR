@@ -61,10 +61,8 @@ class NMRApplication(object):
     def setDefaults(self):
         """
         """
-        self.NMRInterface.preferencesPanel.densityPanel.gradientSelection['values'] = defaultForParameter('gradientColorList')
         self.NMRInterface.preferencesPanel.setDefaults()
-        self.NMRInterface.mainPanel.constraintPanel.violationsFrame.cutOff.set(defaultForParameter("cutOff"))
-        self.NMRInterface.mainPanel.constraintPanel.structureManagement.comboPDB.values = MVI.getModelsNames(defaultForParameter('SatisfactionMarker'), defaultForParameter('UnSatisfactionMarker'))
+        self.NMRInterface.mainPanel.constraintPanel.setDefaults()
         self.NMRInterface.mainPanel.fileSelection.updateFilelist()
 
     def GUIBindings(self):
