@@ -33,6 +33,7 @@ from operator import mul, sub
 from itertools import product, izip
 import errors
 import sys
+from Application.DataControllers.Observer import event
 
 
 def centerOfMass(coords):
@@ -49,7 +50,7 @@ def centerOfMass(coords):
 
 # Methods for distance constraints
 
-
+@event('method')
 def calcDistance(*coords):
     """    Calculate distance according to :
     ((sum of all distances^-6)/number of distances)^-1/6

@@ -35,6 +35,7 @@ import re
 from sys import stderr
 from ...Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
 from appDefaults import defaultForParameter
+from Application.DataControllers.Observer import event
 
 regInput = re.compile(r'[^0-9+\-\,\s]')
 
@@ -103,6 +104,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
         state_all = self.RangesVars["all"].get()
         for consRange in self.ranges:
             self.RangesVars[consRange].set(state_all)
+        event.trigger('dist_range', tuple(aRange for aRange in self.ranges if self.RangesVars[aRange].get() == 1))
 
     def tick(self):
         """
@@ -110,6 +112,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
         self.RangesVars["all"].set(1)
         if any(self.RangesVars[aRange].get() == 0 for aRange in self.ranges):
             self.RangesVars["all"].set(0)
+        event.trigger('dist_range', tuple(aRange for aRange in self.ranges if self.RangesVars[aRange].get() == 1))
 
     def getInfo(self):
         """
@@ -136,7 +139,9 @@ class ViolationSelectionPanel(ttk.LabelFrame):
         """
         for rowPosition, violationType in enumerate(('unSatisfied', 'Satisfied')):
             self.ViolationsVars[violationType] = Tk.IntVar(self)
-            self.UnSatisfiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType, variable=self.ViolationsVars[violationType])
+            self.UnSatisfiedCB[violationType] = ttk.Checkbutton(self, text=': ' + violationType,
+                                                                variable=self.ViolationsVars[violationType],
+                                                                command=self.setViolationState)
             self.UnSatisfiedCB[violationType].grid(row=rowPosition, column=0, sticky=Tk.W, columnspan=2)
             self.ViolationsVars[violationType].set(1)
 
@@ -147,9 +152,18 @@ class ViolationSelectionPanel(ttk.LabelFrame):
         rowPosition += 1
         self.spinBox_cutOff = Tk.Spinbox(self, textvariable=self.cutOff,
                                          from_=0.0, to=10.0, increment=0.1,
-                                         format='%2.1f', width=6)
+                                         format='%2.1f', width=6,
+                                         command = self.setViolationCutOff)
         self.spinBox_cutOff.grid(row=rowPosition, column=0)
         ttk.Label(self, text=u'\u212b').grid(row=rowPosition, column=1)
+        self.setViolationState()
+        self.setViolationCutOff()
+    
+    def setViolationState(self):
+        event.trigger('violationState', tuple(violationType for violationType in ('unSatisfied', 'Satisfied') if self.ViolationsVars[violationType].get() == 1))
+    
+    def setViolationCutOff(self):
+        event.trigger('violCutoff', self.cutOff.get())
 
     def getInfo(self):
         """

@@ -34,6 +34,7 @@ import tkFileDialog
 import Tkinter as Tk
 import ttk
 from ttkScrolledList import ScrolledList
+from Application.DataControllers.Observer import event
 
 
 class FileSelectionPanel(ttk.LabelFrame):

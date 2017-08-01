@@ -47,6 +47,7 @@ from ConstraintsDrawing import ConstraintDrawer
 from MolecularViewerInterfaces import MolecularViewerInterface as MVI
 from ConstraintManager import ConstraintSetManager
 import errors
+from Application.DataControllers.Observer import event
 
 
 class NMRCore(MutableMapping):
@@ -137,15 +138,21 @@ class NMRCore(MutableMapping):
             except ValueError:
                 errors.add_error_message("No constraints to draw ! You might want to load a few of them first ...")
 
-    def commandsInterpretation(self, managerName, residuesList, dist_range, violationState,
-                               violCutoff, method, rangeCutOff):
+    @event('dist_range')
+    @event('violationState')
+    @event('violCutoff')
+    @event('rangeCutOff')
+    def commandsInterpretation(self, managerName, residuesList):
         """Setup Filter for constraints
         """
         if len(residuesList) == 0:
             residuesList = set(str(aResidueNumber) for aResidueNumber in self[managerName].residuesList)
 
-        self.constraintFilter = NOEFilter(residuesList, dist_range, violationState,
-                                          violCutoff, method, rangeCutOff)
+        self.constraintFilter = NOEFilter(residuesList,
+                                          self.commandsInterpretation.dist_range,
+                                          self.commandsInterpretation.violationState,
+                                          self.commandsInterpretation.violCutoff,
+                                          self.commandsInterpretation.rangeCutOff)
 
     def cleanScreen(self):
         """Remove all sticks

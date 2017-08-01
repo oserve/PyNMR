@@ -33,6 +33,7 @@ import Tkinter as Tk
 import ttk
 import tkColorChooser
 import appDefaults
+from Application.DataControllers.Observer import event
 
 
 class SticksPreferencesPanel(ttk.LabelFrame):
@@ -156,7 +157,8 @@ class PreferencesPanel(ttk.LabelFrame):
                                       command=self.resetPrefs)
         self.rangeCutOff = Tk.IntVar(self)
         self.rangeCutOffEntry = Tk.Spinbox(self, textvariable=self.rangeCutOff,
-                                           from_=1, to=20, increment=1, width=2)
+                                           from_=1, to=20, increment=1, width=2,
+                                           command=self.setRangeCutOff)
         self.url = Tk.StringVar(self)
         self.urlTextField = ttk.Entry(self, textvariable=self.url)
         self.widgetCreation()
@@ -169,7 +171,7 @@ class PreferencesPanel(ttk.LabelFrame):
 
         for position, (methodName, method) in enumerate(self.methodsList):
             ttk.Radiobutton(self, text=methodName, variable=self.selectedMethod,
-                            value=method).grid(row=position, column=1)
+                            value=method, command=self.setCalcMethod).grid(row=position, column=1)
         position += 1
         ttk.Label(self, text=u'Residue range cut-off :').grid(row=position, column=0)
 
@@ -185,6 +187,12 @@ class PreferencesPanel(ttk.LabelFrame):
         position += 1
         self.savePrefButton.grid(row=position, column=0)
         self.resetButton.grid(row=position, column=1)
+    
+    def setCalcMethod(self):
+        event.trigger('method', self.selectedMethod.get())
+    
+    def setRangeCutOff(self):
+        event.trigger('rangeCutOff', self.rangeCutOff.get())        
 
     def savePrefs(self):
         """
@@ -203,8 +211,10 @@ class PreferencesPanel(ttk.LabelFrame):
         """
         self.densityPanel.gradient.set(appDefaults.defaultForParameter("gradient"))
         self.selectedMethod.set(appDefaults.defaultForParameter("method"))
+        event.trigger('method', appDefaults.defaultForParameter("method"))
         self.url.set(appDefaults.defaultForParameter("urlPDB"))
         self.rangeCutOff.set(appDefaults.defaultForParameter("rangeCutOff"))
+        event.trigger('rangeCutOff', appDefaults.defaultForParameter("method"))
         self.densityPanel.gradientSelection['values'] = appDefaults.defaultForParameter('gradientColorList')
         self.sticksPanel.setDefaults()
 

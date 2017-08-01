@@ -1,3 +1,4 @@
+
 # Copyright Notice
 # ================
 #
@@ -28,18 +29,15 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Application.Core.Geom import calcDistance
+#
 
-
-def NOEFilter(residuesList, dist_range, violationState, violCutoff, RangeCutOff):
+def event(name):
+    """Approach inspired by django-quicky and bindings from objective-c
+    pattern observer by decorator with parameter and value
     """
-    """
-    def constraintFilter(aConstraint):
-        """
-        """
-        if aConstraint.getRange(RangeCutOff) in dist_range:
-            if any(str(aResiNumber) in residuesList for aResiNumber in aConstraint.ResiNumbers):
-                return aConstraint.satisfaction(violCutoff) in violationState
-        return False
-
-    return constraintFilter
+    event.subscriptions = getattr(event, 'subscriptions', {})
+    event.trigger = lambda e, valeur: [setattr(f, e, valeur) for f in event.subscriptions[e]]
+    def decorator(func):
+        event.subscriptions.setdefault(name, []).append(func)
+        return func
+    return decorator

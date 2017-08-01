@@ -66,12 +66,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["constraintFile"],
-                                                    infos["ranges"],
-                                                    infos["residuesRange"],
-                                                    infos["violationState"],
-                                                    infos["cutOff"],
-                                                    infos["method"],
-                                                    infos["rangeCutOff"])
+                                                    infos["ranges"])
 
             self.NMRCommands.showSticks(infos["constraintFile"],
                                         infos["structure"],
@@ -92,12 +87,8 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
         if self.infoCheck(infos):
             self.NMRCommands.commandsInterpretation(infos["constraintFile"],
-                                                    infos["ranges"],
-                                                    infos["residuesRange"],
-                                                    infos["violationState"],
-                                                    infos["cutOff"],
-                                                    infos["method"],
-                                                    infos["rangeCutOff"])
+                                                    infos["ranges"])
+                                                    
             self.NMRCommands.showNOEDensity(infos["constraintFile"],
                                             infos["structure"],
                                             infos["gradient"])

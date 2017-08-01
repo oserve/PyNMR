@@ -104,7 +104,7 @@ class imConstraintSetManager(Sequence):
         resis = set()
         for constraint in self.constraints:
             resis.update(constraint.ResiNumbers)
-        return resis
+        return tuple(resis)
 
     def intersection(self, anotherManager):
         """
