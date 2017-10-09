@@ -31,7 +31,7 @@
 from collections import namedtuple
 from sys import stderr
 
-from memoization import lru_cache
+from Application.Core.MolecularViewerInterfaces.memoization import lru_cache
 
 PDBAtom = namedtuple("PDBAtom", ['segid', 'resi_number', 'name', 'coord'])
 

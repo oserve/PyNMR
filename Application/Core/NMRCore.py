@@ -34,6 +34,7 @@
 import os
 import os.path as path
 import sys
+from sys import stderr
 import urllib2
 import shutil
 import gzip
@@ -41,12 +42,11 @@ import tempfile
 from collections import MutableMapping
 
 # Custom Classes
-from ConstraintLoading import loadConstraintsFromFile
-from Filtering import NOEFilter
-from ConstraintsDrawing import ConstraintDrawer
-from MolecularViewerInterfaces import MolecularViewerInterface as MVI
-from ConstraintManager import ConstraintSetManager
-import errors
+from Application.Core.ConstraintLoading import loadConstraintsFromFile
+from Application.Core.Filtering import NOEFilter
+from Application.Core.ConstraintsDrawing import ConstraintDrawer
+from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
+import Application.Core.errors as errors
 
 
 class NMRCore(MutableMapping):
@@ -61,19 +61,19 @@ class NMRCore(MutableMapping):
     def __getitem__(self, key):
         """Return a constraint Manager
         """
-        if key in self.ManagersList:
+        try:
             return self.ManagersList[key]
-        else:
-            raise ValueError("No constraintManager named " + str(key) + "\n")
+        except ValueError:
+            stderr.write("No constraintManager named " + str(key) + "\n")
 
     def __setitem__(self, key, item):
         self.ManagersList[key] = item
 
     def __delitem__(self, key):
-        if key in self.ManagersList:
+        try:
             del self.ManagersList[key]
-        else:
-            raise ValueError("No constraintManager named " + str(key) + "\n")
+        except ValueError:
+            stderr.write("No constraintManager named " + str(key) + "\n")
 
     def __iter__(self):
         return self.ManagersList.__iter__()

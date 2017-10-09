@@ -33,8 +33,8 @@ import Tkinter as Tk
 import ttk
 import re
 from sys import stderr
-from ...Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
-from appDefaults import defaultForParameter
+from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
+from Application.GUI.Panels.appDefaults import defaultForParameter
 
 regInput = re.compile(r'[^0-9+\-\,\s]')
 

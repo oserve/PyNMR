@@ -31,10 +31,10 @@
 import Tkinter as Tk
 import ttk
 
-from Panels.ttkScrolledList import ScrolledList
+from Application.GUI.Panels.ttkScrolledList import ScrolledList
 
-from ..Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
-from ..DataControllers import atomTypeListController, resiNumberListController
+from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
+from Application.DataControllers import atomTypeListController, resiNumberListController
 
 
 class NOEDataViewer(Tk.Toplevel):

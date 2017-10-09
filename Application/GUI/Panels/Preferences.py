@@ -32,7 +32,7 @@
 import Tkinter as Tk
 import ttk
 import tkColorChooser
-import appDefaults
+import Application.GUI.Panels.appDefaults as appDefaults
 
 
 class SticksPreferencesPanel(ttk.LabelFrame):

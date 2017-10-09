@@ -31,8 +31,8 @@
 from math import sqrt, fsum
 from operator import mul, sub
 from itertools import product, izip
-import errors
 import sys
+import Application.Core.errors as errors
 
 
 def centerOfMass(coords):

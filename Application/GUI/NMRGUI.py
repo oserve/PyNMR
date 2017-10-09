@@ -30,9 +30,9 @@
 # ----------------------------------------------------------------------
 import Tkinter as Tk
 import ttk
-from Panels.Preferences import PreferencesPanel
-from Panels.MainPanel import mainPanel
-from Panels.About import About
+from Application.GUI.Panels.Preferences import PreferencesPanel
+from Application.GUI.Panels.MainPanel import mainPanel
+from Application.GUI.Panels.About import About
 
 
 class NMRGUI(Tk.Toplevel):

@@ -32,7 +32,7 @@ import re
 from sys import stderr
 from collections import Sequence
 
-import MolecularViewerInterfaces.MolecularViewerInterface as MVI
+import Application.Core.MolecularViewerInterfaces.MolecularViewerInterface as MVI
 
 
 class imConstraintSetManager(Sequence):

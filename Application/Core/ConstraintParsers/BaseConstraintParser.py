@@ -31,7 +31,7 @@
 from sys import stderr
 import re
 from collections import Iterable, namedtuple, defaultdict
-from ..Constraints.NOE import NOE
+from Application.Core.Constraints.NOE import NOE
 
 Atoms = namedtuple("Atoms", ['segid', 'resi_number', 'atoms'])
 

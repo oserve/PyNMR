@@ -32,7 +32,7 @@ from sys import stderr
 from itertools import izip
 import re
 
-from BaseConstraintParser import BaseConstraintParser
+from Application.Core.ConstraintParsers.BaseConstraintParser import BaseConstraintParser
 
 SegResiReg = re.compile(r"(SEGI\w*\s+[\w\d]+\s+AND\s+)?(RESI\w*\s+\d+\s+AND\s+NAME\s+\w\w?\d*[\*#\+%]*)")
 RegFloat = re.compile(r'\s+[-+]?[0-9]*\.?[0-9]+'*3)

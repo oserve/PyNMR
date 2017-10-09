@@ -30,9 +30,9 @@
 # ----------------------------------------------------------------------
 
 import ttk
-from ConstraintSelection import ConstraintSelectionPanel
-from FileSelection import FileSelectionPanel
-from NOEDrawing import NOEDrawingPanel
+from Application.GUI.Panels.ConstraintSelection import ConstraintSelectionPanel
+from Application.GUI.Panels.FileSelection import FileSelectionPanel
+from Application.GUI.Panels.NOEDrawing import NOEDrawingPanel
 
 
 class mainPanel(ttk.Frame):

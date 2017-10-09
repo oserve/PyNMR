@@ -31,7 +31,7 @@
 from sys import stderr
 import re
 
-from BaseConstraintParser import BaseConstraintParser
+from Application.Core.ConstraintParsers.BaseConstraintParser import BaseConstraintParser
 
 class CYANAParser(BaseConstraintParser):
     """

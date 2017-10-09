@@ -31,8 +31,8 @@
 
 # DistanceConstraints loading functions
 from sys import stderr
-from ConstraintManager import imConstraintSetManager
-from ConstraintParsers import BaseConstraintParser, CNSParser, CYANAParser
+from Application.Core.ConstraintManager import imConstraintSetManager
+from Application.Core.ConstraintParsers import BaseConstraintParser, CNSParser, CYANAParser
 
 
 def loadConstraintsFromFile(fileName, managerName):

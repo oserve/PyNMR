@@ -28,10 +28,10 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from .. import errors
-from Constraint import Constraint
-from ..Geom import centerOfMass, calcDistance
-from ..MolecularViewerInterfaces import MolecularViewerInterface as MVI
+from Application.Core import errors
+from Application.Core.Constraints.Constraint import Constraint
+from Application.Core.Geom import centerOfMass, calcDistance
+from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
 
 
 class NOE(Constraint):

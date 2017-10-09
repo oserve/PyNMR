@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 from pymol import cmd as PymolCmd
 from pymol.cgo import CYLINDER
-from atomList import PDBAtom
+from Application.Core.MolecularViewerInterfaces.atomList import PDBAtom
 # import pickle
 
 

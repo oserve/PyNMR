@@ -29,10 +29,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stdout
-from GUI.NMRGUI import NMRGUI
-import Core.MolecularViewerInterfaces.MolecularViewerInterface as MVI
-from GUI.Panels.appDefaults import defaultForParameter
-from NMRCLI import NMRCLI
+from Application.GUI.NMRGUI import NMRGUI
+from Application.NMRCLI import NMRCLI
 
 
 class NMRApplication(object):

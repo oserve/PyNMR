@@ -31,8 +31,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from collections import Counter
-from ConstraintManager import ConstraintSetManager
-from MolecularViewerInterfaces import MolecularViewerInterface as MVI
+from Application.Core.ConstraintManager import ConstraintSetManager
+from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
 
 
 class ConstraintDrawer(object):

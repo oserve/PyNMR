@@ -29,9 +29,9 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
-from atomList import atomList, PDBAtom
-from memoization import lru_cache
-from .. import errors
+from Application.Core.MolecularViewerInterfaces.atomList import atomList, PDBAtom
+from Application.Core.MolecularViewerInterfaces.memoization import lru_cache
+from Application.Core import errors
 
 lastDigitsRE = re.compile(r'\d+\b')  # look for last digit of atom type (used in AtomSet)
 

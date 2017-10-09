@@ -29,7 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import ttk
-from ..DataViewer import NOEDataViewer
+from Application.GUI.DataViewer import NOEDataViewer
 from Application.DataControllers import NOEDataController
 
 
