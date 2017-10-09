@@ -1,0 +1,3 @@
+assign (segid "Tfb1" and resid    8 and name HD12) (segid "Tfb1" and resid    8 and name HG11) 1.973 0.486 0.486 weight 1.000
+    or (segid "Tfb1" and resid    8 and name HD11) (segid "Tfb1" and resid    8 and name HG11)
+    or (segid "Tfb1" and resid    8 and name HD13) (segid "Tfb1" and resid    8 and name HG11)

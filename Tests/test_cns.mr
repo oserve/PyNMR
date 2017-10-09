@@ -1,0 +1,5 @@
+! noe distance restraints
+assign ( resid    7 and name  HA+ )  ( resid    8 and name   H )    6.00   1.20   0.50 
+assign ( resid    8 and name  HA* )  ( resid    9 and name   H )    1.20   1.20   0.50 
+assign ( resid    9 and name   HA )  ( resid   10 and name   H )    3.00   1.20   0.50 
+assign ( resid    9 and name   HA )  ( resid    9 and name  HG* )    3.00   1.20   0.50 
