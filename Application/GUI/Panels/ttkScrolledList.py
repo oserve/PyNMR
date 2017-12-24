@@ -139,6 +139,11 @@ class ScrolledList(ttk.Frame):
         else:
             raise IndexError("ScrolledList[%d] out of range." % k)
 
+    def get(self, index):
+        """
+        """
+        return self.listbox.get(index)
+
     def append(self, text):
         """Append a line to the listbox.
         """
@@ -177,6 +182,31 @@ class ScrolledList(ttk.Frame):
         """
         """
         self.listbox.bind(sequence, func, add)
+
+    def selection_set(self, first, last=None):
+        """
+        """
+        return self.listbox.selection_set(first, last)
+
+    def selection_clear(self, first, last=None):
+        """
+        """
+        self.listbox.selection_clear(first, last)
+
+    def size(self):
+        """
+        """
+        return self.listbox.size()
+
+    def event_generate(self, event):
+        """
+        """
+        self.listbox.event_generate(event)
+
+    def selectmode(self, newMode):
+        """
+        """
+        self.listbox.configure(selectmode=newMode)
 
     @property
     def exportselection(self):

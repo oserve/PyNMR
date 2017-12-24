@@ -28,46 +28,76 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from collections import OrderedDict
+from collections import OrderedDict, Mapping, defaultdict
 
 
-class atomTypeListController(object):
+class atomTypeListController(Mapping):
     """
     """
 
     def __init__(self):
         """
         """
-        self.selectedAtoms = list()
+        Mapping.__init__(self)
+        self.atomTypes = defaultdict(list)
 
-    @property
-    def atomTypeList(self):
+    def __getitem__(self, key):
         """
         """
-        atomTypeList = OrderedDict()
-        for atomType in sorted(set(atom.atoms for atom in self.selectedAtoms)):
-            atomTypeList[atomType] = [atom for atom in self.selectedAtoms if atom.atoms == atomType]
-        return atomTypeList
+        return self.atomTypes[key]
+
+    def __iter__(self):
+        """
+        """
+        return sorted(self.atomTypes.keys()).__iter__()
+
+    def __len__(self):
+        """
+        """
+        return len(self.atomTypes)
+
+    def clear(self):
+        """
+        """
+        self.atomTypes.clear()
+
+    def addAtom(self, atom):
+        """
+        """
+        self.atomTypes[atom.atoms].append(atom)
 
 
-class resiNumberListController(object):
+class resiNumberListController(Mapping):
     """
     """
 
     def __init__(self):
         """
         """
-        self.atomsList = list()
+        Mapping.__init__(self)
+        self.resiNumbers = defaultdict(list)
 
-    @property
-    def resiNumberList(self):
+    def __getitem__(self, key):
         """
         """
-        resiNumberList = OrderedDict()
-        totalResiNumberList = sorted(set(atom[1] for atom in self.atomsList))
-        for segid in sorted(set(atom.segid for atom in self.atomsList)):
-            for resi_number in totalResiNumberList:
-                resi = [atom for atom in self.atomsList if atom.resi_number == resi_number and atom.segid == segid]
-                if len(resi) > 0:
-                    resiNumberList["{}\ ({})".format(resi_number, segid)] = resi
-        return resiNumberList
+        return self.resiNumbers[key]
+
+    def __iter__(self):
+        """
+        """
+        return sorted(self.resiNumbers.keys(), key=lambda x: int(x.split('\\')[0])).__iter__()
+
+    def __len__(self):
+        """
+        """
+        return len(self.resiNumbers)
+
+    def clear(self):
+        """
+        """
+        self.resiNumbers.clear()
+
+    def addAtom(self, atom):
+        """
+        """
+        self.resiNumbers["{}\ ({})".format(atom.resi_number, atom.segid)].append(atom)
