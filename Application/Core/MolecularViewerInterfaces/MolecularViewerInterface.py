@@ -121,7 +121,7 @@ def get_coordinates(atomSet): # and there are typically thousands of atoms in st
     else:
         complyingAtomsCoordinates = currentPDB.coordinatesForAtom(atomSet)
 
-    if len(complyingAtomsCoordinates) == 0:
+    if not complyingAtomsCoordinates:
         errors.add_error_message( "Atom not found in structure : " + str(atomSet) + ", please check nomenclature.")
 
     return tuple(complyingAtomsCoordinates)

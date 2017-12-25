@@ -88,7 +88,7 @@ class FileSelectionPanel(ttk.LabelFrame):
         """
         fileList = " ".join(self.NMRCommands.keys()).strip()
         self.constraintsFileList.set(fileList)
-        if len(fileList) == 0:
+        if not fileList:
             self.infoLabelString.set('')
         else:
             self.constraintsList.listbox.activate(len(fileList) - 1)

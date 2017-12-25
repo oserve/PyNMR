@@ -59,14 +59,14 @@ class NMRCLI(object):
                 if managerName == '':
                     managerName = self.Core.keys()[0]
                 if managerName in self.Core:
-                    residuesList, dist_range, violationState = interpret(dist_range, violationState, residuesList)
+                    dist_range, violationState, residuesList = interpret(dist_range, violationState, residuesList)
                     self.Core.commandsInterpretation(managerName, residuesList,
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
                     self.Core.showSticks(managerName, structure, colors, radius,
                                          UnSatisfactionMarker, SatisfactionMarker)
 
-                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName, structure)
+                    self.dataControllers[managerName] = NOEDataController(self.Core.drawer.displayedConstraintsSticks.intersection(self.Core.get(managerName, "").constraintsManagerForDataType('NOE')), managerName, structure)
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
                     stdout.write(str(len([residue for residue in self.dataControllers[managerName].residuesList])) +
@@ -107,7 +107,7 @@ class NMRCLI(object):
                                                      dist_range, violationState, violCutoff,
                                                      method, rangeCutOff)
                     self.Core.showNOEDensity(managerName, structure, colors)
-                    self.dataControllers[managerName] = NOEDataController(self.Core, managerName, structure)
+                    self.dataControllers[managerName] = NOEDataController(self.Core.drawer.displayedConstraintsDensity.intersection(self.Core.get(managerName, "").constraintsManagerForDataType('NOE')), managerName, structure)
 
                     stdout.write(str(len(self.dataControllers[managerName])) +
                                  " constraints used.\n")
@@ -127,7 +127,6 @@ class NMRCLI(object):
                      violationState, violCutoff, method, radius, colors,
                      rangeCutOff, UnSatisfactionMarker, SatisfactionMarker)
 
-
     def downloadNMR(self, pdbCode, url):
         """
         """
@@ -145,7 +144,7 @@ def interpret(dist_range, violationState, residuesList):
     """
     """
     resList = set()
-    if len(regInput.findall(residuesList)) == 0:
+    if not regInput.findall(residuesList):
         for resi_range in residuesList.split("+"):
             aRange = resi_range.split("-")
             if 1 <= len(aRange) <= 2:

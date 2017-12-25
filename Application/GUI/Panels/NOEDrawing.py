@@ -114,9 +114,13 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
         if self.infoCheck(infos):
             self.NMRCommands.cleanScreen()
-            self.dataViewers[self.mainGUI.getInfo()["constraintFile"]].destroy()
-            del self.dataViewers[self.mainGUI.getInfo()["constraintFile"]]
-            del self.dataControllers[self.mainGUI.getInfo()["constraintFile"]]
+            try:
+                self.dataViewers[self.mainGUI.getInfo()["constraintFile"]].destroy()
+                del self.dataViewers[self.mainGUI.getInfo()["constraintFile"]]
+                del self.dataControllers[self.mainGUI.getInfo()["constraintFile"]]
+            except KeyError:
+                pass
+
 
     @staticmethod
     def infoCheck(infos):

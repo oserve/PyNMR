@@ -130,7 +130,7 @@ class NMRCore(MutableMapping):
                         selectedAtoms = displayFunction(selectedConstraints,
                                                         self[managerName].structure,
                                                         gradient)
-                    if len(selectedAtoms) > 0:
+                    if selectedAtoms:
                         MVI.zoom(self[managerName].structure, selectedAtoms)
                 else:
                     errors.add_error_message("No structure selected.")
@@ -141,9 +141,8 @@ class NMRCore(MutableMapping):
                                violCutoff, method, rangeCutOff):
         """Setup Filter for constraints
         """
-        if len(residuesList) == 0:
+        if not residuesList:
             residuesList = set(str(aResidueNumber) for aResidueNumber in self[managerName].residuesList)
-
         self.constraintFilter = NOEFilter(residuesList, dist_range, violationState,
                                           violCutoff, method, rangeCutOff)
 

@@ -199,7 +199,7 @@ def interpret(residuesList):
     """
     """
     resList = set()
-    if len(regInput.findall(residuesList)) == 0:
+    if not regInput.findall(residuesList):
         for resi_range in residuesList.split("+"):
             aRange = resi_range.split("-")
             if 1 <= len(aRange) <= 2:

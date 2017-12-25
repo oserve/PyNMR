@@ -52,7 +52,7 @@ class NOEDataController(object):
     def residuesList(self):
         """
         """
-        return (str(residue) for residue in sorted(int(number) for number in self.manager.residuesList))
+        return (str(residue) for residue in sorted(self.manager.residuesList, key=int))
 
     def setSelectedAtoms(self, aSelection):
         """

@@ -84,7 +84,7 @@ def selectionFormat(currentPDB, unAmbiguousAtomsList, structure, residueLevel):
     selection = ""
     for molChain in currentPDB.segids:
         resiList = [atom for atom in unAmbiguousAtomsList if atom.segid == molChain or atom.segid == '']
-        if len(resiList) > 0:
+        if resiList:
             selection += structure + " and (chain " + molChain + " and ("
             if not residueLevel:
                 selection += " ".join("resi {} and name {} +".format(atom.resi_number, atom.name) for atom in resiList)
