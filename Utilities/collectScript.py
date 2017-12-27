@@ -3,24 +3,29 @@
     Gathers all python files into one
     the final file still needs clean up
 """
-from os import listdir
+from os import walk
 from os.path import basename, join
 from sys import stderr, stdout
 
-collection = list()
+collection = ""
 importCollection = set()
 
 mainDirectory = '/Users/olivier/Pymol_scripts/PyNMR/'
-directoriesList = ('Application', 'Application/Core',
-                   'Application/Core/Constraints',
-                   'Application/GUI', 'Application/GUI/Panels',
-                   'Application/DataControllers')
 
 importAsException = set()
 
-projectFileList=[join(mainDirectory, directory, aFile) for directory in directoriesList for aFile in listdir(mainDirectory+directory) if aFile.endswith('py') and not '__init__' in aFile]
+ExceptDirs = ("Tests", "Utilities")
+ExceptFiles = ("__init__.py", "PyNMR.py", "DebugMVI.py")
 
-moduleList = [basename(aFile).split('.')[0] for aFile in projectFileList]
+projectFileList = list()
+for item in walk(mainDirectory):
+    if '.' not in item[0]:
+        if all(ExceptDir not in item[0] for ExceptDir in ExceptDirs):
+            for aFile in item[2]:
+                if aFile.endswith('.py') and all(aFile != ExceptFile for ExceptFile in ExceptFiles):
+                    projectFileList.append(join(item[0], aFile))
+
+moduleList = set(basename(aFile).split('.')[0] for aFile in projectFileList)
 
 for aFile in projectFileList:
     stderr.write('Parsing file : ' + aFile + '\n')
@@ -40,24 +45,23 @@ for aFile in projectFileList:
             else:
                 if not importException:
                     if not '"""' in line:
-                        for aModuleName in moduleList:
-                            if aModuleName in line:
-                                if 'as' in line:
-                                    importAsException.add(line.split(' as ')[1])
-                            break
+                        if any(aModuleName in line for aModuleName in moduleList):
+                            if ' as ' in line:
+                                importAsException.add(line.split(' as ')[1])
                         else:
                             importCollection.add(line)
                     else:
                         collection += line
                 else:
                     collection += line
+        collection += '\n'
 
-with open(mainDirectory + "/pymolNMR.py", 'r') as fin:
-    for line in fin:
-        if not "import" in line:
-            collection += line
-        else:
-            importCollection.add(line)
+# with open(mainDirectory + "/pymolNMR.py", 'r') as fin:
+#     for line in fin:
+#         if not "import" in line:
+#             collection += line
+#         else:
+#             importCollection.add(line)
 
 stdout.write("".join(importCollection))
 stdout.write("".join(collection))

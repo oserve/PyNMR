@@ -23,10 +23,11 @@ constraints extracted from the nmr spectrum make sens or not.
 - Choose method of distance calculation between atoms (in case of ambiguous restraints)
 - Choice for colors and size of NOE representations
 - Selection of constraint by clicking and visualization on the 3D structure
+- For Pymol 1.X serie only
 
 # Installation :
 ## For user friendly version :
-- Download "PyNMR.py" (Version of 20/11/16)
+- Download "PyNMR.py" (Version of 27/12/17)
 
 ## For development version :
 - Copy all files into a single directory anywhere on your disk
