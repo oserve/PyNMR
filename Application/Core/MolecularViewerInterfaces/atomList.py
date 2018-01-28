@@ -28,7 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from collections import namedtuple
+from collections import namedtuple, MutableSequence
 from sys import stderr
 
 from Application.Core.MolecularViewerInterfaces.memoization import lru_cache
@@ -36,7 +36,7 @@ from Application.Core.MolecularViewerInterfaces.memoization import lru_cache
 PDBAtom = namedtuple("PDBAtom", ['segid', 'resi_number', 'name', 'coord'])
 
 
-class atomList(object): # used as singleton
+class atomList(MutableSequence): # used as singleton
     """
     """
     def __init__(self, name=""):
@@ -48,14 +48,18 @@ class atomList(object): # used as singleton
         self.segidList = list()
         self.segidSet = False
 
-    def append(self, anAtom):
-        """
-        """
+    def __setitem__(self, index, anAtom):
         if isinstance(anAtom, PDBAtom):
-            self.atoms.append(anAtom)
+            self.atoms[index] = anAtom
             self.segidSet = False
         else:
-            raise TypeError(str(anAtom) + " is not atom.\n")
+            raise TypeError(str(anAtom) + " is not atom.\n")    
+
+    def __delitem__(self, index):
+        del self.atoms[index]
+
+    def insert(self, index, anAtom):
+        self.atoms.insert(index, anAtom)
 
     def clear(self):
         """
@@ -71,13 +75,10 @@ class atomList(object): # used as singleton
     def __getitem__(self, index):
         """
         """
-        if 0 <= index < len(self.atoms):
+        try:
             return self.atoms[index]
-        else:
+        except IndexError:
             raise IndexError("No atom at index " + str(index) + ".\n")
-
-    def __iter__(self):
-        return self.atoms.__iter__()
 
     @lru_cache(maxsize=10) # Most expensive loop with lowest probability of changes
     def atomsForSegid(self, aSegid=None):
@@ -142,7 +143,6 @@ class atomList(object): # used as singleton
             stderr.write(str(anAtom) + " is not an atom.\n")
 
         return tuple(atom.coord for atom in selectedAtom)
-
 
     def atomsLikeAtom(self, anAtom):
         """

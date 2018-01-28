@@ -57,7 +57,7 @@ class ConstraintDrawer(object):
             if len(self.displayedConstraintsSticks) > number:
                 try:
                     MVI.delete(self.IDConstraint(aConstraint))
-                    self.displayedConstraintsSticks.removeConstraint(aConstraint)
+                    self.displayedConstraintsSticks.remove(aConstraint)
                 except ValueError:
                     pass
             if aConstraint.satisfaction() is 'unSatisfied':
@@ -82,7 +82,7 @@ class ConstraintDrawer(object):
         for number, aConstraint in enumerate(selectedConstraints):
             if len(self.displayedConstraintsDensity) > number:
                 try:
-                    self.displayedConstraintsDensity.removeConstraint(aConstraint)
+                    self.displayedConstraintsDensity.remove(aConstraint)
                     MVI.delete(self.IDConstraint(aConstraint))
                 except ValueError:
                     pass

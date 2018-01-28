@@ -34,7 +34,7 @@ import ttk
 
 from Application.GUI.DataViewer.DependantColumnsTableView import DependantColumnsTableView as DCTView
 from Application.GUI.DataViewer.NOEViewController import NOEViewController as NVController
-from Application.GUI.DataViewer.delegates import DelegateProviderMixin, notify_delegates
+from Application.GUI.delegates import DelegateProviderMixin, notify_delegates
 
 
 class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):

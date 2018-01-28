@@ -56,12 +56,5 @@ for aFile in projectFileList:
                     collection += line
         collection += '\n'
 
-# with open(mainDirectory + "/pymolNMR.py", 'r') as fin:
-#     for line in fin:
-#         if not "import" in line:
-#             collection += line
-#         else:
-#             importCollection.add(line)
-
 stdout.write("".join(importCollection))
 stdout.write("".join(collection))

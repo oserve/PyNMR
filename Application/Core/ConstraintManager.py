@@ -29,8 +29,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 import re
-from sys import stderr
-from collections import Sequence
+from collections import Sequence, MutableSequence
 
 import Application.Core.MolecularViewerInterfaces.MolecularViewerInterface as MVI
 
@@ -54,12 +53,12 @@ class imConstraintSetManager(Sequence):
     __repr__ = __str__
 
     def __getitem__(self, constraintIndex):
-        if 0 <= constraintIndex < len(self.constraints):
+        try:
             self.constraints[constraintIndex].id['number'] = constraintIndex
             return self.constraints[constraintIndex]
-        else:
-            raise IndexError("No constraint at index " + str(constraintIndex) + ".\n")
-
+        except IndexError:
+            raise IndexError("Index error, no constraint at index {}.\n".format(constraintIndex))
+            
     # Constraints management methods
 
     def setPDB(self, structure):
@@ -137,7 +136,7 @@ class imConstraintSetManager(Sequence):
         return anAtom in self.partnerManager.atomsList
 
 
-class ConstraintSetManager(imConstraintSetManager):
+class ConstraintSetManager(imConstraintSetManager, MutableSequence):
     """Class to manage a mutable set of constraints
     Usable as an iterator
     """
@@ -151,38 +150,19 @@ class ConstraintSetManager(imConstraintSetManager):
         self.format = ""
         self.fileText = ""
 
-    # Constraints management methods
-
-    def removeAllConstraints(self):
-        """Empties an array of constraints
-        """
-        del self.constraints[:]
-
-    def append(self, aConstraint):
-        """Add a constraint to the constraint list of the manager and
-        update the list of residues
-        """
-        aConstraint.id['number'] = len(self)
-        self.constraints.append(aConstraint)
-        if aConstraint.name == "":
-            aConstraint.name = self.name
-
-    def extend(self, constraints):
-        """
-        """
-        for constraint in constraints:
-            self.append(constraint)
-
-    def removeConstraint(self, aConstraint):
-        """
-        """
+    def __setitem__(self, constraintIndex, constraint):
         try:
-            self.constraints.remove(aConstraint)
-        except ValueError:
-            stderr.write("Constraint " + str(aConstraint) +" is unknown\n")
+            self.constraints[constraintIndex] = constraint
+            if constraint.name == "":
+                constraint.name = self.name
+        except IndexError:
+            raise IndexError("Index error, no constraint at index {}.\n".format(constraintIndex))
+            
+    def __delitem__(self, constraintIndex):
+        try:
+            del self.constraints[constraintIndex]
+        except IndexError:
+            raise IndexError("Index error, no constraint at index {}.\n".format(constraintIndex))
 
-    def removeConstraints(self, Constraints):
-        """
-        """
-        for Constraint in Constraints:
-            self.removeConstraint(Constraint)
+    def insert(self, constraintIndex, constraint):
+        self.constraints.insert(constraintIndex, constraint)

@@ -43,6 +43,7 @@ from collections import MutableMapping
 
 # Custom Classes
 from Application.Core.ConstraintLoading import loadConstraintsFromFile
+from Application.Core.ConstraintManager import imConstraintSetManager
 from Application.Core.Filtering import NOEFilter
 from Application.Core.ConstraintsDrawing import ConstraintDrawer
 from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI
@@ -64,8 +65,8 @@ class NMRCore(MutableMapping):
         try:
             return self.ManagersList[key]
         except ValueError:
-            stderr.write("No constraintManager named " + str(key) + "\n")
-
+            raise ValueError("No constraintManager named " + str(key) + "\n")
+            
     def __setitem__(self, key, item):
         self.ManagersList[key] = item
 
@@ -73,26 +74,13 @@ class NMRCore(MutableMapping):
         try:
             del self.ManagersList[key]
         except ValueError:
-            stderr.write("No constraintManager named " + str(key) + "\n")
+            raise ValueError("No constraintManager named " + str(key) + "\n")
 
     def __iter__(self):
         return self.ManagersList.__iter__()
 
     def __len__(self):
         return len(self.ManagersList)
-
-    def get(self, key, default=None):
-        """
-        """
-        try:
-            return self.ManagersList[key]
-        except ValueError:
-            return default
-
-    def keys(self):
-        """
-        """
-        return self.ManagersList.keys()
 
     def LoadConstraints(self, filename):
         """load NMR distance constraints, call for the correct file format
@@ -151,7 +139,7 @@ class NMRCore(MutableMapping):
         """
         for aConstraint in self.drawer.displayedConstraintsSticks:
             MVI.delete(self.drawer.IDConstraint(aConstraint))
-        self.drawer.displayedConstraintsSticks.removeAllConstraints()
+        del self.drawer.displayedConstraintsSticks[:]
 
     def saveConstraintsFile(self, aManagerName, fileName):
         """Save the selected constraint file under the format

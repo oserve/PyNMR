@@ -33,7 +33,7 @@ import ttk
 from sys import stderr
 
 from Application.GUI.Panels.ttkScrolledList import ScrolledList
-from Application.GUI.DataViewer.delegates import DelegateProviderMixin, notify_delegates
+from Application.GUI.delegates import DelegateProviderMixin, notify_delegates
 
 class DependantColumnsTableView(ttk.Frame, DelegateProviderMixin):
     """

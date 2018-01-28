@@ -28,7 +28,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from Geom import calcDistance
+from Application.Core.Geom import calcDistance
 
 
 def NOEFilter(residuesList, dist_range, violationState, violCutoff, method, RangeCutOff):
