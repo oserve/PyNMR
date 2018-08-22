@@ -157,7 +157,7 @@ class ConstraintSetManager(imConstraintSetManager, MutableSequence):
                 constraint.name = self.name
         except IndexError:
             raise IndexError("Index error, no constraint at index {}.\n".format(constraintIndex))
-            
+
     def __delitem__(self, constraintIndex):
         try:
             del self.constraints[constraintIndex]

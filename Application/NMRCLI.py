@@ -35,6 +35,7 @@ from DataControllers import NOEDataController
 
 regInput = re.compile(r'[^0-9+\-\,\s]')
 
+
 class NMRCLI(object):
     """
     """

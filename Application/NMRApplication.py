@@ -36,22 +36,22 @@ from Application.NMRCLI import NMRCLI
 class NMRApplication(object):
     """
     """
-    def __init__(self, Core, app="NoGUI"):
+    def __init__(self, Core, root=None):
         """
         """
         self.NMRCommands = Core
         self.log = ""
         self.NMRCLI = NMRCLI(Core)
-        if app == "NoGUI":
+        if root is not None:
             stdout.write("Starting PyNMR CLI ...\n")
         else:
             stdout.write("Starting PyNMR GUI ...\n")
-            self.startGUI()
+            self.startGUI(root)
 
-    def startGUI(self):
+    def startGUI(self, root):
         """
         """
-        self.NMRInterface = NMRGUI()
+        self.NMRInterface = NMRGUI(root)
         self.NMRInterface.startGUI()
         self.GUIBindings()
         self.setDefaults()

@@ -107,6 +107,6 @@ class BaseConstraintParser(Iterable):
                 currentResidue["resi_number"] = int(aResult["resi"])
             currentResidue["atoms"] = aResult["name"]
             currentResidue["segid"] = aResult.get("segid", 'A')
-            residueKey = ''.join(str(value) for value in currentResidue.values()) 
+            residueKey = ''.join(str(value) for value in currentResidue.values())
             atomList.append(BaseConstraintParser.atoms[residueKey](**currentResidue))
         return atomList

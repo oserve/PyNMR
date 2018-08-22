@@ -43,7 +43,6 @@ from collections import MutableMapping
 
 # Custom Classes
 from Application.Core.ConstraintLoading import loadConstraintsFromFile
-from Application.Core.ConstraintManager import imConstraintSetManager
 from Application.Core.Filtering import NOEFilter
 from Application.Core.ConstraintsDrawing import ConstraintDrawer
 from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface as MVI

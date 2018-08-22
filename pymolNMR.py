@@ -37,7 +37,6 @@ lower limit violation, red for upper limit violation for NOEs)
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
 from sys import stderr
-
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
 
@@ -47,15 +46,15 @@ appDefaults.loadDefaults()
 
 Core = NMRCore()
 
-pyNMR = NMRApplication(Core, app="NoGUI")
+pyNMR = NMRApplication(Core)
 
-def __init__(self):
+def __init__plugin(self):
     """Add the plugin to Pymol main menu
     """
-    self.menuBar.addmenuitem('Plugin', 'command',
+    self.plugins.addmenuitem('Plugin', 'command',
                              'PyNMR',
                              label='PyNMR...',
-                             command=lambda s=self: NMRApplication(Core, app="GUI"))
+                             command=lambda s=self: NMRApplication(Core, root))
 
 
 PyNMRCLI = pyNMR.NMRCLI
@@ -122,10 +121,13 @@ def cleanScreen(filename):
 if __name__ == "__main__":
     import Tkinter as Tk
     MainWin = Tk.Tk()
-    pyNMR.startGUI()
+    pyNMR.startGUI(MainWin)
     MainWin.mainloop()
 
 try:
+    from pymol import plugins
+    root = plugins.get_tk_root()
+    app = plugins.get_pmgapp()
     from pymol.cmd import extend
     extend("LoadConstraints", LoadConstraints)
     extend("showNOE", showNOE)

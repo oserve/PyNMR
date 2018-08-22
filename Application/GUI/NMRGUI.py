@@ -35,13 +35,13 @@ from Application.GUI.Panels.MainPanel import mainPanel
 from Application.GUI.Panels.About import About
 
 
-class NMRGUI(Tk.Toplevel):
+class NMRGUI(Tk.Tk):
     """
     """
-    def __init__(self):
+    def __init__(self, root):
         """
         """
-        Tk.Toplevel.__init__(self)
+        Tk.Tk.__init__(self, root)
         self.title('PymolNMR')
         self.resizable(width=False, height=False)
         self.noteBook = ttk.Notebook(self)

@@ -77,7 +77,7 @@ class RangeSelectionPanel(ttk.LabelFrame):
     def __init__(self, master):
         """
         """
-        ttk.LabelFrame.__init__(self, master, text=u"Range Selection")
+        ttk.LabelFrame.__init__(self, master, text=u"Range Selection :")
 
         self.RangesVars = dict()
         self.RangesCB = dict()
