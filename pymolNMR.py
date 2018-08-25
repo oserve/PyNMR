@@ -36,7 +36,12 @@ lower limit violation, red for upper limit violation for NOEs)
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 # ----------------------------------------------------------------------
-from sys import stderr
+from sys import stderr, version_info
+if version_info[0] < 3:
+    import Tkinter as Tk
+else:
+    import tkinter as Tk
+
 from Application.Core.NMRCore import NMRCore
 from Application.NMRApplication import NMRApplication
 
@@ -48,13 +53,13 @@ Core = NMRCore()
 
 pyNMR = NMRApplication(Core)
 
-def __init__plugin(self):
+def __init__(self):
     """Add the plugin to Pymol main menu
     """
-    self.plugins.addmenuitem('Plugin', 'command',
+    self.menuBar.addmenuitem('Plugin', 'command',
                              'PyNMR',
                              label='PyNMR...',
-                             command=lambda s=self: NMRApplication(Core, root))
+                             command=NMR_GUI)
 
 
 PyNMRCLI = pyNMR.NMRCLI
@@ -117,24 +122,25 @@ def cleanScreen(filename):
     """
     PyNMRCLI.cleanScreen(filename)
 
-
-if __name__ == "__main__":
-    import Tkinter as Tk
-    MainWin = Tk.Tk()
-    pyNMR.startGUI(MainWin)
-    MainWin.mainloop()
-
-try:
+def NMR_GUI():
     from pymol import plugins
     root = plugins.get_tk_root()
     app = plugins.get_pmgapp()
+    pyNMR.startGUI(Tk.Toplevel(root))
+
+
+if __name__ == "__main__":
+    MainWin = Tk.Tk()
+    pyNMR.startGUI(MainWin)
+    MainWin.mainloop()
+try:
     from pymol.cmd import extend
-    extend("LoadConstraints", LoadConstraints)
+    extend("load_Constraints", LoadConstraints)
     extend("showNOE", showNOE)
     extend("showNOEDensity", showNOEDensity)
     extend("loadAndShow", loadAndShow)
     extend("downloadNMR", downloadNMR)
     extend("cleanScreen", cleanScreen)
-
+    extend("NMR_GUI", NMR_GUI)
 except ImportError:
     stderr.write("Demo mode.\n")
