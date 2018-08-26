@@ -47,7 +47,6 @@ class ConstraintSelectionPanel(ttk.LabelFrame):
         self.consRangeFrame = RangeSelectionPanel(self)
         self.violationsFrame = ViolationSelectionPanel(self)
         self.structureManagement = StructureSelectionPanel(self)
-        self.panelsList = (self.consRangeFrame, self.violationsFrame, self.structureManagement)
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -62,7 +61,7 @@ class ConstraintSelectionPanel(ttk.LabelFrame):
 
     def getInfo(self):
         infos = dict()
-        for panel in self.panelsList:
+        for panel in self.winfo_children():
             infos.update(panel.getInfo())
         return infos
 

@@ -60,3 +60,8 @@ class About(ttk.Frame):
                   ' display the constraints on.\n - Finally, click on the' +
                   ' display you want\n (sticks or colormap)'
                   ).grid(row=0, column=0)
+
+    def getInfo(self):
+        """
+        """
+        return {}

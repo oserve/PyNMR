@@ -47,20 +47,13 @@ class NMRGUI(object):
         self.mainPanel = mainPanel(self.noteBook)
         self.preferencesPanel = PreferencesPanel(self.noteBook)
         self.About = About(self.noteBook)
-        self.panelsList = list()
 
     def createPanels(self):
         """Main Frames (not IBM ;-)
         """
-
         self.noteBook.grid(row=0, column=0)
-
         self.noteBook.add(self.mainPanel, text="Main")
-        self.panelsList.append(self.mainPanel)
-
-        self.panelsList.append(self.preferencesPanel)
         self.noteBook.add(self.preferencesPanel, text="Preferences")
-
         self.noteBook.add(self.About, text="Help")
 
     def startGUI(self):
@@ -80,6 +73,6 @@ class NMRGUI(object):
         """
         """
         infos = dict()
-        for panel in self.panelsList:
+        for panel in self.noteBook.winfo_children():
             infos.update(panel.getInfo())
         return infos

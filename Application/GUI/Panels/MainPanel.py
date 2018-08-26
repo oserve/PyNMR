@@ -45,7 +45,6 @@ class mainPanel(ttk.Frame):
         self.fileSelection = FileSelectionPanel(self)
         self.constraintPanel = ConstraintSelectionPanel(self)
         self.NOEDrawing = NOEDrawingPanel(self)
-        self.panelsList = (self.fileSelection, self.constraintPanel)
         self.widgetCreation()
 
     def widgetCreation(self):
@@ -59,6 +58,6 @@ class mainPanel(ttk.Frame):
         """
         """
         infos = dict()
-        for panel in self.panelsList:
+        for panel in self.winfo_children():
             infos.update(panel.getInfo())
         return infos
