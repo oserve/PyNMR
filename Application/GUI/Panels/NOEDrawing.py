@@ -58,7 +58,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
         self.sticksButton.grid(row=0, column=0)
         self.densityButton.grid(row=0, column=1)
         self.cleanButton.grid(row=0, column=2)
-
+    
     def showSticks(self):
         """
         """
@@ -80,10 +80,12 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         infos["UnSatisfactionMarker"],
                                         infos["SatisfactionMarker"])
 
+            view_callback = self.destroy_dataView_callback(infos["constraintFile"])
             self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsSticks.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
             self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
+            self.dataViewers[infos["constraintFile"]].protocol("WM_DELETE_WINDOW", view_callback)
 
     def showDensity(self):
         """
@@ -102,10 +104,13 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                             infos["structure"],
                                             infos["gradient"])
 
+            view_callback = self.destroy_dataView_callback(infos["constraintFile"])
+            
             self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsDensity.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
             self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
+            self.dataViewers[infos["constraintFile"]].protocol("WM_DELETE_WINDOW", view_callback)
 
     def cleanAll(self):
         """Remove all displayed sticks
@@ -121,9 +126,20 @@ class NOEDrawingPanel(ttk.LabelFrame):
             except KeyError:
                 pass
 
+    def destroy_dataView_callback(self, constraintFile):
+        def callback():
+            self.dataViewers[constraintFile].destroy()
+            del self.dataViewers[constraintFile]
+            del self.dataControllers[constraintFile]
+        return callback
 
     @staticmethod
     def infoCheck(infos):
         """
         """
         return all(item != "" for item in infos.values())
+
+    def getInfo(self):
+        """
+        """
+        return {}
