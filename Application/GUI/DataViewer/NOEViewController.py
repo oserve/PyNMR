@@ -104,11 +104,10 @@ class NOEViewController(object):
         """
         selection = self.NOETableView.selectedRows[2]
 
-        if len(selection) == 1:
-            if len(self.NOETableView.selectedRows[1]) == 1:
-                selectedPartnerAtoms = self.listsControllers[2].values()[selection[0]]
-                self.listsControllers[3].addAtom(selectedPartnerAtoms[0])
-                MVI.zoom(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms)
+        if len(selection) == 1 and len(self.NOETableView.selectedRows[1]) == 1:
+            selectedPartnerAtoms = self.listsControllers[2].values()[selection[0]]
+            self.listsControllers[3].addAtom(selectedPartnerAtoms[0])
+            MVI.zoom(self.NOEDataController.structure, self.NOEDataController.selectedAtoms+selectedPartnerAtoms)
 
     def selectAtomPartner(self):
         """
@@ -128,4 +127,3 @@ class NOEViewController(object):
         """
         """
         return self.listsControllers[index]
-    

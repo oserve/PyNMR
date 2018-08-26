@@ -42,9 +42,11 @@ class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):
     """
     def __init__(self, dataController):
         Tk.Toplevel.__init__(self, class_='NOEDataViewer')
-        self.NOEView = DCTView(masterView=self, NumberOfResiLists=2)
-        self.NOEVController = NVController(dataController, self, self.NOEView)
-        self.NOEView.dataSource = self.NOEVController
+        self.title(dataController.name + " on " + dataController.structure)
+        self.resizable(width=False, height=False)
+        self.NOETableView = DCTView(masterView=self, NumberOfResiLists=2)
+        self.NOEVController = NVController(dataController, self, self.NOETableView)
+        self.NOETableView.dataSource = self.NOEVController
         self.constraintSelectionText = Tk.StringVar()
         self.labelConstraints = ttk.Label(self, textvariable=self.constraintSelectionText,
                                           justify=Tk.CENTER)
@@ -55,7 +57,7 @@ class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):
             self.NOEValueLabels[valueType] = ttk.Label(self, textvariable=self.NOEValues[valueType], width=3)
 
         self.add_delegate(self.NOEVController)
-        self.NOEView.add_delegate(self.NOEVController)
+        self.NOETableView.add_delegate(self.NOEVController)
 
         self.widgetCreation()
     
@@ -65,8 +67,8 @@ class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):
         self.labelConstraints.grid(row=0, column=0, columnspan=8)
         ttk.Label(self, text='1st residue').grid(row=2, column=0, columnspan=4)
         ttk.Label(self, text='2nd residue').grid(row=2, column=4, columnspan=4)
-        self.NOEView.grid(row=3, column=0, columnspan=8)
-        self.NOEView.setColumnTitles(('Name', 'Atom', 'Name', 'Atom'))
+        self.NOETableView.grid(row=3, column=0, columnspan=8)
+        self.NOETableView.setColumnTitles(('Name', 'Atom', 'Name', 'Atom'))
 
         columnPosition = 0
         for key, aLabel in self.NOEValueLabels.iteritems():
