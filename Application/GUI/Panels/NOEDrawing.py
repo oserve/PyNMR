@@ -81,10 +81,10 @@ class NOEDrawingPanel(ttk.LabelFrame):
                                         infos["SatisfactionMarker"])
 
             view_callback = self.destroy_dataView_callback(infos["constraintFile"])
-            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsSticks.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsSticks.intersection(self.NMRCommands.get(infos["constraintFile"], "")),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
-            self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
+            self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]], master=self.winfo_toplevel())
             self.dataViewers[infos["constraintFile"]].protocol("WM_DELETE_WINDOW", view_callback)
 
     def showDensity(self):
@@ -106,7 +106,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
             view_callback = self.destroy_dataView_callback(infos["constraintFile"])
             
-            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsDensity.intersection(self.NMRCommands.get(infos["constraintFile"], "").constraintsManagerForDataType('NOE')),
+            self.dataControllers[infos["constraintFile"]] = NOEDataController(self.NMRCommands.drawer.displayedConstraintsDensity.intersection(self.NMRCommands.get(infos["constraintFile"], "")),
                                                                               infos["constraintFile"],
                                                                               infos["structure"])
             self.dataViewers[infos["constraintFile"]] = NOEDataViewer(self.dataControllers[infos["constraintFile"]])
@@ -128,6 +128,7 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
     def destroy_dataView_callback(self, constraintFile):
         def callback():
+            # self.dataViewers[constraintFile].NOETableView.remove_delegate(self.dataViewers[constraintFile].NOEVController)
             self.dataViewers[constraintFile].destroy()
             del self.dataViewers[constraintFile]
             del self.dataControllers[constraintFile]

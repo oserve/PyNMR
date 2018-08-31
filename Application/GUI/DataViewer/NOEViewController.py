@@ -35,10 +35,10 @@ from Application.Core.MolecularViewerInterfaces import MolecularViewerInterface 
 class NOEViewController(object):
     """
     """
-    def __init__(self, dataController, NOEView, NOETableView):
+    def __init__(self, dataController, NOEView):
         self.NOEDataController = dataController
         self.listsControllers = (resiNumberListController(), atomTypeListController(), resiNumberListController(), atomTypeListController())
-        self.NOETableView = NOETableView
+        self.NOETableView = NOEView.NOETableView
         self.NOEView = NOEView
 
     def on_before_widgetCreation(self, *args, **kwargs):

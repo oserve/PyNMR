@@ -40,12 +40,13 @@ from Application.GUI.delegates import DelegateProviderMixin, notify_delegates
 class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):
     """
     """
-    def __init__(self, dataController):
-        Tk.Toplevel.__init__(self, class_='NOEDataViewer')
+    def __init__(self, dataController, master=None):
+        Tk.Toplevel.__init__(self, master=master, class_='NOEDataViewer')
+        DelegateProviderMixin.__init__(self)
         self.title(dataController.name + " on " + dataController.structure)
         self.resizable(width=False, height=False)
         self.NOETableView = DCTView(masterView=self, NumberOfResiLists=2)
-        self.NOEVController = NVController(dataController, self, self.NOETableView)
+        self.NOEVController = NVController(dataController, self)
         self.NOETableView.dataSource = self.NOEVController
         self.constraintSelectionText = Tk.StringVar()
         self.labelConstraints = ttk.Label(self, textvariable=self.constraintSelectionText,
@@ -63,11 +64,12 @@ class NOEDataViewer(Tk.Toplevel, DelegateProviderMixin):
     
     @notify_delegates
     def widgetCreation(self):
-        ttk.Label(self, text='Select NOE residue and / or atom to see their counterparts :').grid(row=1, column=0, columnspan=8)
-        self.labelConstraints.grid(row=0, column=0, columnspan=8)
-        ttk.Label(self, text='1st residue').grid(row=2, column=0, columnspan=4)
-        ttk.Label(self, text='2nd residue').grid(row=2, column=4, columnspan=4)
-        self.NOETableView.grid(row=3, column=0, columnspan=8)
+        max_columnspan = len(('constraint', 'min', 'plus', 'actual')) * 2
+        ttk.Label(self, text='Select NOE residue and / or atom to see their counterparts :').grid(row=1, column=0, columnspan=max_columnspan)
+        self.labelConstraints.grid(row=0, column=0, columnspan=max_columnspan)
+        ttk.Label(self, text='1st residue').grid(row=2, column=0, columnspan=max_columnspan/2)
+        ttk.Label(self, text='2nd residue').grid(row=2, column=4, columnspan=max_columnspan/2)
+        self.NOETableView.grid(row=3, column=0, columnspan=max_columnspan)
         self.NOETableView.setColumnTitles(('Name', 'Atom', 'Name', 'Atom'))
 
         columnPosition = 0

@@ -50,7 +50,8 @@ class DelegateProviderMixin(object):
     """Mixin for a class that has delegates. Any method can be wrapped for
     delegates using the `@notify_delegates` decorator."""
 
-    __delegates = []
+    def __init__(self, *args, **kwargs):
+        self.__delegates = []
 
     def add_delegate(self, delegate):
         """Adds a delegate specifically listening on all delegate methods it

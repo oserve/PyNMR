@@ -42,6 +42,7 @@ class DependantColumnsTableView(ttk.Frame, DelegateProviderMixin):
         """
         """
         ttk.Frame.__init__(self, class_='DCTView', master=masterView)
+        DelegateProviderMixin.__init__(self)
         self.dataSource = dataSource
         self.TkVars = tuple(Tk.StringVar() for number in xrange(NumberOfResiLists * 2))
         self.listTitleLabels = tuple(ttk.Label(self) for number in xrange(NumberOfResiLists * 2))
@@ -62,8 +63,8 @@ class DependantColumnsTableView(ttk.Frame, DelegateProviderMixin):
         """
         super(DependantColumnsTableView, self).grid(*args, **kwargs)
         for index, aList in enumerate(self.scrolledLists):
-            self.listTitleLabels[index].grid(row=0, column=index*2, columnspan=2)
-            aList.grid(row=1, column=index*2, columnspan=2)
+            self.listTitleLabels[index].grid(row=0, column=index*2)
+            aList.grid(row=1, column=index*2)
         try:
             self.TkVars[0].set(" ".join(self.dataSource.valuesForColumn(0)))
         except AttributeError:

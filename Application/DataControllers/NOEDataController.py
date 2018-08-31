@@ -41,7 +41,7 @@ class NOEDataController(object):
         self.name = aManagerName
         self.dataType = 'NOE'
         self.selectedAtoms = list()
-        self.manager = dataSource
+        self.manager = dataSource.constraintsManagerForDataType(self.dataType)
 
     def __len__(self):
         """
