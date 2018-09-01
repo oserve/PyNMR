@@ -31,9 +31,7 @@
 # ----------------------------------------------------------------------
 
 # Standard modules
-import os
-import os.path as path
-import sys
+from os import path
 from sys import stderr
 import urllib2
 import shutil
@@ -153,28 +151,25 @@ class NMRCore(MutableMapping):
         """
         PDBConstraintsFileName = pdbCode.lower() + ".mr"
         zippedFileName = PDBConstraintsFileName + ".gz"
-        workdir = os.getcwd()
         tempDownloadDir = tempfile.mkdtemp()
-        os.chdir(tempDownloadDir)
+        localPDBFilePath = path.join(tempDownloadDir, PDBConstraintsFileName)
+        localZippedFilePath = path.join(tempDownloadDir, zippedFileName)
         try:
             restraintFileRequest = urllib2.urlopen(urllib2.Request(url+zippedFileName))
-            localFile = open(zippedFileName, 'wb')
+            localFile = open(localZippedFilePath, 'wb')
             shutil.copyfileobj(restraintFileRequest, localFile)
             localFile.close()
             restraintFileRequest.close()
-            with gzip.open(zippedFileName, 'rb') as zippedFile:
+            with gzip.open(localZippedFilePath, 'rb') as zippedFile:
                 decodedFile = zippedFile.read()
-                with open(PDBConstraintsFileName, 'w') as restraintFile:
+                with open(localPDBFilePath, 'w') as restraintFile:
                     restraintFile.write(decodedFile)
-            if path.exists(zippedFileName):
-                os.remove(zippedFileName)
-                self.LoadConstraints(PDBConstraintsFileName)
-                os.remove(PDBConstraintsFileName)
-                os.chdir(workdir)
-                os.removedirs(tempDownloadDir)
+            self.LoadConstraints(localPDBFilePath)
         except IOError:
-            sys.stderr.write("Error while downloading or opening " +
-                             pdbCode + " NMR Restraints file from PDB.\n")
+            stderr.write("Error while downloading or opening " +
+                             pdbCode + " NMR Restraints file from PDB website.\n")
+        finally:
+            shutil.rmtree(tempDownloadDir)
 
     def getModelsNames(self, satisfactionMarker="", unSatisfactionMarker=""):
         return MVI.getModelsNames(satisfactionMarker, unSatisfactionMarker)

@@ -128,7 +128,6 @@ class NOEDrawingPanel(ttk.LabelFrame):
 
     def destroy_dataView_callback(self, constraintFile):
         def callback():
-            # self.dataViewers[constraintFile].NOETableView.remove_delegate(self.dataViewers[constraintFile].NOEVController)
             self.dataViewers[constraintFile].destroy()
             del self.dataViewers[constraintFile]
             del self.dataControllers[constraintFile]
